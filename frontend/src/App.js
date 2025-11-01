@@ -12,8 +12,8 @@ function App() {
   const [answer, setAnswer] = useState(null);
   
   // const [apiUrl, setApiUrl] = useState('http://localhost:8000');
-  // const [apiUrl, setApiUrl] = useState('https://insightsphere-production.up.railway.app');
   const [apiUrl, setApiUrl] = useState('https://insightsphere-production.up.railway.app');
+  console.log('API URL:', apiUrl);
 
   const [showSettings, setShowSettings] = useState(false);
 
