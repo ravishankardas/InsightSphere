@@ -89,6 +89,7 @@ function App() {
     setAnswer(null);
 
     try {
+      console.log('`${apiUrl}/api/query`:', `${apiUrl}/api/query`);
       const response = await fetch(`${apiUrl}/api/query`, {
         method: 'POST',
         headers: {
