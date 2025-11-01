@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+python-multipart
+sentence-transformers
+chromadb
+pdfplumber
+openai
+python-dotenv
+icecream
