@@ -9,7 +9,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:3000",  # Local development
-        "https://insight-sphere-gamma.vercel.app",  # Your Vercel frontend
+        "https://insight-sphere-lake.vercel.app/",  # Your Vercel frontend
         "https://insightsphere-production.up.railway.app"  # Allow self
     ],
     allow_credentials=True,
