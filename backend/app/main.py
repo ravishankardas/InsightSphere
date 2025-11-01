@@ -4,13 +4,13 @@ from app.api import upload, query
 
 
 app = FastAPI(title="InsightSphere API", version="1.0.0")
-
+# "http://localhost:3000",  # Local development
+#         "https://insight-sphere-lake.vercel.app/",  # Your Vercel frontend
+#         "https://insightsphere-production.up.railway.app" 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:3000",  # Local development
-        "https://insight-sphere-lake.vercel.app/",  # Your Vercel frontend
-        "https://insightsphere-production.up.railway.app"  # Allow self
+        "*" # Allow self
     ],
     allow_credentials=True,
     allow_methods=["*"],
