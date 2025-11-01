@@ -9,7 +9,7 @@ class QueryRequest(BaseModel):
     query: str
     top_k: int = 4
 
-@router.post("/")
+@router.post("")
 async def query_documents(
     request: QueryRequest,
     user_id: Optional[str] = Header(None, alias="X-User-Id")
