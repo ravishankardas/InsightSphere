@@ -283,13 +283,14 @@ export default function App() {
             </button>
 
             <SignedOut>
-              <button className="ghost-button" onClick={openSignIn}>
+              <button className="primary-button small" onClick={openSignIn}>
                 Sign In
               </button>
               <button className="primary-button small" onClick={openSignUp}>
                 Sign Up
               </button>
             </SignedOut>
+
 
             <SignedIn>
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>

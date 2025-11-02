@@ -679,13 +679,25 @@ body {
   color: var(--primary-color);
   font-weight: 600;
   cursor: pointer;
-  text-decoration: none;
+  text-decoration: underline;
+  text-underline-offset: 2px;
   padding: 0;
   font-size: inherit;
+  transition: color 0.15s ease, text-decoration-color 0.15s ease;
 }
 
-.auth-switch-link:hover {
-  text-decoration: underline;
+/* subtle hover and focus styles for accessibility */
+.auth-switch-link:hover,
+.auth-switch-link:focus {
+  color: var(--primary-hover, #2563eb); /* fallback if variable not defined */
+  text-decoration-color: currentColor;
+}
+
+/* prevent focus ring when clicked by mouse, but show when tabbing */
+.auth-switch-link:focus-visible {
+  outline: 2px solid var(--primary-hover, #2563eb);
+  outline-offset: 2px;
+  border-radius: 2px;
 }
 
 .sidebar-signin-link {
