@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
+import { SignUp, SignIn, SignedIn, SignedOut, UserButton, useUser } from '@clerk/clerk-react';
 import './App.css';
 
 function App() {
-  const [userId, setUserId] = useState('alice@example.com');
+  const { user, isSignedIn } = useUser();
+  const userId = user?.primaryEmailAddress?.emailAddress;
+
   const [file, setFile] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [uploadStatus, setUploadStatus] = useState(null);
@@ -11,13 +14,17 @@ function App() {
   const [querying, setQuerying] = useState(false);
   const [answer, setAnswer] = useState(null);
   
-  // const [apiUrl, setApiUrl] = useState('http://localhost:8000');
-  const [apiUrl, setApiUrl] = useState('https://insightsphere-production.up.railway.app');
-  console.log('API URL:', apiUrl);
-
+  const [apiUrl, setApiUrl] = useState(process.env.BACKEND_URL || 'https://insightsphere-production.up.railway.app');
   const [showSettings, setShowSettings] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [authMode, setAuthMode] = useState('signup'); // 'signup' or 'signin'
 
   const handleFileChange = (e) => {
+    if (!isSignedIn) {
+      setAuthMode('signup');
+      setShowAuthModal(true);
+      return;
+    }
     const selectedFile = e.target.files[0];
     if (selectedFile && selectedFile.type === 'application/pdf') {
       setFile(selectedFile);
@@ -28,12 +35,13 @@ function App() {
   };
 
   const handleUpload = async () => {
-    if (!file) {
-      setUploadStatus({ type: 'error', message: 'Please select a file first' });
+    if (!isSignedIn) {
+      setAuthMode('signup');
+      setShowAuthModal(true);
       return;
     }
-    if (!userId) {
-      setUploadStatus({ type: 'error', message: 'Please enter a user ID' });
+    if (!file) {
+      setUploadStatus({ type: 'error', message: 'Please select a file first' });
       return;
     }
 
@@ -79,17 +87,17 @@ function App() {
   };
 
   const handleQuery = async () => {
-    if (!query.trim()) return;
-    if (!userId) {
-      setAnswer({ type: 'error', message: 'Please enter a user ID' });
+    if (!isSignedIn) {
+      setAuthMode('signup');
+      setShowAuthModal(true);
       return;
     }
+    if (!query.trim()) return;
 
     setQuerying(true);
     setAnswer(null);
 
     try {
-      console.log('`${apiUrl}/api/query`:', `${apiUrl}/api/query`);
       const response = await fetch(`${apiUrl}/api/query`, {
         method: 'POST',
         headers: {
@@ -127,12 +135,6 @@ function App() {
     }
   };
 
-  const quickUserSwitch = (email) => {
-    setUserId(email);
-    setAnswer(null);
-    setUploadStatus(null);
-  };
-
   const handleQueryKeyPress = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
@@ -140,8 +142,83 @@ function App() {
     }
   };
 
+  const openSignUp = () => {
+    setAuthMode('signup');
+    setShowAuthModal(true);
+  };
+
+  const openSignIn = () => {
+    setAuthMode('signin');
+    setShowAuthModal(true);
+  };
+
   return (
     <div className="app-container">
+      {/* Auth Modal - Separate Sign Up and Sign In */}
+      {showAuthModal && (
+        <div className="modal-overlay" onClick={() => setShowAuthModal(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <button className="modal-close" onClick={() => setShowAuthModal(false)}>×</button>
+            <div className="modal-header">
+              <div className="brand-icon-large">IS</div>
+              {authMode === 'signup' ? (
+                <>
+                  <h2 className="modal-title">Create Your Account</h2>
+                  <p className="modal-subtitle">Join InsightSphere to start building your knowledge base</p>
+                </>
+              ) : (
+                <>
+                  <h2 className="modal-title">Welcome Back</h2>
+                  <p className="modal-subtitle">Sign in to access your documents</p>
+                </>
+              )}
+            </div>
+
+            {authMode === 'signup' ? (
+              <SignUp 
+                routing="virtual"
+                appearance={{
+                  elements: {
+                    rootBox: "mx-auto",
+                    card: "shadow-none"
+                  }
+                }}
+                afterSignUpUrl="/"
+              />
+            ) : (
+              <SignIn 
+                routing="virtual"
+                appearance={{
+                  elements: {
+                    rootBox: "mx-auto",
+                    card: "shadow-none"
+                  }
+                }}
+                afterSignInUrl="/"
+              />
+            )}
+
+            <div className="auth-switch">
+              {authMode === 'signup' ? (
+                <p>
+                  Already have an account?{' '}
+                  <button className="auth-switch-link" onClick={() => setAuthMode('signin')}>
+                    Sign In
+                  </button>
+                </p>
+              ) : (
+                <p>
+                  Don't have an account?{' '}
+                  <button className="auth-switch-link" onClick={() => setAuthMode('signup')}>
+                    Sign Up
+                  </button>
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Top Navigation */}
       <nav className="top-nav">
         <div className="nav-content">
@@ -156,6 +233,23 @@ function App() {
             >
               ⚙️
             </button>
+            <SignedOut>
+              <button 
+                className="secondary-button"
+                onClick={openSignIn}
+              >
+                Sign In
+              </button>
+              <button 
+                className="login-button"
+                onClick={openSignUp}
+              >
+                Sign Up
+              </button>
+            </SignedOut>
+            <SignedIn>
+              <UserButton afterSignOutUrl="/" />
+            </SignedIn>
           </div>
         </div>
       </nav>
@@ -170,50 +264,57 @@ function App() {
               value={apiUrl}
               onChange={(e) => setApiUrl(e.target.value)}
               className="settings-input"
-              placeholder="http://localhost:8000"
+              placeholder="https://insightsphere-production.up.railway.app"
             />
           </div>
         </div>
       )}
 
       <div className="main-content">
-        {/* User Selection Sidebar */}
+        {/* User Info Sidebar */}
         <aside className="sidebar">
-          <div className="sidebar-section">
-            <h3 className="sidebar-title">Current User</h3>
-            <input
-              type="text"
-              value={userId}
-              onChange={(e) => setUserId(e.target.value)}
-              className="user-input-sidebar"
-              placeholder="user@example.com"
-            />
-          </div>
-
-          <div className="sidebar-section">
-            <h3 className="sidebar-title">Quick Switch</h3>
-            <div className="user-list">
-              {[
-                { email: 'alice@example.com', name: 'Alice Chen', avatar: 'AC', color: '#6366f1' },
-                { email: 'bob@example.com', name: 'Bob Smith', avatar: 'BS', color: '#8b5cf6' },
-                { email: 'charlie@example.com', name: 'Charlie Wu', avatar: 'CW', color: '#ec4899' }
-              ].map((user) => (
-                <button
-                  key={user.email}
-                  onClick={() => quickUserSwitch(user.email)}
-                  className={`user-card ${userId === user.email ? 'active' : ''}`}
+          <SignedOut>
+            <div className="sidebar-section">
+              <div className="login-prompt-card">
+                <div className="login-prompt-icon">🚀</div>
+                <h3 className="login-prompt-title">Get Started</h3>
+                <p className="login-prompt-text">
+                  Create a free account to upload documents and access your personal AI-powered knowledge base.
+                </p>
+                <button 
+                  className="primary-button"
+                  onClick={openSignUp}
                 >
-                  <div className="user-avatar" style={{ backgroundColor: user.color }}>
-                    {user.avatar}
-                  </div>
-                  <div className="user-info">
-                    <div className="user-name">{user.name}</div>
-                    <div className="user-email">{user.email}</div>
-                  </div>
+                  Create Account
                 </button>
-              ))}
+                <div className="sidebar-signin-link">
+                  Already have an account?{' '}
+                  <button className="link-button" onClick={openSignIn}>
+                    Sign In
+                  </button>
+                </div>
+              </div>
             </div>
-          </div>
+          </SignedOut>
+
+          <SignedIn>
+            <div className="sidebar-section">
+              <h3 className="sidebar-title">Current User</h3>
+              <div className="user-profile-card">
+                <img 
+                  src={user?.imageUrl} 
+                  alt={user?.firstName || 'User'}
+                  className="user-profile-image"
+                />
+                <div className="user-profile-info">
+                  <div className="user-profile-name">
+                    {user?.firstName} {user?.lastName}
+                  </div>
+                  <div className="user-profile-email">{userId}</div>
+                </div>
+              </div>
+            </div>
+          </SignedIn>
         </aside>
 
         {/* Main Content Area */}
@@ -232,8 +333,18 @@ function App() {
                 onChange={handleFileChange}
                 className="file-input-hidden"
                 id="file-upload"
+                disabled={!isSignedIn}
               />
-              <label htmlFor="file-upload" className="file-dropzone">
+              <label 
+                htmlFor="file-upload" 
+                className={`file-dropzone ${!isSignedIn ? 'disabled' : ''}`}
+                onClick={(e) => {
+                  if (!isSignedIn) {
+                    e.preventDefault();
+                    openSignUp();
+                  }
+                }}
+              >
                 {file ? (
                   <>
                     <div className="file-icon-success">📄</div>
@@ -247,15 +358,17 @@ function App() {
                         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
                       </svg>
                     </div>
-                    <div className="upload-text">Drop PDF here or click to browse</div>
-                    <div className="upload-hint">Maximum file size: 10MB</div>
+                    <div className="upload-text">
+                      {isSignedIn ? 'Drop PDF here or click to browse' : 'Create an account to upload documents'}
+                    </div>
+                    {isSignedIn && <div className="upload-hint">Maximum file size: 10MB</div>}
                   </>
                 )}
               </label>
 
               <button
                 onClick={handleUpload}
-                disabled={uploading || !file || !userId}
+                disabled={uploading || !file}
                 className="primary-button"
               >
                 {uploading ? 'Processing...' : 'Upload Document'}
@@ -285,15 +398,16 @@ function App() {
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   onKeyPress={handleQueryKeyPress}
-                  placeholder="What would you like to know?"
+                  placeholder={isSignedIn ? "What would you like to know?" : "Create an account to search your documents"}
                   className="query-input"
                   rows="4"
+                  disabled={!isSignedIn}
                 />
               </div>
 
               <button
                 onClick={handleQuery}
-                disabled={querying || !query.trim() || !userId}
+                disabled={querying || !query.trim() || !isSignedIn}
                 className="primary-button"
               >
                 {querying ? 'Searching...' : 'Search Documents'}
