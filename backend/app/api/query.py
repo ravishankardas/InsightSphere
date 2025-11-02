@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, Header
 from pydantic import BaseModel
 from typing import Optional
 from app.services.retriever import retrieve_and_answer
-
+from app.services.multimodal_retriever import query_multimodal
 router = APIRouter()
 
 class QueryRequest(BaseModel):
@@ -25,9 +25,5 @@ async def query_documents(
             detail="Authentication required. Please provide X-User-Id header."
         )
     
-    result = retrieve_and_answer(
-        query=request.query,
-        user_id=user_id,
-        top_k=request.top_k
-    )
+    result = query_multimodal(request.query, user_id, request.top_k)
     return result

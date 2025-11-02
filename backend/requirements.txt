@@ -7,3 +7,9 @@ pdfplumber
 openai
 python-dotenv
 icecream
+unstructured[pdf]
+unstructured-inference
+langchain-core
+langchain-openai
+langchain
+langchain-text-splitters

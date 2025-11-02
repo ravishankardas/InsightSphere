@@ -10,7 +10,7 @@ app = FastAPI(title="InsightSphere API", version="1.0.0", redirect_slashes=False
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "*" # Allow self
+        "*"
     ],
     allow_credentials=True,
     allow_methods=["*"],

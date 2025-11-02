@@ -1,94 +1,148 @@
-import React, { useState } from 'react';
-import { SignUp, SignIn, SignedIn, SignedOut, UserButton, useUser } from '@clerk/clerk-react';
-import './App.css';
+// App.js
+import React, { useState, useEffect } from "react";
+import {
+  SignUp,
+  SignIn,
+  SignedIn,
+  SignedOut,
+  UserButton,
+  useUser,
+} from "@clerk/clerk-react";
+import "./App.css";
+import PdfViewer from './PdfViewer';
 
-function App() {
-  const { user, isSignedIn } = useUser();
-  const userId = user?.primaryEmailAddress?.emailAddress;
+const TOOLS = [
+  { id: "upload", title: "Upload", desc: "Add PDFs to build your knowledge base", icon: "📄" },
+  { id: "search", title: "Search", desc: "Ask natural-language questions", icon: "🔎" },
+  { id: "summaries", title: "Summaries", desc: "Auto-generate concise notes", icon: "📝" },
+  { id: "topics", title: "Topic Map", desc: "Visualize topic clusters", icon: "🕸️" },
+];
 
+export default function App() {
+  const { user, isSignedIn } = useUser(); // clerk hook
+  const userId = user?.primaryEmailAddress?.emailAddress || user?.id || null;
+
+  // Upload / preview
   const [file, setFile] = useState(null);
+  const [fileUrl, setFileUrl] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [uploadStatus, setUploadStatus] = useState(null);
-  
-  const [query, setQuery] = useState('');
+
+  // Query / answers
+  const [query, setQuery] = useState("");
   const [querying, setQuerying] = useState(false);
   const [answer, setAnswer] = useState(null);
-  
-  const [apiUrl, setApiUrl] = useState(process.env.BACKEND_URL || 'https://insightsphere-production.up.railway.app');
+
+  // UI state
+  const [apiUrl, setApiUrl] = useState(
+    process.env.NODE_ENV === 'development'
+      ? process.env.REACT_APP_BACKEND_URL_DEV
+      : process.env.REACT_APP_BACKEND_URL_PROD || 'https://insightsphere-production.up.railway.app'
+  );
+
   const [showSettings, setShowSettings] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
-  const [authMode, setAuthMode] = useState('signup'); // 'signup' or 'signin'
+  const [authMode, setAuthMode] = useState("signup"); // 'signup' or 'signin'
+  const [activeTool, setActiveTool] = useState("welcome");
+
+  // PDF viewer controls
+  const [viewerPage, setViewerPage] = useState(null);
+  const [highlight, setHighlight] = useState(null);
+
+  // ensure modal opens if user tries something while signed out
+  useEffect(() => {
+    if (isSignedIn) {
+      setShowAuthModal(false);
+    }
+  }, [isSignedIn]);
+
+  // ---- Handlers ----
+  const openSignUp = () => {
+    setAuthMode("signup");
+    setShowAuthModal(true);
+  };
+  const openSignIn = () => {
+    setAuthMode("signin");
+    setShowAuthModal(true);
+  };
 
   const handleFileChange = (e) => {
     if (!isSignedIn) {
-      setAuthMode('signup');
+      setAuthMode("signup");
       setShowAuthModal(true);
       return;
     }
-    const selectedFile = e.target.files[0];
-    if (selectedFile && selectedFile.type === 'application/pdf') {
-      setFile(selectedFile);
-      setUploadStatus(null);
-    } else {
-      setUploadStatus({ type: 'error', message: 'Please select a valid PDF file' });
+    const selectedFile = e.target.files?.[0];
+    if (!selectedFile) return;
+    if (selectedFile.type !== "application/pdf") {
+      setUploadStatus({ type: "error", message: "Please select a PDF file." });
+      return;
     }
+    setFile(selectedFile);
+    setUploadStatus(null);
+    const url = URL.createObjectURL(selectedFile);
+    setFileUrl(url);
+    setViewerPage(1);
+    setHighlight(null);
+    // auto-switch to upload tool so user sees preview
+    setActiveTool("upload");
   };
 
   const handleUpload = async () => {
     if (!isSignedIn) {
-      setAuthMode('signup');
+      setAuthMode("signup");
       setShowAuthModal(true);
       return;
     }
     if (!file) {
-      setUploadStatus({ type: 'error', message: 'Please select a file first' });
+      setUploadStatus({ type: "error", message: "Please select a file first." });
       return;
     }
 
     setUploading(true);
     setUploadStatus(null);
-
     const formData = new FormData();
-    formData.append('file', file);
+    formData.append("file", file);
 
     try {
-      const response = await fetch(`${apiUrl}/api/upload/pdf`, {
-        method: 'POST',
-        headers: {
-          'X-User-Id': userId,
-        },
+      const headers = {};
+      if (userId) headers["X-User-Id"] = userId;
+      const res = await fetch(`${apiUrl}/api/upload/pdf`, {
+        method: "POST",
+        headers,
         body: formData,
       });
-
-      const data = await response.json();
-
-      if (response.ok) {
+      const data = await res.json();
+      if (res.ok) {
         setUploadStatus({
-          type: 'success',
-          message: `Document indexed successfully. ${data.indexed_chunks} chunks processed.`,
+          type: "success",
+          message: `Indexed ${data.indexed_chunks ?? data.n_chunks ?? 0} chunks.`,
         });
-        setFile(null);
-        const fileInput = document.getElementById('file-upload');
-        if (fileInput) fileInput.value = '';
+        // Keep local preview active (fileUrl)
+        setActiveTool("upload");
       } else {
-        setUploadStatus({
-          type: 'error',
-          message: data.detail || 'Upload failed',
-        });
+        setUploadStatus({ type: "error", message: data.detail || data.message || "Upload failed." });
       }
-    } catch (error) {
-      setUploadStatus({
-        type: 'error',
-        message: `Connection error: ${error.message}`,
-      });
+    } catch (err) {
+      setUploadStatus({ type: "error", message: `Network error: ${err.message}` });
     } finally {
       setUploading(false);
     }
   };
 
+  const handleClearPreview = () => {
+    if (fileUrl) {
+      URL.revokeObjectURL(fileUrl);
+    }
+    setFile(null);
+    setFileUrl(null);
+    setViewerPage(null);
+    setHighlight(null);
+  };
+
   const handleQuery = async () => {
     if (!isSignedIn) {
-      setAuthMode('signup');
+      setAuthMode("signup");
       setShowAuthModal(true);
       return;
     }
@@ -96,72 +150,86 @@ function App() {
 
     setQuerying(true);
     setAnswer(null);
+    setHighlight(null);
 
     try {
-      const response = await fetch(`${apiUrl}/api/query`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-User-Id': userId,
-        },
-        body: JSON.stringify({
-          query: query,
-          top_k: 4,
-        }),
+      const headers = { "Content-Type": "application/json" };
+      if (userId) headers["X-User-Id"] = userId;
+      const res = await fetch(`${apiUrl}/api/query`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify({ query: query, top_k: 4 }),
       });
+      const data = await res.json();
+      if (res.ok) {
+        // Normalize sources/retrieved fields
+        const retrieved = data.retrieved ?? data.sources ?? data.results ?? [];
+        setAnswer({ type: "success", answer: data.answer ?? "", retrieved });
 
-      const data = await response.json();
-
-      if (response.ok) {
-        setAnswer({
-          type: 'success',
-          answer: data.answer,
-          sources: data.sources,
-          retrieved: data.retrieved,
-        });
+        // If first retrieved has page, jump and highlight
+        const first = retrieved?.[0];
+        if (first) {
+          // backend metadata naming can vary; try common keys
+          const page =
+            first.metadata?.page ??
+            first.metadata?.page_number ??
+            first.page ??
+            first.page_number ??
+            first.pageIndex ??
+            null;
+          const snippet = first.snippet ?? first.content ?? first.text ?? first.display_content ?? "";
+          if (page) {
+            setViewerPage(Number(page));
+            setHighlight({ page: Number(page), snippet });
+            // switch to left viewer visible (upload tool shows it already), ensure active tool visible
+            setActiveTool("upload");
+          } else {
+            // fallback: show snippet overlay without page move
+            setHighlight({ page: 1, snippet });
+          }
+        }
       } else {
-        setAnswer({
-          type: 'error',
-          message: data.detail || 'Query failed',
-        });
+        setAnswer({ type: "error", message: data.detail || data.message || "Query failed." });
       }
-    } catch (error) {
-      setAnswer({
-        type: 'error',
-        message: `Connection error: ${error.message}`,
-      });
+    } catch (err) {
+      setAnswer({ type: "error", message: `Network error: ${err.message}` });
     } finally {
       setQuerying(false);
     }
   };
 
-  const handleQueryKeyPress = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleQuery();
+  // click source -> jump & highlight
+  const handleSourceClick = (src) => {
+    const page =
+      src.metadata?.page ??
+      src.metadata?.page_number ??
+      src.page ??
+      src.page_number ??
+      src.pageIndex ??
+      null;
+    const snippet = src.snippet ?? src.content ?? src.text ?? src.display_content ?? "";
+    if (page) {
+      setViewerPage(Number(page));
+      setHighlight({ page: Number(page), snippet });
+      setActiveTool("upload");
+    } else {
+      setHighlight({ page: 1, snippet });
     }
   };
 
-  const openSignUp = () => {
-    setAuthMode('signup');
-    setShowAuthModal(true);
-  };
-
-  const openSignIn = () => {
-    setAuthMode('signin');
-    setShowAuthModal(true);
-  };
-
+  // ---- Render ----
   return (
     <div className="app-container">
-      {/* Auth Modal - Separate Sign Up and Sign In */}
+      {/* Auth modal */}
       {showAuthModal && (
         <div className="modal-overlay" onClick={() => setShowAuthModal(false)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <button className="modal-close" onClick={() => setShowAuthModal(false)}>×</button>
+            <button className="modal-close" onClick={() => setShowAuthModal(false)}>
+              ×
+            </button>
             <div className="modal-header">
               <div className="brand-icon-large">IS</div>
-              {authMode === 'signup' ? (
+              {authMode === "signup" ? (
                 <>
                   <h2 className="modal-title">Create Your Account</h2>
                   <p className="modal-subtitle">Join InsightSphere to start building your knowledge base</p>
@@ -174,42 +242,24 @@ function App() {
               )}
             </div>
 
-            {authMode === 'signup' ? (
-              <SignUp 
-                routing="virtual"
-                appearance={{
-                  elements: {
-                    rootBox: "mx-auto",
-                    card: "shadow-none"
-                  }
-                }}
-                afterSignUpUrl="/"
-              />
+            {authMode === "signup" ? (
+              <SignUp routing="virtual" appearance={{ elements: { rootBox: "mx-auto", card: "shadow-none" } }} afterSignUpUrl="/" />
             ) : (
-              <SignIn 
-                routing="virtual"
-                appearance={{
-                  elements: {
-                    rootBox: "mx-auto",
-                    card: "shadow-none"
-                  }
-                }}
-                afterSignInUrl="/"
-              />
+              <SignIn routing="virtual" appearance={{ elements: { rootBox: "mx-auto", card: "shadow-none" } }} afterSignInUrl="/" />
             )}
 
             <div className="auth-switch">
-              {authMode === 'signup' ? (
+              {authMode === "signup" ? (
                 <p>
-                  Already have an account?{' '}
-                  <button className="auth-switch-link" onClick={() => setAuthMode('signin')}>
+                  Already have an account?{" "}
+                  <button className="auth-switch-link" onClick={() => setAuthMode("signin")}>
                     Sign In
                   </button>
                 </p>
               ) : (
                 <p>
-                  Don't have an account?{' '}
-                  <button className="auth-switch-link" onClick={() => setAuthMode('signup')}>
+                  Don't have an account?{" "}
+                  <button className="auth-switch-link" onClick={() => setAuthMode("signup")}>
                     Sign Up
                   </button>
                 </p>
@@ -219,42 +269,38 @@ function App() {
         </div>
       )}
 
-      {/* Top Navigation */}
+      {/* Top nav */}
       <nav className="top-nav">
         <div className="nav-content">
           <div className="nav-brand">
             <div className="brand-icon">IS</div>
             <span className="brand-name">InsightSphere</span>
           </div>
+
           <div className="nav-actions">
-            <button 
-              className="settings-button"
-              onClick={() => setShowSettings(!showSettings)}
-            >
+            <button className="settings-button" onClick={() => setShowSettings(!showSettings)} aria-label="Toggle settings" title="Settings">
               ⚙️
             </button>
+
             <SignedOut>
-              <button 
-                className="secondary-button"
-                onClick={openSignIn}
-              >
+              <button className="ghost-button" onClick={openSignIn}>
                 Sign In
               </button>
-              <button 
-                className="login-button"
-                onClick={openSignUp}
-              >
+              <button className="primary-button small" onClick={openSignUp}>
                 Sign Up
               </button>
             </SignedOut>
+
             <SignedIn>
-              <UserButton afterSignOutUrl="/" />
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <UserButton afterSignOutUrl="/" />
+              </div>
             </SignedIn>
           </div>
         </div>
       </nav>
 
-      {/* Settings Panel */}
+      {/* Settings panel */}
       {showSettings && (
         <div className="settings-panel">
           <div className="settings-content">
@@ -264,80 +310,54 @@ function App() {
               value={apiUrl}
               onChange={(e) => setApiUrl(e.target.value)}
               className="settings-input"
-              placeholder="https://insightsphere-production.up.railway.app"
+              placeholder="https://api.example.com"
             />
+            <p className="card-subtitle" style={{ marginTop: 8 }}>
+              Overrides REACT_APP_BACKEND_URL for local testing.
+            </p>
           </div>
         </div>
       )}
 
-      <div className="main-content">
-        {/* User Info Sidebar */}
-        <aside className="sidebar">
-          <SignedOut>
-            <div className="sidebar-section">
-              <div className="login-prompt-card">
-                <div className="login-prompt-icon">🚀</div>
-                <h3 className="login-prompt-title">Get Started</h3>
-                <p className="login-prompt-text">
-                  Create a free account to upload documents and access your personal AI-powered knowledge base.
-                </p>
-                <button 
-                  className="primary-button"
-                  onClick={openSignUp}
-                >
-                  Create Account
-                </button>
-                <div className="sidebar-signin-link">
-                  Already have an account?{' '}
-                  <button className="link-button" onClick={openSignIn}>
-                    Sign In
-                  </button>
-                </div>
+      {/* Two-column main */}
+      <div className="main-content two-column">
+        {/* LEFT: PDF viewer (flexible) */}
+        <div className="left-panel">
+          <PdfViewer fileUrl={fileUrl} goToPage={viewerPage} highlightSnippet={highlight} />
+        </div>
+
+        {/* RIGHT: Controls */}
+        <div className="right-panel">
+          {/* Tools sidebar header (small) */}
+          <div className="content-card" style={{ padding: 12 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div>
+                <div style={{ fontWeight: 800, color: "var(--primary)" }}>InsightSphere</div>
+                <div className="small muted">Tools & actions</div>
+              </div>
+              <div>
+                <SignedIn>
+                  <div className="small muted">Signed in as {user?.firstName ?? user?.email ?? "you"}</div>
+                </SignedIn>
+                <SignedOut>
+                  <div className="small muted">Sign in to save your library</div>
+                </SignedOut>
               </div>
             </div>
-          </SignedOut>
+          </div>
 
-          <SignedIn>
-            <div className="sidebar-section">
-              <h3 className="sidebar-title">Current User</h3>
-              <div className="user-profile-card">
-                <img 
-                  src={user?.imageUrl} 
-                  alt={user?.firstName || 'User'}
-                  className="user-profile-image"
-                />
-                <div className="user-profile-info">
-                  <div className="user-profile-name">
-                    {user?.firstName} {user?.lastName}
-                  </div>
-                  <div className="user-profile-email">{userId}</div>
-                </div>
-              </div>
-            </div>
-          </SignedIn>
-        </aside>
-
-        {/* Main Content Area */}
-        <main className="content-area">
-          {/* Upload Section */}
+          {/* Upload card */}
           <section className="content-card">
             <div className="card-header">
-              <h2 className="card-title">Document Upload</h2>
-              <p className="card-subtitle">Upload PDF documents to build your knowledge base</p>
+              <h2 className="card-title">Upload Document</h2>
+              <p className="card-subtitle">Upload PDFs to your private collection</p>
             </div>
-            
+
             <div className="upload-area">
-              <input
-                type="file"
-                accept=".pdf"
-                onChange={handleFileChange}
-                className="file-input-hidden"
-                id="file-upload"
-                disabled={!isSignedIn}
-              />
-              <label 
-                htmlFor="file-upload" 
-                className={`file-dropzone ${!isSignedIn ? 'disabled' : ''}`}
+              <input type="file" accept=".pdf" onChange={handleFileChange} id="file-upload" className="file-input-hidden" />
+              <label
+                htmlFor="file-upload"
+                className={`file-dropzone ${!isSignedIn ? "disabled" : ""}`}
                 onClick={(e) => {
                   if (!isSignedIn) {
                     e.preventDefault();
@@ -346,128 +366,114 @@ function App() {
                 }}
               >
                 {file ? (
-                  <>
-                    <div className="file-icon-success">📄</div>
-                    <div className="file-name">{file.name}</div>
-                    <div className="file-size">{(file.size / 1024).toFixed(2)} KB</div>
-                  </>
+                  <div className="file-preview">
+                    <div className="file-icon">📄</div>
+                    <div className="file-meta">
+                      <div className="file-name">{file.name}</div>
+                      <div className="file-size">{(file.size / 1024).toFixed(2)} KB</div>
+                    </div>
+                  </div>
                 ) : (
-                  <>
-                    <div className="upload-icon">
-                      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
-                      </svg>
-                    </div>
-                    <div className="upload-text">
-                      {isSignedIn ? 'Drop PDF here or click to browse' : 'Create an account to upload documents'}
-                    </div>
-                    {isSignedIn && <div className="upload-hint">Maximum file size: 10MB</div>}
-                  </>
+                  <div className="upload-prompt">
+                    <div className="upload-icon">⬆️</div>
+                    <div className="upload-text">{isSignedIn ? "Drop PDF here or click to browse" : "Create an account to upload documents"}</div>
+                  </div>
                 )}
               </label>
 
-              <button
-                onClick={handleUpload}
-                disabled={uploading || !file}
-                className="primary-button"
-              >
-                {uploading ? 'Processing...' : 'Upload Document'}
-              </button>
+              <div className="action-row">
+                <button onClick={handleUpload} disabled={uploading || !file} className="primary-button">
+                  {uploading ? "Processing..." : "Upload"}
+                </button>
+                <button onClick={handleClearPreview} disabled={!fileUrl} className="secondary-button">
+                  Clear Preview
+                </button>
+              </div>
 
               {uploadStatus && (
                 <div className={`alert alert-${uploadStatus.type}`}>
-                  <div className="alert-icon">
-                    {uploadStatus.type === 'success' ? '✓' : '⚠'}
-                  </div>
+                  <div className="alert-icon">{uploadStatus.type === "success" ? "✓" : "⚠"}</div>
                   <div className="alert-text">{uploadStatus.message}</div>
                 </div>
               )}
             </div>
           </section>
 
-          {/* Query Section */}
+          {/* Query card */}
           <section className="content-card">
             <div className="card-header">
-              <h2 className="card-title">Ask Questions</h2>
-              <p className="card-subtitle">Query your documents using natural language</p>
+              <h2 className="card-title">Search Documents</h2>
+              <p className="card-subtitle">Ask questions and get answers with cited snippets</p>
             </div>
 
             <div className="query-area">
-              <div className="query-input-wrapper">
-                <textarea
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  onKeyPress={handleQueryKeyPress}
-                  placeholder={isSignedIn ? "What would you like to know?" : "Create an account to search your documents"}
-                  className="query-input"
-                  rows="4"
-                  disabled={!isSignedIn}
-                />
+              <textarea
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                className="query-input"
+                rows="4"
+                placeholder={isSignedIn ? "Ask something like: What are the main contributions?" : "Sign in to search"}
+                disabled={!isSignedIn}
+              />
+              <div className="action-row">
+                <button onClick={handleQuery} disabled={querying || !query.trim() || !isSignedIn} className="primary-button">
+                  {querying ? "Searching..." : "Ask"}
+                </button>
+                <button
+                  onClick={() => {
+                    setQuery("");
+                    setAnswer(null);
+                    setHighlight(null);
+                  }}
+                  className="secondary-button"
+                >
+                  Clear
+                </button>
               </div>
-
-              <button
-                onClick={handleQuery}
-                disabled={querying || !query.trim() || !isSignedIn}
-                className="primary-button"
-              >
-                {querying ? 'Searching...' : 'Search Documents'}
-              </button>
             </div>
           </section>
 
-          {/* Answer Section */}
+          {/* Answer / Sources */}
           {answer && (
             <section className="content-card answer-section">
               <div className="card-header">
                 <h2 className="card-title">Response</h2>
               </div>
-              
-              {answer.type === 'error' ? (
+
+              {answer.type === "error" ? (
                 <div className="alert alert-error">
                   <div className="alert-icon">⚠</div>
                   <div className="alert-text">{answer.message}</div>
                 </div>
               ) : (
-                <div className="answer-content">
+                <>
                   <div className="answer-box">
                     <p className="answer-text">{answer.answer}</p>
                   </div>
 
                   {answer.retrieved && answer.retrieved.length > 0 && (
                     <div className="sources-section">
-                      <h3 className="sources-title">Source Documents ({answer.retrieved.length})</h3>
+                      <h3 className="sources-title">Sources</h3>
                       <div className="sources-grid">
-                        {answer.retrieved.map((source, idx) => (
-                          <div key={idx} className="source-item">
+                        {answer.retrieved.map((src, idx) => (
+                          <div key={idx} className="source-item" onClick={() => handleSourceClick(src)}>
                             <div className="source-header">
                               <span className="source-number">{idx + 1}</span>
-                              {source.distance && (
-                                <span className="source-score">
-                                  {((1 - source.distance) * 100).toFixed(1)}% match
-                                </span>
-                              )}
+                              <span className="source-score">{src.distance ? `${((1 - src.distance) * 100).toFixed(1)}%` : ""}</span>
                             </div>
-                            {source.meta && (
-                              <div className="source-meta">
-                                <div className="source-filename">{source.meta.source}</div>
-                                {source.meta.chunk_index !== undefined && (
-                                  <div className="source-chunk">Chunk {source.meta.chunk_index}</div>
-                                )}
-                              </div>
-                            )}
+                            <div className="source-filename">{src.metadata?.source || src.metadata?.file || "Document"}</div>
+                            <div className="source-chunk small">{src.snippet ?? (src.content && src.content.slice(0, 160) + "...")}</div>
                           </div>
                         ))}
                       </div>
                     </div>
                   )}
-                </div>
+                </>
               )}
             </section>
           )}
-        </main>
+        </div>
       </div>
     </div>
   );
 }
-
-export default App;

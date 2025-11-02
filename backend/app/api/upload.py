@@ -1,6 +1,7 @@
 from fastapi import APIRouter, UploadFile, File, HTTPException, Header
 from typing import Optional
 from app.services.ingest import ingest_pdf
+from app.services.multimodal_ingest import ingest_multimodal_pdf  # NEW
 
 router = APIRouter()
 
@@ -9,27 +10,20 @@ async def upload_pdf(
     file: UploadFile = File(...),
     user_id: Optional[str] = Header(None, alias="X-User-Id")
 ):
-    """
-    Upload a PDF for indexing.
-    Currently uses X-User-Id header (dev mode).
-    Will be replaced with email auth token.
-    """
     if not user_id:
-        raise HTTPException(
-            status_code=401, 
-            detail="Authentication required. Please provide X-User-Id header."
-        )
+        raise HTTPException(status_code=401, detail="Auth required")
     
-    filename = file.filename or ""
-    if not filename.lower().endswith(".pdf"):
-        raise HTTPException(status_code=400, detail="Only PDF files are allowed")
+    filename = (file.filename or "").lower()
+    if not filename.endswith(".pdf"):
+        raise HTTPException(status_code=400, detail="Only PDFs")
     
     contents = await file.read()
-    result = ingest_pdf(contents, user_id=user_id, filename=filename)
+    result = ingest_multimodal_pdf(contents, user_id, filename )
     
     return {
         "status": "indexed",
-        "indexed_chunks": result.get("n_chunks", 0),
-        "total_items": result.get("total_items", 0),
-        "user_id": user_id
+        "text_chunks": result["n_chunks"],
+        "tables": result["n_tables"],
+        "images": result["n_images"],
+        "total": result["total_items"]
     }
