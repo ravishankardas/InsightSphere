@@ -15,3 +15,4 @@ langchain
 langchain-text-splitters
 PyPDF2
 slowapi
+redis
