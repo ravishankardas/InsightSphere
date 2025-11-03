@@ -326,15 +326,14 @@ export default function App() {
           </div>
 
           <div className="nav-actions">
-            {/* <button className="settings-button" onClick={() => setShowSettings(!showSettings)} aria-label="Toggle settings" title="Settings">
-              ⚙️
-            </button> */}
+            <button className="settings-button" aria-label="Toggle settings" title="Settings"> ⚙️
+            </button>
 
             <SignedOut>
-              <button className="primary-button small" onClick={openSignIn}>
+              <button className="primary-button small auth-button-fixed" onClick={openSignIn}>
                 Sign In
               </button>
-              <button className="primary-button small" onClick={openSignUp}>
+              <button className="primary-button small auth-button-fixed" onClick={openSignUp}>
                 Sign Up
               </button>
             </SignedOut>
