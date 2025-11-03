@@ -14,12 +14,12 @@ RUN apt-get update && \
 
 WORKDIR /app
 
-# Copy requirements and install dependencies
-COPY requirements.txt /app/
+# Copy requirements from backend folder and install dependencies
+COPY backend/requirements.txt /app/
 RUN pip install --upgrade pip && \
     pip install -r requirements.txt
 
-# Copy application code
-COPY . /app
+# Copy backend application code
+COPY backend/ /app/
 
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8080"]
