@@ -89,46 +89,79 @@ export default function App() {
   };
 
   const handleUpload = async () => {
-    if (!isSignedIn) {
-      setAuthMode("signup");
-      setShowAuthModal(true);
-      return;
-    }
-    if (!file) {
-      setUploadStatus({ type: "error", message: "Please select a file first." });
-      return;
-    }
+  if (!isSignedIn) {
+    setAuthMode("signup");
+    setShowAuthModal(true);
+    return;
+  }
+  if (!file) {
+    setUploadStatus({ type: "error", message: "Please select a file first." });
+    return;
+  }
 
-    setUploading(true);
-    setUploadStatus(null);
-    const formData = new FormData();
-    formData.append("file", file);
+  setUploading(true);
+  setUploadStatus(null);
+  const formData = new FormData();
+  formData.append("file", file);
 
-    try {
-      const headers = {};
-      if (userId) headers["X-User-Id"] = userId;
-      const res = await fetch(`${apiUrl}/api/upload/pdf`, {
-        method: "POST",
-        headers,
-        body: formData,
-      });
-      const data = await res.json();
-      if (res.ok) {
-        setUploadStatus({
-          type: "success",
-          message: `Indexed ${data.indexed_chunks ?? data.n_chunks ?? 0} chunks.`,
-        });
-        // Keep local preview active (fileUrl)
-        setActiveTool("upload");
-      } else {
-        setUploadStatus({ type: "error", message: data.detail || data.message || "Upload failed." });
+  try {
+    const headers = {};
+    if (userId) headers["X-User-Id"] = userId;
+    
+    // Use the smart auto-detection endpoint with balanced preset
+    const res = await fetch(`${apiUrl}/api/upload/pdf/auto?preset=balanced`, {
+      method: "POST",
+      headers,
+      body: formData,
+    });
+    
+    const data = await res.json();
+    
+    if (res.ok) {
+      // Build success message with details
+      const chunks = data.text_chunks || data.indexed_chunks || 0;
+      const tables = data.tables || 0;
+      const images = data.images || 0;
+      const mode = data.mode_used || 'unknown';
+      const complexity = data.complexity_score;
+      
+      let message = `Indexed ${chunks} chunks`;
+      
+      // Add details if multimodal processing was used
+      if (tables > 0 || images > 0) {
+        const parts = [];
+        if (tables > 0) parts.push(`${tables} tables`);
+        if (images > 0) parts.push(`${images} images`);
+        message += ` (${parts.join(', ')})`;
       }
-    } catch (err) {
-      setUploadStatus({ type: "error", message: `Network error: ${err.message}` });
-    } finally {
-      setUploading(false);
+      
+      // Add mode info (optional - can remove if too verbose)
+      if (complexity !== undefined) {
+        message += ` • Mode: ${mode} (complexity: ${complexity}/100)`;
+      }
+      
+      setUploadStatus({
+        type: "success",
+        message: message,
+      });
+      
+      // Keep local preview active (fileUrl)
+      setActiveTool("upload");
+    } else {
+      setUploadStatus({ 
+        type: "error", 
+        message: data.detail || data.message || "Upload failed." 
+      });
     }
-  };
+  } catch (err) {
+    setUploadStatus({ 
+      type: "error", 
+      message: `Network error: ${err.message}` 
+    });
+  } finally {
+    setUploading(false);
+  }
+};
 
   const handleClearPreview = () => {
     if (fileUrl) {
@@ -324,7 +357,7 @@ export default function App() {
       <div className="main-content two-column">
         {/* LEFT: PDF viewer (flexible) */}
         <div className="left-panel">
-          <PdfViewer fileUrl={fileUrl} goToPage={viewerPage} highlightSnippet={highlight} />
+          <PdfViewer fileUrl={fileUrl} />
         </div>
 
         {/* RIGHT: Controls */}
