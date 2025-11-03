@@ -381,7 +381,7 @@ export default function App() {
           <div className="content-card" style={{ padding: 12 }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <div>
-                <div style={{ fontWeight: 800, color: "var(--primary)" }}>InsightSphere</div>
+                <div style={{ fontWeight: 600, color: "var(--primary)" }}>InsightSphere</div>
                 <div className="small muted">Tools & actions</div>
               </div>
               <div>
