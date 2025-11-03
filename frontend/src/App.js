@@ -326,9 +326,9 @@ export default function App() {
           </div>
 
           <div className="nav-actions">
-            <button className="settings-button" onClick={() => setShowSettings(!showSettings)} aria-label="Toggle settings" title="Settings">
+            {/* <button className="settings-button" onClick={() => setShowSettings(!showSettings)} aria-label="Toggle settings" title="Settings">
               ⚙️
-            </button>
+            </button> */}
 
             <SignedOut>
               <button className="primary-button small" onClick={openSignIn}>
