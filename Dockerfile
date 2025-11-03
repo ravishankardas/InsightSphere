@@ -32,7 +32,6 @@ RUN pip install --upgrade pip && \
 COPY backend/ /app/
 
 # Expose port (Railway will override with $PORT)
-EXPOSE 8000
 
 # Start uvicorn with PORT from environment variable
-CMD uvicorn app.main:app --host 0.0.0.0 --port $PORT
+CMD uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}
