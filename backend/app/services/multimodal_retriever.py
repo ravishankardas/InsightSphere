@@ -5,19 +5,22 @@ import os
 from typing import Dict, List
 from openai import OpenAI
 from app.services.embeddings import get_embeddings
-from app.services.retriever import get_user_collection
+from app.services.ingest import get_user_collection
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 
-def query_multimodal(query: str, user_id: str, top_k: int = 6) -> Dict:
+def query_multimodal(query: str, user_id: str, top_k: int = 6, source_filter: str = "") -> Dict:
     """Query across all modalities with detailed source snippets"""
     
+    # --- DEBUG LINE ---
+    # print(f"\n--- DEBUG: Incoming source_filter: {repr(source_filter)} ---")
+    # ------------------
     print(f"\n🔍 Query: {query}")
     
     # Get collection
     collection = get_user_collection(user_id)
-    if not collection:
+    if not collection or collection.count() == 0:
         return {
             "answer": "No documents found",
             "sources": [],
@@ -26,13 +29,20 @@ def query_multimodal(query: str, user_id: str, top_k: int = 6) -> Dict:
     
     # Generate query embedding
     query_emb = get_embeddings([query])[0]
-    
-    # Search
     results = collection.query(
         query_embeddings=[query_emb],
-        n_results=min(top_k, collection.count())
+        n_results=min(top_k, max(1, collection.count())),
+        where={
+            "$and": [
+                {"user_id": user_id},
+                {"source": source_filter}
+            ]
+        }  
     )
-    
+
+    # --- END CRITICAL FIX AREA ---
+
+    # print(results)
     # Format results with detailed snippets
     sources = []
     context = []

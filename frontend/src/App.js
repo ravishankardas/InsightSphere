@@ -78,13 +78,18 @@ export default function App() {
       setUploadStatus({ type: "error", message: "Please select a PDF file." });
       return;
     }
+    
+    // Clear old URL before setting new one
+    if (fileUrl) {
+      URL.revokeObjectURL(fileUrl);
+    }
+    
     setFile(selectedFile);
     setUploadStatus(null);
     const url = URL.createObjectURL(selectedFile);
     setFileUrl(url);
     setViewerPage(1);
     setHighlight(null);
-    // auto-switch to upload tool so user sees preview
     setActiveTool("upload");
   };
 
@@ -106,7 +111,10 @@ export default function App() {
 
   try {
     const headers = {};
-    if (userId) headers["X-User-Id"] = userId;
+    if (userId){
+      headers["X-User-Id"] = userId;
+      console.log("User ID added to headers:", userId);
+    }
     
     // Use the smart auto-detection endpoint with balanced preset
     const res = await fetch(`${apiUrl}/api/upload/pdf/auto?preset=balanced`, {
@@ -171,6 +179,9 @@ export default function App() {
     setFileUrl(null);
     setViewerPage(null);
     setHighlight(null);
+    setUploadStatus(null);  // ← Add this to clear status messages
+    setAnswer(null);  // ← Add this to clear search results
+    setQuery("");  // ← Add this to clear search query
   };
 
   const handleQuery = async () => {
@@ -191,7 +202,11 @@ export default function App() {
       const res = await fetch(`${apiUrl}/api/query`, {
         method: "POST",
         headers,
-        body: JSON.stringify({ query: query, top_k: 4 }),
+        body: JSON.stringify({ 
+          query: query,
+          top_k: 4,
+          source: file?.name?.toLowerCase()
+        }),
       });
       const data = await res.json();
       if (res.ok) {
@@ -416,7 +431,7 @@ export default function App() {
               </label>
 
               <div className="action-row">
-                <button onClick={handleUpload} disabled={uploading || !file} className="primary-button">
+                <button onClick={handleUpload} disabled={uploading || !file} className="secondary-button">
                   {uploading ? "Processing..." : "Upload"}
                 </button>
                 <button onClick={handleClearPreview} disabled={!fileUrl} className="secondary-button">
@@ -450,7 +465,7 @@ export default function App() {
                 disabled={!isSignedIn}
               />
               <div className="action-row">
-                <button onClick={handleQuery} disabled={querying || !query.trim() || !isSignedIn} className="primary-button">
+                <button onClick={handleQuery} disabled={querying || !query.trim() || !isSignedIn} className="secondary-button">
                   {querying ? "Searching..." : "Ask"}
                 </button>
                 <button

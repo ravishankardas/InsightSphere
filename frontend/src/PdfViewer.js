@@ -13,7 +13,7 @@ export default function PdfViewer({ fileUrl }) {
       ) : (
         <div className="pdf-doc-scroll">
           <iframe
-            src={fileUrl}
+            src={`${fileUrl}#toolbar=0`}
             title="PDF Viewer"
             width="100%"
             height="100%"

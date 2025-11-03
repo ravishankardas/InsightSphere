@@ -37,6 +37,7 @@ async def upload_pdf_auto(
     # Read file contents
     contents = await file.read()
     
+    # print("received user_id:", user_id)
     # Validate preset
     if preset not in ["speed_first", "balanced", "quality_first"]:
         raise HTTPException(

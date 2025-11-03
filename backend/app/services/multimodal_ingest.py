@@ -270,7 +270,12 @@ def ingest_multimodal_pdf(
     print(f"  ⏱️  Text chunking time: {step3_end - step3_start:.2f} seconds")
 
     print(f"\n📄 Text chunks: {len(text_chunks)}")
+    print("#" * 100)
     print(f"📊 Table summaries: {len(table_summaries)}")
+    for txt in text_chunks:
+        print(txt + "\n")
+    print("#" * 100)
+
     print(f"🖼️  Image descriptions: {len(image_descriptions)}")
 
     # Prepare documents for embedding
@@ -307,7 +312,10 @@ def ingest_multimodal_pdf(
 
     # Store
     collection = get_user_collection(user_id)
+    print(f"📊 Collection count before: {collection.count()}")
     collection.add(ids=all_ids, documents=all_docs, metadatas=all_metas, embeddings=embeddings) # type: ignore
+    print(f"📊 Collection count after: {collection.count()}")
+
 
     print(f"✅ Stored {len(all_docs)} items in {collection.count()} total")
     end = time.time()
