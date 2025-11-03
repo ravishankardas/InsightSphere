@@ -17,9 +17,11 @@ def get_user_identifier(request: Request) -> str:
 # Initialize the Limiter: 
 # 2/86400 is 2 queries per 24 hours (86400 seconds)
 REDIS_STORAGE_URI = os.getenv("REDIS_URI", "memory://")
+to_ = os.getenv("TO", "2")
+from_ = os.getenv("FROM", "86400")
 limiter = Limiter(
     key_func=get_user_identifier, 
-    default_limits=["2/86400"], 
+    default_limits=[f"{to_}/{from_}"], 
     storage_uri=REDIS_STORAGE_URI # Use Redis URI for production
 )
 
