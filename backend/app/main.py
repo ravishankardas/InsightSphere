@@ -1,6 +1,16 @@
-from fastapi import FastAPI
+# main.py (Updated to use app/core/rate_limiter_config.py)
+
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from app.api import upload, query
+from fastapi.responses import JSONResponse
+from starlette.status import HTTP_429_TOO_MANY_REQUESTS
+
+# --- FIX: Import limiter from the new config file ---
+from app.core.rate_limiter_config import limiter
+from slowapi.errors import RateLimitExceeded # type: ignore
+# ----------------------------------------------------
+
+from app.api import upload, query # These imports are now safe
 
 app = FastAPI(
     title="InsightSphere API", 
@@ -9,18 +19,35 @@ app = FastAPI(
     redoc_url="/redoc"
 )
 
-# CORS configuration - MUST be added before routers
+# Attach the limiter instance to the app state
+app.state.limiter = limiter
+
+# Add exception handler for rate limit exceeded errors
+@app.exception_handler(RateLimitExceeded)
+async def rate_limit_exceeded_handler(request: Request, exc: RateLimitExceeded):
+    """Custom handler to return a 429 response when limit is exceeded."""
+    limit_string = str(exc.detail).split(":")[-1].strip()
+    return JSONResponse(
+        content={
+            "detail": f"Rate limit exceeded: You are limited to 2 queries per 24 hour period. Please try again later.",
+            "answer": "Query limit exceeded. Please try again later."
+        },
+        status_code=HTTP_429_TOO_MANY_REQUESTS,
+    )
+
+
+# CORS configuration
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:3000",  # Local development
-        "https://theinsightsphere.xyz",  # Your production frontend
-        "https://www.theinsightsphere.xyz",  # www version
-        "https://insight-sphere-lake.vercel.app",  # Vercel deployment
+        "http://localhost:3000",
+        "https://theinsightsphere.xyz",
+        "https://www.theinsightsphere.xyz",
+        "https://insight-sphere-lake.vercel.app",
     ],
     allow_credentials=True,
     allow_methods=["*"],
-    allow_headers=["*"],
+    allow_headers=["*", "X-User-Id"], # Ensure custom header is allowed
     expose_headers=["*"],
 )
 

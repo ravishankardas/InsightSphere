@@ -1,8 +1,9 @@
-from fastapi import APIRouter, HTTPException, Header
+from fastapi import APIRouter, HTTPException, Header, Request
 from pydantic import BaseModel
 from typing import Optional
 from app.services.retriever import retrieve_and_answer
 from app.services.multimodal_retriever import query_multimodal
+from app.core.rate_limiter_config import limiter
 
 router = APIRouter()
 
@@ -12,8 +13,10 @@ class QueryRequest(BaseModel):
     source: Optional[str] = None  # ← Add optional source filter
 
 @router.post("")
+@limiter.limit("2/24hour")
 async def query_documents(
-    request: QueryRequest,
+    request: Request,
+    body: QueryRequest,
     user_id: Optional[str] = Header(None, alias="X-User-Id")
 ):
     """
@@ -30,9 +33,9 @@ async def query_documents(
     # print(f"source filter from the api: {request.source}")
     # Pass source filter to query function
     result = query_multimodal(
-        request.query, 
+        body.query, 
         user_id, 
-        request.top_k,
-        source_filter=request.source  # ← Pass the filter # type: ignore
+        body.top_k,
+        source_filter=body.source  # ← Pass the filter # type: ignore
     )
     return result

@@ -272,9 +272,9 @@ def ingest_multimodal_pdf(
     print(f"\n📄 Text chunks: {len(text_chunks)}")
     print("#" * 100)
     print(f"📊 Table summaries: {len(table_summaries)}")
-    for txt in text_chunks:
-        print(txt + "\n")
-    print("#" * 100)
+    # for txt in text_chunks:
+    #     print(txt + "\n")
+    # print("#" * 100)
 
     print(f"🖼️  Image descriptions: {len(image_descriptions)}")
 
