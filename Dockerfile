@@ -13,11 +13,13 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
-COPY pyproject.toml poetry.lock* /app/
-# or requirements.txt, etc.
-RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
 
+# Copy requirements and install dependencies
+COPY requirements.txt /app/
+RUN pip install --upgrade pip && \
+    pip install -r requirements.txt
+
+# Copy application code
 COPY . /app
 
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8080"]
