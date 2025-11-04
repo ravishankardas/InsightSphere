@@ -1,0 +1,129 @@
+{
+  "status": "Evaluation Complete",
+  "timestamp": "2025-11-04T10:33:46.673351",
+  "total_questions": 7,
+  "embedding_model": "SentenceTransformer: all-MiniLM-L6-v2",
+  "average_scores": {
+    "faithfulness": 0.9523809523809523,
+    "answer_relevancy": 0.9786684537070777,
+    "context_recall": 1,
+    "context_precision": 0.9166666666136906
+  },
+  "detail_scores_preview": [
+    {
+      "user_input": "What is the primary benefit of using a 2D CNN for ECG arrhythmia detection?",
+      "response": "The primary benefit of using a 2D CNN for ECG arrhythmia detection is its ability to capture both temporal and spatial features of the ECG signals, making it more effective for analyzing the data compared to 1D CNNs [3], [4].",
+      "retrieved_contexts": [
+        "2D CNN for ECG arrhythmia detection",
+        "2D CNN for ECG arrhythmia detection",
+        "Why CNNs for signals? 1D vs 2D CNN? -> 2D CNNs capture temporal+spatial features; better for",
+        "Why CNNs for signals? 1D vs 2D CNN? -> 2D CNNs capture temporal+spatial features; better for"
+      ],
+      "reference": "2D CNNs capture both temporal and spatial features, which is better suited for spectrogram-like ECG data.",
+      "faithfulness": 1,
+      "answer_relevancy": 1,
+      "context_recall": 1,
+      "context_precision": 0.4166666666458333
+    },
+    {
+      "user_input": "How does BioBERT differ from the original BERT model?",
+      "response": "BioBERT differs from the original BERT model in that it is specifically trained further on biomedical literature from PubMed, making it better suited for biomedical tasks [1], [2].",
+      "retrieved_contexts": [
+        "BERT vs BioBERT? -> BioBERT trained further on PubMed, better for biomedical tasks.",
+        "BERT vs BioBERT? -> BioBERT trained further on PubMed, better for biomedical tasks.",
+        "BioBERT for Medical QA",
+        "BioBERT for Medical QA"
+      ],
+      "reference": "BioBERT is specifically trained further on PubMed data, making it more effective for biomedical tasks.",
+      "faithfulness": 0.6666666666666666,
+      "answer_relevancy": 1.0000000000000002,
+      "context_recall": 1,
+      "context_precision": 0.99999999995
+    },
+    {
+      "user_input": "What is the definition of Retrieval-Augmented Generation (RAG)?",
+      "response": "Retrieval-Augmented Generation (RAG) is defined as the combination of vector search and large language model (LLM) generation [1], [2].",
+      "retrieved_contexts": [
+        "What is RAG? -> Retrieval-Augmented Generation = vector search + LLM generation.",
+        "What is RAG? -> Retrieval-Augmented Generation = vector search + LLM generation.",
+        "RAG with ChromaDB",
+        "Pretraining vs Fine-tuning? -> Pretraining = unsupervised generic; Fine-tuning = supervised task-specific."
+      ],
+      "reference": "RAG is a system that combines vector search (retrieval) with LLM generation to produce better answers.",
+      "faithfulness": 1,
+      "answer_relevancy": 0.9749285929526731,
+      "context_recall": 1,
+      "context_precision": 0.99999999995
+    },
+    {
+      "user_input": "What are the two key roles of Speech-to-Text (STT) and Text-to-Speech (TTS) in a Multi-Agent Voice AI system?",
+      "response": "The two key roles of Speech-to-Text (STT) and Text-to-Speech (TTS) in a Multi-Agent Voice AI system are to convert voice to text and to convert text to voice, respectively [1].",
+      "retrieved_contexts": [
+        "STT/TTS role? -> STT -> voice to text; TTS -> text to voice.",
+        "Multi-Agent Voice AI (LangGraph + LiveKit)",
+        "Multi-Agent Voice AI (LangGraph + LiveKit)",
+        "Multi-modal AI (InceptionV3 + GPT-4)"
+      ],
+      "reference": "STT converts voice to text, and TTS converts text back to voice.",
+      "faithfulness": 1,
+      "answer_relevancy": 0.8801641425610944,
+      "context_recall": 1,
+      "context_precision": 0.9999999999
+    },
+    {
+      "user_input": "What two metrics are commonly used to monitor for model drift in MLOps?",
+      "response": "The two metrics commonly used to monitor for model drift in MLOps are input distribution (Population Stability Index, PSI) and output accuracy, as indicated in the context provided [1], [2].",
+      "retrieved_contexts": [
+        "Monitor drift? -> Track input distribution (PSI), output accuracy; alerts trigger retrain.",
+        "Monitor drift? -> Track input distribution (PSI), output accuracy; alerts trigger retrain.",
+        "CI/CD in ML? -> Auto build/test/deploy pipeline for models.",
+        "CI/CD in ML? -> Auto build/test/deploy pipeline for models."
+      ],
+      "reference": "Drift is monitored by tracking input distribution using techniques like Population Stability Index (PSI) and tracking output accuracy.",
+      "faithfulness": 1,
+      "answer_relevancy": 0.9955864404357765,
+      "context_recall": 1,
+      "context_precision": 0.99999999995
+    },
+    {
+      "user_input": "What is the main distinction between LangChain and LangGraph?",
+      "response": "The main distinction between LangChain and LangGraph is that LangChain focuses on providing components for various applications, while LangGraph is designed for orchestration of state machines [1], [2].",
+      "retrieved_contexts": [
+        "LangGraph vs LangChain? -> LangChain = components; LangGraph = state machine orchestration.",
+        "LangGraph vs LangChain? -> LangChain = components; LangGraph = state machine orchestration.",
+        "Medical AI Assistant (LangGraph)",
+        "What is RAG? -> Retrieval-Augmented Generation = vector search + LLM generation."
+      ],
+      "reference": "LangChain provides a collection of components, while LangGraph focuses on state machine orchestration for multi-agent systems.",
+      "faithfulness": 1,
+      "answer_relevancy": 1,
+      "context_recall": 1,
+      "context_precision": 0.99999999995
+    },
+    {
+      "user_input": "What is the purpose of semantic caching in a RAG system?",
+      "response": "The purpose of semantic caching in a RAG (Retrieval-Augmented Generation) system is to cache embeddings and outputs to reduce the number of API calls by approximately 50% [1], [2].",
+      "retrieved_contexts": [
+        "Semantic caching? -> Cache embeddings/outputs; reduces API calls ~50%.",
+        "Semantic caching? -> Cache embeddings/outputs; reduces API calls ~50%.",
+        "RAG with ChromaDB",
+        "RAG with ChromaDB"
+      ],
+      "reference": "Semantic caching caches embeddings or LLM outputs, which can reduce API calls by around 50%.",
+      "faithfulness": 1,
+      "answer_relevancy": 1,
+      "context_recall": 1,
+      "context_precision": 0.99999999995
+    }
+  ],
+  "available_columns": [
+    "user_input",
+    "retrieved_contexts",
+    "response",
+    "reference",
+    "faithfulness",
+    "answer_relevancy",
+    "context_recall",
+    "context_precision"
+  ]
+}
