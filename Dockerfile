@@ -19,6 +19,7 @@ RUN apt-get update && \
       # Additional utilities
       libgomp1 \
       libmagic1 && \
+      git && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
