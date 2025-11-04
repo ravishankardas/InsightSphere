@@ -18,7 +18,7 @@ RUN apt-get update && \
       tesseract-ocr \
       # Additional utilities
       libgomp1 \
-      libmagic1 && \
+      libmagic1 \
       git && \
     rm -rf /var/lib/apt/lists/*
 
