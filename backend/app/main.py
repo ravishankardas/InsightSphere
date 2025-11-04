@@ -47,7 +47,17 @@ app.add_middleware(
     ],
     allow_credentials=True,
     allow_methods=["*"],
-    allow_headers=["*", "X-User-Id", "X-API-Key"], # Ensure custom header is allowed
+     allow_headers=[
+        "Content-Type",
+        "Authorization",
+        "Accept",
+        "Origin",
+        "X-Requested-With",
+        "X-User-Id",
+        "X-API-Key",
+        "Access-Control-Allow-Origin",
+        "Access-Control-Allow-Credentials",
+    ],
     expose_headers=["*"],
 )
 
