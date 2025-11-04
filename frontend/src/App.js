@@ -10,6 +10,7 @@ import {
 } from "@clerk/clerk-react";
 import "./App.css";
 import PdfViewer from './PdfViewer';
+import DeleteConfirmationModal from './components/DeleteConfirmationModal';
 
 const TOOLS = [
   { id: "upload", title: "Upload", desc: "Add PDFs to build your knowledge base", icon: "📄" },
@@ -34,6 +35,16 @@ export default function App() {
   const [query, setQuery] = useState("");
   const [querying, setQuerying] = useState(false);
   const [answer, setAnswer] = useState(null);
+  const [selectedDocument, setSelectedDocument] = useState(null);
+
+  // Documents state
+  const [documents, setDocuments] = useState([]);
+  const [loadingDocuments, setLoadingDocuments] = useState(false);
+  const [deletingDoc, setDeletingDoc] = useState(null);
+  
+  // Delete modal state
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [docToDelete, setDocToDelete] = useState(null);
 
   // UI state
   const [apiUrl, setApiUrl] = useState(
@@ -57,6 +68,128 @@ export default function App() {
       setShowAuthModal(false);
     }
   }, [isSignedIn]);
+
+  // Load documents when user signs in
+  useEffect(() => {
+    if (isSignedIn && userId) {
+      loadDocuments();
+    } else {
+      setDocuments([]);
+    }
+  }, [isSignedIn, userId]);
+
+  // ---- Document Functions ----
+  const loadDocuments = async () => {
+    if (!userId) return;
+    
+    setLoadingDocuments(true);
+    try {
+      const headers = {
+        "X-API-Key": API_KEY,
+        "X-User-Id": userId,
+      };
+
+      const res = await fetch(`${apiUrl}/api/documents`, {
+        method: "GET",
+        headers,
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        setDocuments(data || []);
+      } else {
+        console.error("Failed to load documents");
+      }
+    } catch (err) {
+      console.error("Failed to load documents:", err);
+    } finally {
+      setLoadingDocuments(false);
+    }
+  };
+
+  const handleDeleteClick = (filename) => {
+    setDocToDelete(filename);
+    setShowDeleteModal(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!docToDelete) return;
+
+    setDeletingDoc(docToDelete);
+    setShowDeleteModal(false);
+    
+    try {
+      const headers = {
+        "X-API-Key": API_KEY,
+        "X-User-Id": userId,
+      };
+
+      const res = await fetch(`${apiUrl}/api/documents/${encodeURIComponent(docToDelete)}`, {
+        method: "DELETE",
+        headers,
+      });
+
+      if (res.ok) {
+        // Remove from local state
+        setDocuments(documents.filter(doc => doc !== docToDelete));
+        
+        // If the deleted document is currently being viewed, clear it
+        if (file && file.name === docToDelete) {
+          handleClearPreview();
+        }
+        
+        // Show success message
+        setUploadStatus({
+          type: "success",
+          message: `Document "${docToDelete}" deleted successfully.`
+        });
+        
+        // Clear message after 3 seconds
+        setTimeout(() => setUploadStatus(null), 3000);
+      } else {
+        const data = await res.json();
+        setUploadStatus({
+          type: "error",
+          message: data.detail || "Failed to delete document."
+        });
+      }
+    } catch (err) {
+      setUploadStatus({
+        type: "error",
+        message: `Network error: ${err.message}`
+      });
+    } finally {
+      setDeletingDoc(null);
+      setDocToDelete(null);
+    }
+  };
+
+  const handleDeleteCancel = () => {
+    setShowDeleteModal(false);
+    setDocToDelete(null);
+  };
+
+  const handleDocumentClick = (filename) => {
+    // You could implement logic here to load and display the document
+    // For now, we'll just show a message
+    setSelectedDocument(filename);
+    console.log("Document clicked:", filename);
+    // If you have a way to retrieve the document URL, you could set it here:
+    // setFileUrl(documentUrl);
+  };
+
+  const handleClearSelection = () => {
+    setSelectedDocument(null);
+  };
+
+  const handleSourceClick = (src) => {
+    const page = src.metadata?.page ?? src.page ?? 1;
+    setViewerPage(page);
+    setHighlight({
+      page,
+      text: src.snippet || src.content?.slice(0, 100),
+    });
+  };
 
   // ---- Handlers ----
   const openSignUp = () => {
@@ -95,9 +228,7 @@ export default function App() {
     setActiveTool("upload");
   };
 
-  // --- App.js (Inside export default function App()) ---
-
-const handleUpload = async () => {
+  const handleUpload = async () => {
     // 1. NEW SECURITY CHECK: Ensure API Key is available
     if (!API_KEY) {
         setUploadStatus({ type: "error", message: "Configuration Error: Missing API Key." });
@@ -105,8 +236,6 @@ const handleUpload = async () => {
         setUploading(false); 
         return;
     }
-
-    // console.log("Key being sent:", API_KEY);
 
     if (!isSignedIn) {
         setAuthMode("signup");
@@ -126,16 +255,12 @@ const handleUpload = async () => {
     try {
         // 2. CORRECTLY ADDING CUSTOM HEADERS FOR FILE UPLOAD
         const headers = { 
-            "X-API-Key": API_KEY, // <--- The key is correctly added here
+            "X-API-Key": API_KEY,
         };
-
-        // console.log("Key being sent:", API_KEY);
-        // console.log("headers before userId check:", headers);
         
         // This is safe because 'FormData' handles the Content-Type automatically.
         if (userId){
             headers["X-User-Id"] = userId;
-            // console.log("User ID added to headers:", userId);
         }
         
         // Use the smart auto-detection endpoint with balanced preset
@@ -175,6 +300,9 @@ const handleUpload = async () => {
                 message: message,
             });
             
+            // Reload documents list
+            loadDocuments();
+            
             // Keep local preview active (fileUrl)
             setActiveTool("upload");
         } else {
@@ -201,13 +329,10 @@ const handleUpload = async () => {
     setFileUrl(null);
     setViewerPage(null);
     setHighlight(null);
-    setUploadStatus(null);  // ← Add this to clear status messages
-    setAnswer(null);  // ← Add this to clear search results
-    setQuery("");  // ← Add this to clear search query
+    setUploadStatus(null);
+    setAnswer(null);
+    setQuery("");
   };
-
-  
- // --- App.js (Inside export default function App()) ---
 
 const handleQuery = async () => {
     // **NEW SECURITY CHECK:** Check for API Key
@@ -223,121 +348,81 @@ const handleQuery = async () => {
       setShowAuthModal(true);
       return;
     }
-    if (!query.trim()) return;
+    if (!query.trim()) {
+      setAnswer({ type: "error", message: "Please enter a question." });
+      return;
+    }
 
     setQuerying(true);
     setAnswer(null);
     setHighlight(null);
 
     try {
-      // --- UPDATED HEADERS ---
-      const headers = { 
+      const headers = {
         "Content-Type": "application/json",
-        "X-API-Key": API_KEY, // <--- ADDED API KEY HERE
+        "X-API-Key": API_KEY,
       };
-      if (userId) headers["X-User-Id"] = userId;
-      // -----------------------
+      
+      if (userId) {
+        headers["X-User-Id"] = userId;
+      }
 
       const res = await fetch(`${apiUrl}/api/query`, {
         method: "POST",
         headers,
         body: JSON.stringify({ 
-          query: query,
-          top_k: 4,
-          source: file?.name?.toLowerCase()
+          query,
+          ...(selectedDocument && { document: selectedDocument })
         }),
       });
-      const data = await res.json();
       
-      if (res.ok) {
-        // Normalize sources/retrieved fields
-        const retrieved = data.retrieved ?? data.sources ?? data.results ?? [];
-        setAnswer({ type: "success", answer: data.answer ?? "", retrieved });
+      const data = await res.json();
 
-        // If first retrieved has page, jump and highlight
-        const first = retrieved?.[0];
-        if (first) {
-          // backend metadata naming can vary; try common keys
-          const page =
-            first.metadata?.page ??
-            first.metadata?.page_number ??
-            first.page ??
-            first.page_number ??
-            first.pageIndex ??
-            null;
-          const snippet = first.snippet ?? first.content ?? first.text ?? first.display_content ?? "";
-          if (page) {
-            setViewerPage(Number(page));
-            setHighlight({ page: Number(page), snippet });
-            // switch to left viewer visible (upload tool shows it already), ensure active tool visible
-            setActiveTool("upload");
-          } else {
-            // fallback: show snippet overlay without page move
-            setHighlight({ page: 1, snippet });
-          }
-        }
+      if (res.ok) {
+        setAnswer({
+          type: "success",
+          answer: data.answer || "No answer provided.",
+          retrieved: data.retrieved || [],
+        });
       } else {
-        // Added type: "error" for consistency with the catch block
-        setAnswer({ type: "error", message: data.detail || data.message || "Query failed." });
+        setAnswer({
+          type: "error",
+          message: data.detail || data.message || "Query failed.",
+        });
       }
     } catch (err) {
-      setAnswer({ type: "error", message: `Network error: ${err.message}` });
+      setAnswer({
+        type: "error",
+        message: `Network error: ${err.message}`,
+      });
     } finally {
       setQuerying(false);
     }
   };
 
-  // click source -> jump & highlight
-  const handleSourceClick = (src) => {
-    const page =
-      src.metadata?.page ??
-      src.metadata?.page_number ??
-      src.page ??
-      src.page_number ??
-      src.pageIndex ??
-      null;
-    const snippet = src.snippet ?? src.content ?? src.text ?? src.display_content ?? "";
-    if (page) {
-      setViewerPage(Number(page));
-      setHighlight({ page: Number(page), snippet });
-      setActiveTool("upload");
-    } else {
-      setHighlight({ page: 1, snippet });
-    }
-  };
-
-  // ---- Render ----
   return (
     <div className="app-container">
-      {/* Auth modal */}
+      {/* Delete Confirmation Modal */}
+      <DeleteConfirmationModal
+        show={showDeleteModal}
+        filename={docToDelete}
+        onConfirm={handleDeleteConfirm}
+        onCancel={handleDeleteCancel}
+      />
+
+      {/* Auth Modal */}
       {showAuthModal && (
         <div className="modal-overlay" onClick={() => setShowAuthModal(false)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <button className="modal-close" onClick={() => setShowAuthModal(false)}>
               ×
             </button>
-            <div className="modal-header">
-              <div className="brand-icon-large">IS</div>
+            <div className="auth-container">
               {authMode === "signup" ? (
-                <>
-                  <h2 className="modal-title">Create Your Account</h2>
-                  <p className="modal-subtitle">Join InsightSphere to start building your knowledge base</p>
-                </>
+                <SignUp routing="virtual" signInUrl="#" />
               ) : (
-                <>
-                  <h2 className="modal-title">Welcome Back</h2>
-                  <p className="modal-subtitle">Sign in to access your documents</p>
-                </>
+                <SignIn routing="virtual" signUpUrl="#" />
               )}
-            </div>
-
-            {authMode === "signup" ? (
-              <SignUp routing="virtual" appearance={{ elements: { rootBox: "mx-auto", card: "shadow-none" } }} afterSignUpUrl="/" />
-            ) : (
-              <SignIn routing="virtual" appearance={{ elements: { rootBox: "mx-auto", card: "shadow-none" } }} afterSignInUrl="/" />
-            )}
-
-            <div className="auth-switch">
               {authMode === "signup" ? (
                 <p>
                   Already have an account?{" "}
@@ -379,7 +464,6 @@ const handleQuery = async () => {
               </button>
             </SignedOut>
 
-
             <SignedIn>
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                 <UserButton afterSignOutUrl="/" />
@@ -408,15 +492,85 @@ const handleQuery = async () => {
         </div>
       )}
 
-      {/* Two-column main */}
-      <div className="main-content two-column">
-        {/* LEFT: PDF viewer (flexible) */}
-        <div className="left-panel">
+      {/* Three-column main layout */}
+      <div className="main-content three-column">
+        {/* LEFT: Documents panel */}
+        <div className="documents-panel">
+          <div className="content-card" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+            <div className="card-header">
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div>
+                  <h2 className="card-title">My Documents</h2>
+                  <p className="card-subtitle">Uploaded PDFs ({documents.length})</p>
+                </div>
+                {selectedDocument && (
+                  <button 
+                    className="clear-selection-button" 
+                    onClick={handleClearSelection}
+                    title="Clear selection"
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
+            </div>
+                        
+            {!isSignedIn ? (
+              <div className="empty-state">
+                <div className="empty-icon">🔒</div>
+                <p className="empty-text">Sign in to view your documents</p>
+              </div>
+            ) : loadingDocuments ? (
+              <div className="empty-state">
+                <div className="empty-icon">⏳</div>
+                <p className="empty-text">Loading documents...</p>
+              </div>
+            ) : documents.length === 0 ? (
+              <div className="empty-state">
+                <div className="empty-icon">📄</div>
+                <p className="empty-text">No documents yet. Upload a PDF to get started!</p>
+              </div>
+            ) : (
+              <div className="documents-list">
+                {documents.map((doc, idx) => (
+                  <div 
+                    key={idx} 
+                    className={`document-item ${selectedDocument === doc ? 'selected' : ''}`}
+                  >
+                    <div 
+                      className="document-content"
+                      onClick={() => handleDocumentClick(doc)}
+                    >
+                      <div className="document-icon">📄</div>
+                      <div className="document-info">
+                        <div className="document-name" title={doc}>{doc}</div>
+                      </div>
+                    </div>
+                    <button
+                      className="delete-button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDeleteClick(doc);
+                      }}
+                      disabled={deletingDoc === doc}
+                      title="Delete document"
+                    >
+                      {deletingDoc === doc ? "⏳" : "D"}
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* CENTER: PDF viewer */}
+        <div className="center-panel">
           <PdfViewer fileUrl={fileUrl} />
         </div>
 
         {/* RIGHT: Controls */}
-        <div className="right-panel">
+        <div className="controls-panel">
           {/* Tools sidebar header (small) */}
           <div className="content-card" style={{ padding: 12 }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
