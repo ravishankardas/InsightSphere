@@ -1,4 +1,4 @@
-from fastapi import APIRouter, UploadFile, File, HTTPException, Header, Query
+from fastapi import APIRouter, UploadFile, File, HTTPException, Header, Query, Depends
 from typing import Optional
 from app.services.ingest import ingest_pdf
 from app.services.multimodal_ingest import ingest_multimodal_pdf
@@ -7,8 +7,9 @@ from app.services.pdf_complexity_analyzer import (
     analyze_pdf_complexity, 
     get_recommended_settings
 )
+from app.core.auth import validate_api_key
 
-router = APIRouter()
+router = APIRouter(dependencies=[Depends(validate_api_key)])
 
 
 @router.post("/pdf/auto")

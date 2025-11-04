@@ -112,7 +112,7 @@ def query_multimodal(query: str, user_id: str, top_k: int = 6, source_filter: st
         conditions.append({"source": source_filter})
     
     where_clause = {"$and": conditions} if len(conditions) > 1 else conditions[0]
-    print(f"Searching collection with filter: {where_clause}")
+    # print(f"Searching collection with filter: {where_clause}")
     
     # Fetch a larger pool of results for RRF (e.g., top_k * 5)
     retrieval_k = top_k * 5
@@ -176,7 +176,7 @@ def query_multimodal(query: str, user_id: str, top_k: int = 6, source_filter: st
         # Create (query, document) pairs
         sentence_pairs = [[query, item['document']] for item in to_rerank]
         
-        print(f"  🧠 Reranking {len(to_rerank)} chunks...")
+        # print(f"  🧠 Reranking {len(to_rerank)} chunks...")
         
         # Get scores from the Cross-Encoder (higher score = better relevance)
         rerank_scores = RERANKER_MODEL.predict(sentence_pairs) # type: ignore
@@ -191,7 +191,7 @@ def query_multimodal(query: str, user_id: str, top_k: int = 6, source_filter: st
         # Combine the re-ranked top N with the remaining results 
         final_chunks_all = to_rerank + remaining_results
         
-        print(f"  ✅ Reranking complete. New top item score: {to_rerank[0]['rerank_score']:.4f}")
+        # print(f"  ✅ Reranking complete. New top item score: {to_rerank[0]['rerank_score']:.4f}")
     else:
         # If reranker is disabled, or no results, use RRF results directly
         final_chunks_all = fused_results
@@ -264,7 +264,7 @@ Answer:"""
     else:
         answer = "Found content but OpenAI not configured"
     
-    print(f"✅ Found {len(sources)} sources (Reranked Hybrid Search)")
+    # print(f"✅ Found {len(sources)} sources (Reranked Hybrid Search)")
     
     # Return statement strictly maintained
     return {

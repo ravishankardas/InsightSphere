@@ -18,3 +18,6 @@ slowapi
 redis
 rank-bm25
 sentence-transformers
+ragas
+datasets
+pandas 

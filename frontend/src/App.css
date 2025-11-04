@@ -82,6 +82,11 @@ body {
   color: var(--text-primary);
   letter-spacing: -0.5px;
 }
+.auth-button-fixed {
+    /* Adjust this width until it perfectly fits the "Sign Up" text with comfortable padding */
+    min-width: 85px; 
+    text-align: center; 
+}
 .action-row {
   display: flex;
   justify-content: space-between; /* spread buttons evenly */

@@ -13,7 +13,6 @@ def _get_model():
     return _model
 
 
-
 def get_embeddings(texts):
     model = _get_model()
     embeddings = model.encode(texts,show_progress_bar=False, convert_to_numpy=True)

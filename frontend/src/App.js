@@ -19,6 +19,8 @@ const TOOLS = [
 ];
 
 export default function App() {
+  const API_KEY = process.env.REACT_APP_API_KEY;
+
   const { user, isSignedIn } = useUser(); // clerk hook
   const userId = user?.primaryEmailAddress?.emailAddress || user?.id || null;
 
@@ -93,82 +95,102 @@ export default function App() {
     setActiveTool("upload");
   };
 
-  const handleUpload = async () => {
-  if (!isSignedIn) {
-    setAuthMode("signup");
-    setShowAuthModal(true);
-    return;
-  }
-  if (!file) {
-    setUploadStatus({ type: "error", message: "Please select a file first." });
-    return;
-  }
+  // --- App.js (Inside export default function App()) ---
 
-  setUploading(true);
-  setUploadStatus(null);
-  const formData = new FormData();
-  formData.append("file", file);
+const handleUpload = async () => {
+    // 1. NEW SECURITY CHECK: Ensure API Key is available
+    if (!API_KEY) {
+        setUploadStatus({ type: "error", message: "Configuration Error: Missing API Key." });
+        // Setting uploading to false is crucial here to unblock the UI
+        setUploading(false); 
+        return;
+    }
 
-  try {
-    const headers = {};
-    if (userId){
-      headers["X-User-Id"] = userId;
-      console.log("User ID added to headers:", userId);
+    // console.log("Key being sent:", API_KEY);
+
+    if (!isSignedIn) {
+        setAuthMode("signup");
+        setShowAuthModal(true);
+        return;
     }
-    
-    // Use the smart auto-detection endpoint with balanced preset
-    const res = await fetch(`${apiUrl}/api/upload/pdf/auto?preset=balanced`, {
-      method: "POST",
-      headers,
-      body: formData,
-    });
-    
-    const data = await res.json();
-    
-    if (res.ok) {
-      // Build success message with details
-      const chunks = data.text_chunks || data.indexed_chunks || 0;
-      const tables = data.tables || 0;
-      const images = data.images || 0;
-      const mode = data.mode_used || 'unknown';
-      const complexity = data.complexity_score;
-      
-      let message = `Indexed ${chunks} chunks`;
-      
-      // Add details if multimodal processing was used
-      if (tables > 0 || images > 0) {
-        const parts = [];
-        if (tables > 0) parts.push(`${tables} tables`);
-        if (images > 0) parts.push(`${images} images`);
-        message += ` (${parts.join(', ')})`;
-      }
-      
-      // Add mode info (optional - can remove if too verbose)
-      if (complexity !== undefined) {
-        message += ` • Mode: ${mode} (complexity: ${complexity}/100)`;
-      }
-      
-      setUploadStatus({
-        type: "success",
-        message: message,
-      });
-      
-      // Keep local preview active (fileUrl)
-      setActiveTool("upload");
-    } else {
-      setUploadStatus({ 
-        type: "error", 
-        message: data.detail || data.message || "Upload failed." 
-      });
+    if (!file) {
+        setUploadStatus({ type: "error", message: "Please select a file first." });
+        return;
     }
-  } catch (err) {
-    setUploadStatus({ 
-      type: "error", 
-      message: `Network error: ${err.message}` 
-    });
-  } finally {
-    setUploading(false);
-  }
+
+    setUploading(true);
+    setUploadStatus(null);
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+        // 2. CORRECTLY ADDING CUSTOM HEADERS FOR FILE UPLOAD
+        const headers = { 
+            "X-API-Key": API_KEY, // <--- The key is correctly added here
+        };
+
+        // console.log("Key being sent:", API_KEY);
+        // console.log("headers before userId check:", headers);
+        
+        // This is safe because 'FormData' handles the Content-Type automatically.
+        if (userId){
+            headers["X-User-Id"] = userId;
+            // console.log("User ID added to headers:", userId);
+        }
+        
+        // Use the smart auto-detection endpoint with balanced preset
+        const res = await fetch(`${apiUrl}/api/upload/pdf/auto?preset=balanced`, {
+            method: "POST",
+            headers,
+            body: formData,
+        });
+        
+        const data = await res.json();
+        
+        if (res.ok) {
+            // Build success message with details
+            const chunks = data.text_chunks || data.indexed_chunks || 0;
+            const tables = data.tables || 0;
+            const images = data.images || 0;
+            const mode = data.mode_used || 'unknown';
+            const complexity = data.complexity_score;
+            
+            let message = `Indexed ${chunks} chunks`;
+            
+            // Add details if multimodal processing was used
+            if (tables > 0 || images > 0) {
+                const parts = [];
+                if (tables > 0) parts.push(`${tables} tables`);
+                if (images > 0) parts.push(`${images} images`);
+                message += ` (${parts.join(', ')})`;
+            }
+            
+            // Add mode info (optional - can remove if too verbose)
+            if (complexity !== undefined) {
+                message += ` • Mode: ${mode} (complexity: ${complexity}/100)`;
+            }
+            
+            setUploadStatus({
+                type: "success",
+                message: message,
+            });
+            
+            // Keep local preview active (fileUrl)
+            setActiveTool("upload");
+        } else {
+            setUploadStatus({ 
+                type: "error", 
+                message: data.detail || data.message || "Upload failed." 
+            });
+        }
+    } catch (err) {
+        setUploadStatus({ 
+            type: "error", 
+            message: `Network error: ${err.message}` 
+        });
+    } finally {
+        setUploading(false);
+    }
 };
 
   const handleClearPreview = () => {
@@ -184,7 +206,18 @@ export default function App() {
     setQuery("");  // ← Add this to clear search query
   };
 
-  const handleQuery = async () => {
+  
+ // --- App.js (Inside export default function App()) ---
+
+const handleQuery = async () => {
+    // **NEW SECURITY CHECK:** Check for API Key
+    if (!API_KEY) {
+        console.error("API Key is missing. Cannot make secure request.");
+        setAnswer({ type: "error", message: "Configuration Error: Missing API Key." });
+        setQuerying(false);
+        return;
+    }
+
     if (!isSignedIn) {
       setAuthMode("signup");
       setShowAuthModal(true);
@@ -197,8 +230,14 @@ export default function App() {
     setHighlight(null);
 
     try {
-      const headers = { "Content-Type": "application/json" };
+      // --- UPDATED HEADERS ---
+      const headers = { 
+        "Content-Type": "application/json",
+        "X-API-Key": API_KEY, // <--- ADDED API KEY HERE
+      };
       if (userId) headers["X-User-Id"] = userId;
+      // -----------------------
+
       const res = await fetch(`${apiUrl}/api/query`, {
         method: "POST",
         headers,
@@ -209,6 +248,7 @@ export default function App() {
         }),
       });
       const data = await res.json();
+      
       if (res.ok) {
         // Normalize sources/retrieved fields
         const retrieved = data.retrieved ?? data.sources ?? data.results ?? [];
@@ -237,6 +277,7 @@ export default function App() {
           }
         }
       } else {
+        // Added type: "error" for consistency with the catch block
         setAnswer({ type: "error", message: data.detail || data.message || "Query failed." });
       }
     } catch (err) {

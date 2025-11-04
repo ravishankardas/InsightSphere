@@ -1,0 +1,8 @@
+question,ground_truth
+What is the primary benefit of using a 2D CNN for ECG arrhythmia detection?,"2D CNNs capture both temporal and spatial features, which is better suited for spectrogram-like ECG data."
+How does BioBERT differ from the original BERT model?,"BioBERT is specifically trained further on PubMed data, making it more effective for biomedical tasks."
+What is the definition of Retrieval-Augmented Generation (RAG)?,"RAG is a system that combines vector search (retrieval) with LLM generation to produce better answers."
+What are the two key roles of Speech-to-Text (STT) and Text-to-Speech (TTS) in a Multi-Agent Voice AI system?,"STT converts voice to text, and TTS converts text back to voice."
+What two metrics are commonly used to monitor for model drift in MLOps?,"Drift is monitored by tracking input distribution using techniques like Population Stability Index (PSI) and tracking output accuracy."
+What is the main distinction between LangChain and LangGraph?,"LangChain provides a collection of components, while LangGraph focuses on state machine orchestration for multi-agent systems."
+What is the purpose of semantic caching in a RAG system?,"Semantic caching caches embeddings or LLM outputs, which can reduce API calls by around 50%."
