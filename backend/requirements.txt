@@ -16,3 +16,5 @@ langchain-text-splitters
 PyPDF2
 slowapi
 redis
+rank-bm25
+sentence-transformers
