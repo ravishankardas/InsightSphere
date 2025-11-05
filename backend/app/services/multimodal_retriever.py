@@ -250,7 +250,7 @@ def reciprocal_rank_fusion(
 # --- REMOVED: Old synchronous call_openai helper function ---
 
 # --- MODIFIED: query_multimodal is now async and uses ainvoke ---
-async def query_multimodal(query: str, user_id: str, top_k: int = 6, source_filter: str = "") -> Dict:
+async def query_multimodal(query: str, user_id: str, top_k: int = 6, source_filter: str = "file.pdf", email_present: bool=False) -> Dict:
     """
     Query across all modalities using Hybrid Search (Dense + Sparse) + RRF + Cross-Encoder Reranking
     and delegates final answer generation to the RAG Agent (via ainvoke).
@@ -392,13 +392,14 @@ async def query_multimodal(query: str, user_id: str, top_k: int = 6, source_filt
         }
 
     # --- Use Semantic Cache ---
-    if semantic_cache:
-        # Cache search uses the raw query, not the full RAG prompt
-        cached_answer = semantic_cache.search(user_id, source_filter, query)
-        if cached_answer:
-            answer = cached_answer
-            cached = True
-            print("cache hit - using cached answer")
+    if not email_present:
+        if semantic_cache:
+            # Cache search uses the raw query, not the full RAG prompt
+            cached_answer = semantic_cache.search(user_id, source_filter, query)
+            if cached_answer:
+                answer = cached_answer
+                cached = True
+                print("cache hit - using cached answer")
     
     if not cached:
         print("🆕 Cache miss - invoking RAG Agent asynchronously...")

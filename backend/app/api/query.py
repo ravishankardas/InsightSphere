@@ -71,23 +71,32 @@ async def query_documents(
     # else:
     #     pass
 
+    email_present = False
     query_rewriter = get_query_rewriter()
     try:
         processed_query = body.query
-        if body.use_query_rewriting:
-            # Check if query needs rewriting
-            if query_rewriter.should_rewrite(body.query):
-                processed_query = query_rewriter.rewrite_query(
-                    original_query=body.query,
-                    document_context=body.source
-                )
-                print(f"✏️ Query rewritten: '{body.query}' → '{processed_query}'")
+        search_query = body.query.lower()
+
+        if not any(keyword in search_query for keyword in ["email", "mail"]):
+            if body.use_query_rewriting:
+                # Check if query needs rewriting
+                if query_rewriter.should_rewrite(body.query):
+                    processed_query = query_rewriter.rewrite_query(
+                        original_query=body.query,
+                        document_context=body.source
+                    )
+                    print(f"✏️ Query rewritten: '{body.query}' → '{processed_query}'")
+        else:
+            print("Not rewriting query as it seems to be email related.")
+            email_present = True
+            
         # Pass source filter to query function
         result = await query_multimodal(
             processed_query, 
             user_id, 
             body.top_k,
-            source_filter=body.source  # type: ignore
+            source_filter=body.source, # type: ignore
+            email_present=email_present  # type: ignore
         )
         
         # Log successful query sources (the sources returned by RAG are filenames/strings)

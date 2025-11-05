@@ -25,3 +25,5 @@ langcache
 gptcache 
 langgraph
 httpx
+resend
+sendgrid
