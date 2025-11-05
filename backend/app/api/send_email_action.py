@@ -73,10 +73,10 @@ SENDER_EMAIL = os.getenv("SENDER_EMAIL", SMTP_USER)
 
 def send_email_action(recipient_email: str, subject: str, body: str):
     message = Mail(
-        from_email='from_email@example.com',
-        to_emails='to@example.com',
-        subject='Sending with Twilio SendGrid is Fun',
-        html_content='<strong>and easy to do anywhere, even with Python</strong>')
+        from_email=SENDER_EMAIL,
+        to_emails=recipient_email,
+        subject=subject,
+        plain_text_content=body)
     try:
         sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
         # sg.set_sendgrid_data_residency("eu")
