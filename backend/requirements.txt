@@ -21,3 +21,5 @@ sentence-transformers
 ragas
 datasets
 pandas 
+langcache
+gptcache 

@@ -1,30 +1,43 @@
+import time
 from fastapi import APIRouter, Depends, HTTPException, Header, Request
 from pydantic import BaseModel
-from typing import Optional
-# from app.services.retriever import retrieve_and_answer
-from app.services.multimodal_retriever import query_multimodal
+from typing import Optional, Dict, Any, List
+
+# Assuming this path is correct based on your previous file:
+from app.services.multimodal_retriever import query_multimodal 
 from app.core.rate_limiter_config import limiter
 from app.services.evaluation import evaluate_rag_pipeline
 from app.core.auth import validate_api_key
 
+# --- NEW IMPORT ---
+from app.api.analytics import log_query
+from app.services.query_rewriter import get_query_rewriter 
+# ------------------
+from dotenv import load_dotenv
+load_dotenv()
+import os
+
+TO_ = os.getenv("TO") 
+
 router = APIRouter(dependencies=[Depends(validate_api_key)])
+# router = APIRouter()
+
 
 class QueryRequest(BaseModel):
     query: str
     top_k: int = 4
     source: Optional[str] = None  
+    use_query_rewriting: bool = True
 
 @router.post("")
-@limiter.limit("2/24hour")
+@limiter.limit(f"{TO_}/24hour")
 async def query_documents(
     request: Request,
     body: QueryRequest,
     user_id: Optional[str] = Header(None, alias="X-User-Id")
-):
+) -> Dict[str, Any]:
     """
-    Query your uploaded documents.
-    Currently uses X-User-Id header (dev mode).
-    Will be replaced with email auth token.
+    Query your uploaded documents and log performance metrics.
     """
     if not user_id:
         raise HTTPException(
@@ -32,16 +45,58 @@ async def query_documents(
             detail="Authentication required. Please provide X-User-Id header."
         )
     
-    # print(f"source filter from the api: {request.source}")
-    # Pass source filter to query function
-    result = query_multimodal(
-        body.query, 
-        user_id, 
-        body.top_k,
-        source_filter=body.source  # ← Pass the filter # type: ignore
-    )
-    return result
+    start_time = time.time()
+    result = {} # Initialize result to ensure it's available in finally block
+    
+    # Initialize log data with assumed failure (error: True)
+    log_data = {
+        "user_id": user_id,
+        "query": body.query,
+        "document_queried": [body.source] if body.source else [], # Initial placeholder
+        "error": True, 
+        "response_time_ms": None,
+    }
+    query_rewriter = get_query_rewriter()
+    try:
+        processed_query = body.query
+        if body.use_query_rewriting:
+            # Check if query needs rewriting
+            if query_rewriter.should_rewrite(body.query):
+                processed_query = query_rewriter.rewrite_query(
+                    original_query=body.query,
+                    document_context=body.source
+                )
+                print(f"✏️ Query rewritten: '{body.query}' → '{processed_query}'")
+        # Pass source filter to query function
+        result = query_multimodal(
+            processed_query, 
+            user_id, 
+            body.top_k,
+            source_filter=body.source  # type: ignore
+        )
+        
+        # Log successful query sources (the sources returned by RAG are filenames/strings)
+        log_data["document_queried"] = result.get("sources", [])
+        
+        # Check for success: if an answer exists and it doesn't contain a typical error/failure message
+        answer_text = result.get("answer", "").lower()
+        if result.get("answer") and "error" not in answer_text and "no documents" not in answer_text and "not configured" not in answer_text:
+            log_data["error"] = False
 
+        return result
+
+    except Exception as e:
+        print(f"Query exception: {e}")
+        return {"answer": f"A system error occurred during the query: {e}", "sources": [], "citations": []}
+
+    finally:
+        # Log the operation regardless of success or failure
+        end_time = time.time()
+        response_time_ms = (end_time - start_time) * 1000
+        log_data["response_time_ms"] = round(response_time_ms, 2)
+        
+        # Final log write
+        log_query(log_data)
 
 
 @router.post("/evaluate")

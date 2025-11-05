@@ -1,13 +1,25 @@
 # app/services/multimodal_retriever.py
 
+import hashlib
 import os
+import re
+import time
 import uuid
 from typing import Dict, List, Any
 from openai import OpenAI
 from app.services.embeddings import get_embeddings
 from app.services.ingest import get_user_collection
 from rank_bm25 import BM25Okapi 
+from dotenv import load_dotenv
+import redis # type: ignore
+import json
+import hashlib
+from typing import Optional
 
+import hashlib
+
+import os
+load_dotenv()
 # --- New Imports for Reranking ---
 from sentence_transformers import CrossEncoder # Needs 'pip install sentence-transformers'
 # ---------------------------------
@@ -28,7 +40,187 @@ except Exception as e:
     RERANKER_MODEL = None
     RERANKER_ENABLED = False
 # -----------------------------------------------------------
+from sentence_transformers import SentenceTransformer
+import redis # type: ignore
+import numpy as np
+import json
+import hashlib
+import time
+from typing import Optional
+from openai import OpenAI
 
+class SemanticRAGCache:
+    """Semantic cache for RAG queries with user isolation."""
+    
+    def __init__(
+        self, 
+        redis_url: str,
+        similarity_threshold: float = 0.85,
+        embedding_model: str = 'all-MiniLM-L6-v2'
+    ):
+        """
+        Initialize semantic cache.
+        
+        Args:
+            redis_url: Redis connection URL
+            similarity_threshold: Minimum similarity for cache hit (0-1)
+            embedding_model: Sentence transformer model for embeddings
+        """
+        self.redis = redis.from_url(redis_url, decode_responses=True)
+        self.threshold = similarity_threshold
+        self.encoder = SentenceTransformer(embedding_model)
+        print(f"✅ Semantic cache initialized (threshold: {similarity_threshold})")
+    
+    def _create_cache_key(
+        self, 
+        user_id: str, 
+        source_filter: Optional[str], 
+        query: str
+    ) -> str:
+        """Create unique cache key."""
+        user_hash = hashlib.md5(user_id.encode()).hexdigest()[:12]
+        query_hash = hashlib.md5(query.encode()).hexdigest()[:8]
+        
+        if source_filter:
+            return f"rag:semantic:{user_hash}:{source_filter}:{query_hash}"
+        return f"rag:semantic:{user_hash}:all:{query_hash}"
+    
+    def _get_user_prefix(self, user_id: str, source_filter: Optional[str]) -> str:
+        """Get Redis key prefix for scanning."""
+        user_hash = hashlib.md5(user_id.encode()).hexdigest()[:12]
+        if source_filter:
+            return f"rag:semantic:{user_hash}:{source_filter}:*"
+        return f"rag:semantic:{user_hash}:all:*"
+    
+    def search(
+        self, 
+        user_id: str, 
+        source_filter: Optional[str], 
+        query: str
+    ) -> Optional[str]:
+        """
+        Search for semantically similar cached answer.
+        
+        Returns:
+            Cached answer if found, None otherwise
+        """
+        try:
+            # Encode query
+            query_embedding = self.encoder.encode(query)
+            
+            # Get pattern for user's cache entries
+            pattern = self._get_user_prefix(user_id, source_filter)
+            
+            best_match = None
+            best_similarity = 0
+            
+            # Scan cached entries
+            for key in self.redis.scan_iter(match=pattern, count=100):
+                try:
+                    cached_data = self.redis.get(key)
+                    if not cached_data:
+                        continue
+                    
+                    data = json.loads(cached_data)
+                    cached_embedding = np.array(data["embedding"])
+                    
+                    # Calculate cosine similarity
+                    similarity = self._cosine_similarity(query_embedding, cached_embedding)
+                    
+                    if similarity > best_similarity and similarity >= self.threshold:
+                        best_similarity = similarity
+                        best_match = data["answer"]
+                
+                except (json.JSONDecodeError, KeyError) as e:
+                    # Skip corrupted cache entries
+                    continue
+            
+            if best_match:
+                print(f"✅ Semantic cache HIT (similarity: {best_similarity:.1%})")
+                return best_match
+            
+            print(f"🔍 Semantic cache MISS (best similarity: {best_similarity:.1%})")
+            return None
+            
+        except Exception as e:
+            print(f"⚠️ Cache search error: {e}")
+            return None
+    
+    def save(
+        self,
+        user_id: str,
+        source_filter: Optional[str],
+        query: str,
+        answer: str,
+        ttl: int = 604800  # 7 days
+    ):
+        """Save query-answer pair to cache."""
+        try:
+            # Encode query
+            query_embedding = self.encoder.encode(query).tolist()
+            
+            # Create cache key
+            cache_key = self._create_cache_key(user_id, source_filter, query)
+            
+            # Prepare cache data
+            cache_data = {
+                "query": query,
+                "answer": answer,
+                "embedding": query_embedding,
+                "source": source_filter,
+                "timestamp": time.time()
+            }
+            
+            # Save to Redis with TTL
+            self.redis.setex(
+                cache_key,
+                ttl,
+                json.dumps(cache_data)
+            )
+            
+            print(f"💾 Saved to semantic cache (TTL: {ttl//86400} days)")
+            
+        except Exception as e:
+            print(f"⚠️ Cache save error: {e}")
+    
+    def _cosine_similarity(self, a, b) -> float:
+        """Calculate cosine similarity between two vectors."""
+        return float(np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b)))
+    
+    def clear_user_cache(self, user_id: str):
+        """Clear all cache entries for a user."""
+        user_hash = hashlib.md5(user_id.encode()).hexdigest()[:12]
+        pattern = f"rag:semantic:{user_hash}:*"
+        
+        deleted = 0
+        for key in self.redis.scan_iter(match=pattern):
+            self.redis.delete(key)
+            deleted += 1
+        
+        print(f"🗑️ Cleared {deleted} cache entries for user")
+    
+    def get_stats(self, user_id: str) -> dict:
+        """Get cache statistics for a user."""
+        user_hash = hashlib.md5(user_id.encode()).hexdigest()[:12]
+        pattern = f"rag:semantic:{user_hash}:*"
+        
+        count = 0
+        for _ in self.redis.scan_iter(match=pattern):
+            count += 1
+        
+        return {
+            "cached_queries": count,
+            "user_hash": user_hash
+        }
+
+
+# Initialize cache (do this once, globally or in your startup)
+redis_url=os.getenv("REDIS_URL")
+# print("redis_url:", redis_url)
+semantic_cache = SemanticRAGCache(
+    redis_url=redis_url, # type: ignore
+    similarity_threshold=0.85  # Adjust based on your needs
+)
 
 # --- 1. RRF Score Fusion Logic ---
 def reciprocal_rank_fusion(
@@ -88,6 +280,14 @@ def reciprocal_rank_fusion(
     return fused_results
 # --- End RRF Score Fusion Logic ---
 
+def call_openai(prompt: str, client: OpenAI):
+    """Helper function to call OpenAI API."""
+    response = client.chat.completions.create(
+        model=OPENAI_MODEL,
+        messages=[{"role": "user", "content": prompt}],
+        max_tokens=300
+    )
+    return response.choices[0].message.content # type: ignore
 
 def query_multimodal(query: str, user_id: str, top_k: int = 6, source_filter: str = "") -> Dict:
     """
@@ -236,39 +436,62 @@ def query_multimodal(query: str, user_id: str, top_k: int = 6, source_filter: st
         context.append(f"[Source {i+1}] {doc}")
     
     # Generate answer with OpenAI (same as before)
-    if OPENAI_API_KEY and context:
-        client = OpenAI(api_key=OPENAI_API_KEY)
-        
-        prompt = f"""Answer the question based on the provided context. 
-Be specific and reference sources by their numbers [1], [2], etc.
+    if not OPENAI_API_KEY or not context:
+        return {
+            "answer": "OpenAI is not configured or no context found.",
+            "sources": sources,
+            "query": query
+        }
 
-Context from document:
-{chr(10).join(context[:top_k])}
+    # Build prompt once
+    prompt = f"""Answer the question based on the provided context. 
+    Be specific and reference sources by their numbers [1], [2], etc.
 
-Question: {query}
+    Context from document:
+    {chr(10).join(context[:top_k])}
 
-Instructions:
-- Provide a clear, concise answer
-- Reference sources using [1], [2], etc.
-- If answer not in context, say so
+    Question: {query}
 
-Answer:"""
-        
-        response = client.chat.completions.create(
-            model=OPENAI_MODEL,
-            messages=[{"role": "user", "content": prompt}],
-            max_tokens=300
-        )
-        
-        answer = response.choices[0].message.content
+    Instructions:
+    - Provide a clear, concise answer
+    - Reference sources using [1], [2], etc.
+    - If answer not in context, say so
+
+    Answer:"""
+
+    # Initialize client once
+    client = OpenAI(api_key=OPENAI_API_KEY)
+
+    # Try cache first, fallback to OpenAI
+    answer = None
+
+    if semantic_cache:
+        try:
+            # Check cache
+            answer = semantic_cache.search(user_id, source_filter, prompt)
+            
+            if not answer:
+                # Cache miss
+                print("🆕 Cache miss - querying OpenAI")
+                answer = call_openai(prompt, client)
+                semantic_cache.save(user_id, source_filter, prompt, answer)  # type: ignore
+            else:
+                print("cache hit - using cached answer")
+                
+        except Exception as e:
+            print(f"⚠️ Cache error: {e}")
+            # Fallback to OpenAI
+            try:
+                answer = call_openai(prompt, client)
+            except Exception as oe:
+                answer = f"Error calling OpenAI API: {str(oe)}"
+
     else:
-        answer = "Found content but OpenAI not configured"
-    
-    # print(f"✅ Found {len(sources)} sources (Reranked Hybrid Search)")
-    
-    # Return statement strictly maintained
+        # No cache - direct OpenAI call
+        answer = call_openai(prompt, client)
+
     return {
         "answer": answer,
-        "sources": sources,  
+        "sources": sources,
         "query": query
     }
