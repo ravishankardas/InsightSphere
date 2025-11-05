@@ -10,7 +10,7 @@ from app.core.rate_limiter_config import limiter
 from slowapi.errors import RateLimitExceeded # type: ignore
 # ----------------------------------------------------
 
-from app.api import upload, query, documents, analytics # These imports are now safe
+from app.api import upload, query, documents, analytics, send_email_action # These imports are now safe
 
 app = FastAPI(
     title="InsightSphere API", 
@@ -66,6 +66,7 @@ app.include_router(upload.router, prefix="/api/upload", tags=["Upload"])
 app.include_router(query.router, prefix="/api/query", tags=["Query"])
 app.include_router(documents.router, prefix="/api/documents", tags=["Documents"])
 app.include_router(analytics.router, prefix="/api/analytics", tags=["Analytics"]) # NEW ROUTER
+app.include_router(send_email_action.router, prefix="/api/actions", tags=["Actions"]) # NEW ROUTER
 
 @app.get("/", tags=["Root"])
 async def root():

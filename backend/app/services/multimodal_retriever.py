@@ -5,7 +5,7 @@ import os
 import re
 import time
 import uuid
-from typing import Dict, List, Any
+from typing import Dict, List, Any, Optional
 from openai import OpenAI
 from app.services.embeddings import get_embeddings
 from app.services.ingest import get_user_collection
@@ -14,24 +14,22 @@ from dotenv import load_dotenv
 import redis # type: ignore
 import json
 import hashlib
-from typing import Optional
-
-import hashlib
-
-import os
-load_dotenv()
-# --- New Imports for Reranking ---
 from sentence_transformers import CrossEncoder # Needs 'pip install sentence-transformers'
-# ---------------------------------
+from sentence_transformers import SentenceTransformer
+import numpy as np
+
+# --- Agent Imports ---
+from app.services.rag_agent import RAG_AGENT_APP, AgentState 
+# ---------------------
+
+load_dotenv()
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
 
 # --- Initialize Cross-Encoder Model (Load once at startup) ---
-# Use a fast, high-quality reranker model. ms-marco-TinyBERT-L-2-v2 is a good choice.
 try:
     print("Loading Cross-Encoder Reranker Model...")
-    # This model is specifically trained for query-document pair relevance scoring.
     RERANKER_MODEL = CrossEncoder('cross-encoder/ms-marco-TinyBERT-L-2-v2')
     RERANKER_ENABLED = True
     print("Cross-Encoder Loaded.")
@@ -40,14 +38,7 @@ except Exception as e:
     RERANKER_MODEL = None
     RERANKER_ENABLED = False
 # -----------------------------------------------------------
-from sentence_transformers import SentenceTransformer
-import redis # type: ignore
-import numpy as np
-import json
-import hashlib
-import time
-from typing import Optional
-from openai import OpenAI
+
 
 class SemanticRAGCache:
     """Semantic cache for RAG queries with user isolation."""
@@ -60,11 +51,6 @@ class SemanticRAGCache:
     ):
         """
         Initialize semantic cache.
-        
-        Args:
-            redis_url: Redis connection URL
-            similarity_threshold: Minimum similarity for cache hit (0-1)
-            embedding_model: Sentence transformer model for embeddings
         """
         self.redis = redis.from_url(redis_url, decode_responses=True)
         self.threshold = similarity_threshold
@@ -79,7 +65,8 @@ class SemanticRAGCache:
     ) -> str:
         """Create unique cache key."""
         user_hash = hashlib.md5(user_id.encode()).hexdigest()[:12]
-        query_hash = hashlib.md5(query.encode()).hexdigest()[:8]
+        # Use query hash for cache key now that the full prompt is generated in the agent
+        query_hash = hashlib.md5(query.encode()).hexdigest()[:8] 
         
         if source_filter:
             return f"rag:semantic:{user_hash}:{source_filter}:{query_hash}"
@@ -100,21 +87,14 @@ class SemanticRAGCache:
     ) -> Optional[str]:
         """
         Search for semantically similar cached answer.
-        
-        Returns:
-            Cached answer if found, None otherwise
         """
         try:
-            # Encode query
             query_embedding = self.encoder.encode(query)
-            
-            # Get pattern for user's cache entries
             pattern = self._get_user_prefix(user_id, source_filter)
             
             best_match = None
             best_similarity = 0
             
-            # Scan cached entries
             for key in self.redis.scan_iter(match=pattern, count=100):
                 try:
                     cached_data = self.redis.get(key)
@@ -124,15 +104,13 @@ class SemanticRAGCache:
                     data = json.loads(cached_data)
                     cached_embedding = np.array(data["embedding"])
                     
-                    # Calculate cosine similarity
                     similarity = self._cosine_similarity(query_embedding, cached_embedding)
                     
                     if similarity > best_similarity and similarity >= self.threshold:
                         best_similarity = similarity
                         best_match = data["answer"]
                 
-                except (json.JSONDecodeError, KeyError) as e:
-                    # Skip corrupted cache entries
+                except (json.JSONDecodeError, KeyError):
                     continue
             
             if best_match:
@@ -156,13 +134,8 @@ class SemanticRAGCache:
     ):
         """Save query-answer pair to cache."""
         try:
-            # Encode query
             query_embedding = self.encoder.encode(query).tolist()
-            
-            # Create cache key
             cache_key = self._create_cache_key(user_id, source_filter, query)
-            
-            # Prepare cache data
             cache_data = {
                 "query": query,
                 "answer": answer,
@@ -170,14 +143,11 @@ class SemanticRAGCache:
                 "source": source_filter,
                 "timestamp": time.time()
             }
-            
-            # Save to Redis with TTL
             self.redis.setex(
                 cache_key,
                 ttl,
                 json.dumps(cache_data)
             )
-            
             print(f"💾 Saved to semantic cache (TTL: {ttl//86400} days)")
             
         except Exception as e:
@@ -216,20 +186,20 @@ class SemanticRAGCache:
 
 # Initialize cache (do this once, globally or in your startup)
 redis_url=os.getenv("REDIS_URL")
-# print("redis_url:", redis_url)
 semantic_cache = SemanticRAGCache(
     redis_url=redis_url, # type: ignore
-    similarity_threshold=0.85  # Adjust based on your needs
+    similarity_threshold=0.85 
 )
 
 # --- 1. RRF Score Fusion Logic ---
 def reciprocal_rank_fusion(
     dense_results: List[Dict[str, Any]], 
     sparse_results: List[Dict[str, Any]], 
-    k: int = 60 # Parameter k for RRF, a constant often set to 60
+    k: int = 60 
 ) -> List[Dict[str, Any]]:
     """
     Merges dense (vector) and sparse (BM25) results using Reciprocal Rank Fusion (RRF).
+    (Logic remains unchanged)
     """
     fused_scores = {}
     content_map = {}
@@ -237,15 +207,13 @@ def reciprocal_rank_fusion(
     # Process Dense Results
     for rank, result in enumerate(dense_results):
         doc_id = result['id']
-        # Rank starts at 0, so (rank + 1) is the 1-based rank
         score = 1 / (k + rank + 1)
         fused_scores[doc_id] = fused_scores.get(doc_id, 0) + score
         
-        # Store content/metadata for final result construction
         content_map[doc_id] = {
             'document': result['document'],
             'metadata': result['metadata'],
-            'distance': result.get('distance', None) # Keep the original distance if available
+            'distance': result.get('distance', None) 
         }
 
     # Process Sparse Results
@@ -254,12 +222,11 @@ def reciprocal_rank_fusion(
         score = 1 / (k + rank + 1)
         fused_scores[doc_id] = fused_scores.get(doc_id, 0) + score
         
-        # Update map, prioritizing content from sparse search if doc_id is new
         if doc_id not in content_map:
             content_map[doc_id] = {
                 'document': result['document'],
                 'metadata': result['metadata'],
-                'distance': None # No original distance from BM25
+                'distance': None 
             }
 
     # Create final fused list and sort by fused score
@@ -270,30 +237,23 @@ def reciprocal_rank_fusion(
                 'id': doc_id,
                 'document': content_map[doc_id]['document'],
                 'metadata': content_map[doc_id]['metadata'],
-                'fused_score': score, # The RRF score
-                'distance': content_map[doc_id]['distance'] # Original distance (or None)
+                'fused_score': score, 
+                'distance': content_map[doc_id]['distance'] 
             })
 
-    # Sort by the RRF score (highest score is most relevant)
     fused_results.sort(key=lambda x: x['fused_score'], reverse=True)
     
     return fused_results
 # --- End RRF Score Fusion Logic ---
 
-def call_openai(prompt: str, client: OpenAI):
-    """Helper function to call OpenAI API."""
-    response = client.chat.completions.create(
-        model=OPENAI_MODEL,
-        messages=[{"role": "user", "content": prompt}],
-        max_tokens=300
-    )
-    return response.choices[0].message.content # type: ignore
 
-def query_multimodal(query: str, user_id: str, top_k: int = 6, source_filter: str = "") -> Dict:
+# --- REMOVED: Old synchronous call_openai helper function ---
+
+# --- MODIFIED: query_multimodal is now async and uses ainvoke ---
+async def query_multimodal(query: str, user_id: str, top_k: int = 6, source_filter: str = "") -> Dict:
     """
-    Query across all modalities using Hybrid Search (Dense + Sparse) + RRF + Cross-Encoder Reranking.
-    
-    THE RETURN STATEMENT IS STRICTLY MAINTAINED.
+    Query across all modalities using Hybrid Search (Dense + Sparse) + RRF + Cross-Encoder Reranking
+    and delegates final answer generation to the RAG Agent (via ainvoke).
     """
     
     print(f"\n🔍 Query: {query}")
@@ -301,23 +261,21 @@ def query_multimodal(query: str, user_id: str, top_k: int = 6, source_filter: st
     collection = get_user_collection(user_id)
     if not collection or collection.count() == 0:
         return {
-            "answer": "No documents found",
+            "answer": "Collection is empty or API Key is not configured.",
             "sources": [],
-            "query": query
+            "cached": False,
+            "action_performed": False
         }
     
-    # --- 1. Define Filter Clause ---
+    # --- 1. Define Filter Clause (unchanged) ---
     conditions = [{"user_id": user_id}]
     if source_filter and isinstance(source_filter, str) and source_filter.strip():
         conditions.append({"source": source_filter})
     
     where_clause = {"$and": conditions} if len(conditions) > 1 else conditions[0]
-    # print(f"Searching collection with filter: {where_clause}")
-    
-    # Fetch a larger pool of results for RRF (e.g., top_k * 5)
     retrieval_k = top_k * 5
     
-    # --- 2. Dense Retrieval (Vector Search) ---
+    # --- 2. Dense Retrieval (Vector Search) (unchanged) ---
     query_emb = get_embeddings([query])[0]
     
     dense_chroma_results = collection.query(
@@ -336,7 +294,7 @@ def query_multimodal(query: str, user_id: str, top_k: int = 6, source_filter: st
                 'distance': dense_chroma_results['distances'][0][i], # type: ignore
             })
     
-    # --- 3. Sparse Retrieval (BM25 Keyword Search) ---
+    # --- 3. Sparse Retrieval (BM25 Keyword Search) (unchanged) ---
     all_filtered_content = collection.get(
         where=where_clause, # type: ignore
         include=['documents', 'metadatas'] # type: ignore
@@ -353,7 +311,7 @@ def query_multimodal(query: str, user_id: str, top_k: int = 6, source_filter: st
         doc_scores = bm25.get_scores(tokenized_query)
         ranked_indices = sorted(range(len(doc_scores)), key=lambda i: doc_scores[i], reverse=True)
         
-        for rank, i in enumerate(ranked_indices[:min(retrieval_k, len(documents))]):
+        for i in ranked_indices[:min(retrieval_k, len(documents))]:
             sparse_results.append({
                 'id': ids[i],
                 'document': documents[i],
@@ -361,54 +319,38 @@ def query_multimodal(query: str, user_id: str, top_k: int = 6, source_filter: st
                 'score': doc_scores[i] 
             })
 
-    # --- 4. Reciprocal Rank Fusion (RRF) ---
+    # --- 4. Reciprocal Rank Fusion (RRF) (unchanged) ---
     fused_results = reciprocal_rank_fusion(dense_results, sparse_results)
     
-    # --- 5. Reranking with Cross-Encoder (NEW STEP) ---
+    # --- 5. Reranking with Cross-Encoder (unchanged) ---
     if RERANKER_ENABLED and fused_results:
-        # We rerank the top N results from RRF (e.g., top_k * 2)
         rerank_n = max(top_k + 4, top_k * 2) 
-        
-        # Select the subset to rerank
         to_rerank = fused_results[:rerank_n]
         remaining_results = fused_results[rerank_n:]
 
-        # Create (query, document) pairs
         sentence_pairs = [[query, item['document']] for item in to_rerank]
-        
-        # print(f"  🧠 Reranking {len(to_rerank)} chunks...")
-        
-        # Get scores from the Cross-Encoder (higher score = better relevance)
         rerank_scores = RERANKER_MODEL.predict(sentence_pairs) # type: ignore
 
-        # Apply new scores to the results
         for i, score in enumerate(rerank_scores):
             to_rerank[i]['rerank_score'] = score
         
-        # Re-sort the reranked subset by the Cross-Encoder score
         to_rerank.sort(key=lambda x: x['rerank_score'], reverse=True)
-        
-        # Combine the re-ranked top N with the remaining results 
         final_chunks_all = to_rerank + remaining_results
-        
-        # print(f"  ✅ Reranking complete. New top item score: {to_rerank[0]['rerank_score']:.4f}")
     else:
-        # If reranker is disabled, or no results, use RRF results directly
         final_chunks_all = fused_results
     
     # Truncate the final list to the user's requested top_k
     final_chunks = final_chunks_all[:top_k]
     
-    # --- 6. Final Answer Generation and Output Construction ---
+    # --- 6. Final Answer Generation and Output Construction (MODIFIED) ---
     context: List[str] = []
     sources: List[Dict[str, Any]] = [] 
 
     for i, item in enumerate(final_chunks):
         doc = item['document']
         meta = item['metadata']
-        distance = item.get('distance') # Keep the original distance for frontend display compatibility
+        distance = item.get('distance') 
         
-        # Apply the same content cleaning logic as in the original file
         display_content = doc
         if doc.startswith('[TABLE'):
             parts = doc.split(']', 1)
@@ -418,7 +360,6 @@ def query_multimodal(query: str, user_id: str, top_k: int = 6, source_filter: st
             display_content = parts[1].strip() if len(parts) > 1 else doc
 
         sources.append({
-            # Structure required by the original return:
             "index": i + 1,
             "type": meta.get('type', 'text'),
             "content": display_content,  
@@ -432,66 +373,67 @@ def query_multimodal(query: str, user_id: str, top_k: int = 6, source_filter: st
             }
         })
         
-        # Build context for GPT
-        context.append(f"[Source {i+1}] {doc}")
+        # Build context for the agent
+        context.append(doc) # Agent's prompt will handle source numbers
     
-    # Generate answer with OpenAI (same as before)
+    # 6b. Agent Execution (NEW LOGIC)
+    
+    answer = "Error: Could not process request."
+    action_performed = False
+    cached = False 
+    
     if not OPENAI_API_KEY or not context:
         return {
             "answer": "OpenAI is not configured or no context found.",
             "sources": sources,
-            "query": query
+            "query": query,
+            "cached": cached,
+            "action_performed": action_performed
         }
 
-    # Build prompt once
-    prompt = f"""Answer the question based on the provided context. 
-    Be specific and reference sources by their numbers [1], [2], etc.
-
-    Context from document:
-    {chr(10).join(context[:top_k])}
-
-    Question: {query}
-
-    Instructions:
-    - Provide a clear, concise answer
-    - Reference sources using [1], [2], etc.
-    - If answer not in context, say so
-
-    Answer:"""
-
-    # Initialize client once
-    client = OpenAI(api_key=OPENAI_API_KEY)
-
-    # Try cache first, fallback to OpenAI
-    answer = None
-
+    # --- Use Semantic Cache ---
     if semantic_cache:
+        # Cache search uses the raw query, not the full RAG prompt
+        cached_answer = semantic_cache.search(user_id, source_filter, query)
+        if cached_answer:
+            answer = cached_answer
+            cached = True
+            print("cache hit - using cached answer")
+    
+    if not cached:
+        print("🆕 Cache miss - invoking RAG Agent asynchronously...")
+        
+        # Prepare the initial state for the LangGraph agent
+        initial_state: AgentState = {
+            "user_query": query,
+            "user_id": user_id,
+            "source_filter": source_filter,
+            "context": context, # Pass the retrieved chunks to the agent
+            "answer": "",
+            "tool_call": None,
+            "action_performed": False
+        }
+        
         try:
-            # Check cache
-            answer = semantic_cache.search(user_id, source_filter, prompt)
+            # Use ainvoke for async graph execution
+            final_state = await RAG_AGENT_APP.ainvoke(initial_state)
             
-            if not answer:
-                # Cache miss
-                print("🆕 Cache miss - querying OpenAI")
-                answer = call_openai(prompt, client)
-                semantic_cache.save(user_id, source_filter, prompt, answer)  # type: ignore
-            else:
-                print("cache hit - using cached answer")
-                
+            answer = final_state['answer']
+            action_performed = final_state['action_performed']
+            
+            # Save to cache ONLY if it was a standard RAG process (no action performed)
+            if semantic_cache and not action_performed:
+                # Cache the RAG answer (use the original query for the cache key)
+                semantic_cache.save(user_id, source_filter, query, answer) 
+            
         except Exception as e:
-            print(f"⚠️ Cache error: {e}")
-            # Fallback to OpenAI
-            try:
-                answer = call_openai(prompt, client)
-            except Exception as oe:
-                answer = f"Error calling OpenAI API: {str(oe)}"
-
-    else:
-        # No cache - direct OpenAI call
-        answer = call_openai(prompt, client)
+            answer = f"Error invoking RAG Agent: {str(e)}"
+            action_performed = False
 
     return {
         "answer": answer,
         "sources": sources,
-        "query": query
+        "query": query,
+        "cached": cached,
+        "action_performed": action_performed 
     }

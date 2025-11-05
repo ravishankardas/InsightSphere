@@ -11,7 +11,8 @@ from app.core.auth import validate_api_key
 
 # --- NEW IMPORT ---
 from app.api.analytics import log_query
-from app.services.query_rewriter import get_query_rewriter 
+from app.services.query_rewriter import get_query_rewriter
+from app.services.intent_classifier import detect_email_intent
 # ------------------
 from dotenv import load_dotenv
 load_dotenv()
@@ -56,6 +57,20 @@ async def query_documents(
         "error": True, 
         "response_time_ms": None,
     }
+    # intent = detect_email_intent(body.query)
+    # from icecream import ic
+    # ic(intent)
+    # ic(user_id)
+
+    # if intent.send_email:
+    #     return {
+    #         "answer": "Email Sent Successfully",
+    #         "sources": [body.source],
+    #         "query": body.query
+    #     }
+    # else:
+    #     pass
+
     query_rewriter = get_query_rewriter()
     try:
         processed_query = body.query
@@ -68,7 +83,7 @@ async def query_documents(
                 )
                 print(f"✏️ Query rewritten: '{body.query}' → '{processed_query}'")
         # Pass source filter to query function
-        result = query_multimodal(
+        result = await query_multimodal(
             processed_query, 
             user_id, 
             body.top_k,
