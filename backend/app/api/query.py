@@ -31,7 +31,7 @@ class QueryRequest(BaseModel):
     use_query_rewriting: bool = True
 
 @router.post("")
-@limiter.limit(f"{TO_}/24hour")
+# @limiter.limit(f"{TO_}/24hour")
 async def query_documents(
     request: Request,
     body: QueryRequest,
