@@ -40,156 +40,7 @@ except Exception as e:
 # -----------------------------------------------------------
 
 
-class SemanticRAGCache:
-    """Semantic cache for RAG queries with user isolation."""
-    
-    def __init__(
-        self, 
-        redis_url: str,
-        similarity_threshold: float = 0.85,
-        embedding_model: str = 'all-MiniLM-L6-v2'
-    ):
-        """
-        Initialize semantic cache.
-        """
-        self.redis = redis.from_url(redis_url, decode_responses=True)
-        self.threshold = similarity_threshold
-        self.encoder = SentenceTransformer(embedding_model)
-        print(f"✅ Semantic cache initialized (threshold: {similarity_threshold})")
-    
-    def _create_cache_key(
-        self, 
-        user_id: str, 
-        source_filter: Optional[str], 
-        query: str
-    ) -> str:
-        """Create unique cache key."""
-        user_hash = hashlib.md5(user_id.encode()).hexdigest()[:12]
-        # Use query hash for cache key now that the full prompt is generated in the agent
-        query_hash = hashlib.md5(query.encode()).hexdigest()[:8] 
-        
-        if source_filter:
-            return f"rag:semantic:{user_hash}:{source_filter}:{query_hash}"
-        return f"rag:semantic:{user_hash}:all:{query_hash}"
-    
-    def _get_user_prefix(self, user_id: str, source_filter: Optional[str]) -> str:
-        """Get Redis key prefix for scanning."""
-        user_hash = hashlib.md5(user_id.encode()).hexdigest()[:12]
-        if source_filter:
-            return f"rag:semantic:{user_hash}:{source_filter}:*"
-        return f"rag:semantic:{user_hash}:all:*"
-    
-    def search(
-        self, 
-        user_id: str, 
-        source_filter: Optional[str], 
-        query: str
-    ) -> Optional[str]:
-        """
-        Search for semantically similar cached answer.
-        """
-        try:
-            query_embedding = self.encoder.encode(query)
-            pattern = self._get_user_prefix(user_id, source_filter)
-            
-            best_match = None
-            best_similarity = 0
-            
-            for key in self.redis.scan_iter(match=pattern, count=100):
-                try:
-                    cached_data = self.redis.get(key)
-                    if not cached_data:
-                        continue
-                    
-                    data = json.loads(cached_data)
-                    cached_embedding = np.array(data["embedding"])
-                    
-                    similarity = self._cosine_similarity(query_embedding, cached_embedding)
-                    
-                    if similarity > best_similarity and similarity >= self.threshold:
-                        best_similarity = similarity
-                        best_match = data["answer"]
-                
-                except (json.JSONDecodeError, KeyError):
-                    continue
-            
-            if best_match:
-                print(f"✅ Semantic cache HIT (similarity: {best_similarity:.1%})")
-                return best_match
-            
-            print(f"🔍 Semantic cache MISS (best similarity: {best_similarity:.1%})")
-            return None
-            
-        except Exception as e:
-            print(f"⚠️ Cache search error: {e}")
-            return None
-    
-    def save(
-        self,
-        user_id: str,
-        source_filter: Optional[str],
-        query: str,
-        answer: str,
-        ttl: int = 604800  # 7 days
-    ):
-        """Save query-answer pair to cache."""
-        try:
-            query_embedding = self.encoder.encode(query).tolist()
-            cache_key = self._create_cache_key(user_id, source_filter, query)
-            cache_data = {
-                "query": query,
-                "answer": answer,
-                "embedding": query_embedding,
-                "source": source_filter,
-                "timestamp": time.time()
-            }
-            self.redis.setex(
-                cache_key,
-                ttl,
-                json.dumps(cache_data)
-            )
-            print(f"💾 Saved to semantic cache (TTL: {ttl//86400} days)")
-            
-        except Exception as e:
-            print(f"⚠️ Cache save error: {e}")
-    
-    def _cosine_similarity(self, a, b) -> float:
-        """Calculate cosine similarity between two vectors."""
-        return float(np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b)))
-    
-    def clear_user_cache(self, user_id: str):
-        """Clear all cache entries for a user."""
-        user_hash = hashlib.md5(user_id.encode()).hexdigest()[:12]
-        pattern = f"rag:semantic:{user_hash}:*"
-        
-        deleted = 0
-        for key in self.redis.scan_iter(match=pattern):
-            self.redis.delete(key)
-            deleted += 1
-        
-        print(f"🗑️ Cleared {deleted} cache entries for user")
-    
-    def get_stats(self, user_id: str) -> dict:
-        """Get cache statistics for a user."""
-        user_hash = hashlib.md5(user_id.encode()).hexdigest()[:12]
-        pattern = f"rag:semantic:{user_hash}:*"
-        
-        count = 0
-        for _ in self.redis.scan_iter(match=pattern):
-            count += 1
-        
-        return {
-            "cached_queries": count,
-            "user_hash": user_hash
-        }
 
-
-# Initialize cache (do this once, globally or in your startup)
-redis_url=os.getenv("REDIS_URL")
-semantic_cache = SemanticRAGCache(
-    redis_url=redis_url, # type: ignore
-    similarity_threshold=0.85 
-)
 
 # --- 1. RRF Score Fusion Logic ---
 def reciprocal_rank_fusion(
@@ -247,8 +98,6 @@ def reciprocal_rank_fusion(
 # --- End RRF Score Fusion Logic ---
 
 
-# --- REMOVED: Old synchronous call_openai helper function ---
-
 # --- MODIFIED: query_multimodal is now async and uses ainvoke ---
 async def query_multimodal(query: str, user_id: str, top_k: int = 6, source_filter: str = "file.pdf", email_present: bool=False) -> Dict:
     """
@@ -256,7 +105,7 @@ async def query_multimodal(query: str, user_id: str, top_k: int = 6, source_filt
     and delegates final answer generation to the RAG Agent (via ainvoke).
     """
     
-    print(f"\n🔍 Query: {query}")
+    # print(f"\n🔍 Query: {query}, file_name: {source_filter}, user_id: {user_id}, top_k: {top_k}\n")
     
     collection = get_user_collection(user_id)
     if not collection or collection.count() == 0:
@@ -390,46 +239,32 @@ async def query_multimodal(query: str, user_id: str, top_k: int = 6, source_filt
             "cached": cached,
             "action_performed": action_performed
         }
-
-    # --- Use Semantic Cache ---
-    if not email_present:
-        if semantic_cache:
-            # Cache search uses the raw query, not the full RAG prompt
-            cached_answer = semantic_cache.search(user_id, source_filter, query)
-            if cached_answer:
-                answer = cached_answer
-                cached = True
-                print("cache hit - using cached answer")
     
-    if not cached:
-        print("🆕 Cache miss - invoking RAG Agent asynchronously...")
+
+    print("Invoking RAG Agent...")
+
+    # Prepare the initial state for the LangGraph agent
+    initial_state: AgentState = {
+        "user_query": query,
+        "user_id": user_id,
+        "source_filter": source_filter,
+        "context": context, # Pass the retrieved chunks to the agent
+        "answer": "",
+        "tool_call": None,
+        "action_performed": False,
+        "email_present": email_present,
+        "query_type": "RAG_ANSWER"
+    }
+    
+    try:
+        # Use ainvoke for async graph execution
+        final_state = await RAG_AGENT_APP.ainvoke(initial_state)
+        answer = final_state['answer']
         
-        # Prepare the initial state for the LangGraph agent
-        initial_state: AgentState = {
-            "user_query": query,
-            "user_id": user_id,
-            "source_filter": source_filter,
-            "context": context, # Pass the retrieved chunks to the agent
-            "answer": "",
-            "tool_call": None,
-            "action_performed": False
-        }
         
-        try:
-            # Use ainvoke for async graph execution
-            final_state = await RAG_AGENT_APP.ainvoke(initial_state)
-            
-            answer = final_state['answer']
-            action_performed = final_state['action_performed']
-            
-            # Save to cache ONLY if it was a standard RAG process (no action performed)
-            if semantic_cache and not action_performed:
-                # Cache the RAG answer (use the original query for the cache key)
-                semantic_cache.save(user_id, source_filter, query, answer) 
-            
-        except Exception as e:
-            answer = f"Error invoking RAG Agent: {str(e)}"
-            action_performed = False
+    except Exception as e:
+        answer = f"Error invoking RAG Agent: {str(e)}"
+        action_performed = False
 
     return {
         "answer": answer,

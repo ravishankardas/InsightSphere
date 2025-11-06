@@ -81,7 +81,7 @@ export default function App() {
   // ---- Document Functions ----
   const loadDocuments = async () => {
     if (!userId) return;
-    
+
     setLoadingDocuments(true);
     try {
       const headers = {
@@ -96,7 +96,16 @@ export default function App() {
 
       if (res.ok) {
         const data = await res.json();
+        // Ensure documents is an array of filename strings or objects you expect
         setDocuments(data || []);
+
+        // If there is no currently selectedDocument, pick the first one by default
+        // Support both arrays of strings and arrays of objects with .source/.name
+        if (!selectedDocument && data && data.length > 0) {
+          const first = data[0];
+          const firstName = typeof first === "string" ? first : (first.source || first.name || first.file || "");
+          if (firstName) setSelectedDocument(firstName);
+        }
       } else {
         console.error("Failed to load documents");
       }
@@ -106,6 +115,7 @@ export default function App() {
       setLoadingDocuments(false);
     }
   };
+
 
   const handleDeleteClick = (filename) => {
     setDocToDelete(filename);
@@ -201,7 +211,7 @@ export default function App() {
     setShowAuthModal(true);
   };
 
-  const handleFileChange = (e) => {
+ const handleFileChange = (e) => {
     if (!isSignedIn) {
       setAuthMode("signup");
       setShowAuthModal(true);
@@ -213,12 +223,12 @@ export default function App() {
       setUploadStatus({ type: "error", message: "Please select a PDF file." });
       return;
     }
-    
+
     // Clear old URL before setting new one
     if (fileUrl) {
       URL.revokeObjectURL(fileUrl);
     }
-    
+
     setFile(selectedFile);
     setUploadStatus(null);
     const url = URL.createObjectURL(selectedFile);
@@ -226,7 +236,12 @@ export default function App() {
     setViewerPage(1);
     setHighlight(null);
     setActiveTool("upload");
+
+    // <-- NEW: Make the newly-selected file the active/selected document
+    // Use the filename as the identifier that will be sent to the backend
+    setSelectedDocument(selectedFile.name);
   };
+
 
   const handleUpload = async () => {
     // 1. NEW SECURITY CHECK: Ensure API Key is available
@@ -273,44 +288,50 @@ export default function App() {
         const data = await res.json();
         
         if (res.ok) {
-            // Build success message with details
-            const chunks = data.text_chunks || data.indexed_chunks || 0;
-            const tables = data.tables || 0;
-            const images = data.images || 0;
-            const mode = data.mode_used || 'unknown';
-            const complexity = data.complexity_score;
-            
-            let message = `Indexed ${chunks} chunks`;
-            
-            // Add details if multimodal processing was used
-            if (tables > 0 || images > 0) {
-                const parts = [];
-                if (tables > 0) parts.push(`${tables} tables`);
-                if (images > 0) parts.push(`${images} images`);
-                message += ` (${parts.join(', ')})`;
-            }
-            
-            // Add mode info (optional - can remove if too verbose)
-            if (complexity !== undefined) {
-                message += ` • Mode: ${mode} (complexity: ${complexity}/100)`;
-            }
-            
-            setUploadStatus({
-                type: "success",
-                message: message,
-            });
-            
-            // Reload documents list
-            loadDocuments();
-            
-            // Keep local preview active (fileUrl)
-            setActiveTool("upload");
-        } else {
-            setUploadStatus({ 
-                type: "error", 
-                message: data.detail || data.message || "Upload failed." 
-            });
+        // Build success message with details
+        const chunks = data.text_chunks || data.indexed_chunks || 0;
+        const tables = data.tables || 0;
+        const images = data.images || 0;
+        const mode = data.mode_used || 'unknown';
+        const complexity = data.complexity_score;
+
+        let message = `Indexed ${chunks} chunks`;
+
+        if (tables > 0 || images > 0) {
+            const parts = [];
+            if (tables > 0) parts.push(`${tables} tables`);
+            if (images > 0) parts.push(`${images} images`);
+            message += ` (${parts.join(', ')})`;
         }
+
+        if (complexity !== undefined) {
+            message += ` • Mode: ${mode} (complexity: ${complexity}/100)`;
+        }
+
+        setUploadStatus({
+            type: "success",
+            message: message,
+        });
+
+        // Reload documents list
+        loadDocuments();
+
+        // <-- NEW: If backend returned canonical filename (data.file.source or data.file.name),
+        // use that as the selected document. Otherwise fallback to the local file.name.
+        const returnedName = data?.file?.source || data?.file?.name || file?.name;
+        if (returnedName) {
+            setSelectedDocument(returnedName);
+        }
+
+        // Keep local preview active (fileUrl)
+        setActiveTool("upload");
+    } else {
+        setUploadStatus({ 
+            type: "error", 
+            message: data.detail || data.message || "Upload failed." 
+        });
+    }
+
     } catch (err) {
         setUploadStatus({ 
             type: "error", 
@@ -334,13 +355,13 @@ export default function App() {
     setQuery("");
   };
 
-const handleQuery = async () => {
-    // **NEW SECURITY CHECK:** Check for API Key
+  const handleQuery = async () => {
+    // Security / prechecks
     if (!API_KEY) {
-        console.error("API Key is missing. Cannot make secure request.");
-        setAnswer({ type: "error", message: "Configuration Error: Missing API Key." });
-        setQuerying(false);
-        return;
+      console.error("API Key is missing. Cannot make secure request.");
+      setAnswer({ type: "error", message: "Configuration Error: Missing API Key." });
+      setQuerying(false);
+      return;
     }
 
     if (!isSignedIn) {
@@ -353,6 +374,12 @@ const handleQuery = async () => {
       return;
     }
 
+    // You must have selected a document to query its vectors
+    if (!selectedDocument) {
+      setAnswer({ type: "error", message: "Select a document from 'My Documents' to query." });
+      return;
+    }
+
     setQuerying(true);
     setAnswer(null);
     setHighlight(null);
@@ -362,20 +389,27 @@ const handleQuery = async () => {
         "Content-Type": "application/json",
         "X-API-Key": API_KEY,
       };
-      
+
       if (userId) {
         headers["X-User-Id"] = userId;
       }
 
+      // Normalize the filename to match how you store 'source' in the vector DB.
+      const normalizedSource = String(selectedDocument).trim().toLowerCase();
+
+      const bodyPayload = {
+        query: query.trim(),
+        top_k: 4,
+        source: normalizedSource,
+        use_query_rewriting: true
+      };
+
       const res = await fetch(`${apiUrl}/api/query`, {
         method: "POST",
         headers,
-        body: JSON.stringify({ 
-          query,
-          ...(selectedDocument && { document: selectedDocument })
-        }),
+        body: JSON.stringify(bodyPayload),
       });
-      
+
       const data = await res.json();
 
       if (res.ok) {
@@ -397,8 +431,10 @@ const handleQuery = async () => {
       });
     } finally {
       setQuerying(false);
+      setQuery("");
     }
   };
+
 
   return (
     <div className="app-container">

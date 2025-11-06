@@ -11,6 +11,9 @@ from slowapi.errors import RateLimitExceeded # type: ignore
 # ----------------------------------------------------
 
 from app.api import upload, query, documents, analytics, send_email_action # These imports are now safe
+from dotenv import load_dotenv
+import os
+load_dotenv()
 
 app = FastAPI(
     title="InsightSphere API", 
@@ -26,10 +29,11 @@ app.state.limiter = limiter
 @app.exception_handler(RateLimitExceeded)
 async def rate_limit_exceeded_handler(request: Request, exc: RateLimitExceeded):
     """Custom handler to return a 429 response when limit is exceeded."""
+    _TO = os.getenv("TO", "2")
     limit_string = str(exc.detail).split(":")[-1].strip()
     return JSONResponse(
         content={
-            "detail": f"Rate limit exceeded: You are limited to 2 queries per 24 hour period. Please try again later.",
+            "detail": f"Rate limit exceeded: You are limited to {_TO} queries per 24 hour period. Please try again later.",
             "answer": "Query limit exceeded. Please try again later."
         },
         status_code=HTTP_429_TOO_MANY_REQUESTS,

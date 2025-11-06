@@ -15,8 +15,9 @@ from app.services.query_rewriter import get_query_rewriter
 from app.services.intent_classifier import detect_email_intent
 # ------------------
 from dotenv import load_dotenv
-load_dotenv()
 import os
+
+load_dotenv()
 
 TO_ = os.getenv("TO") 
 
@@ -27,15 +28,15 @@ router = APIRouter(dependencies=[Depends(validate_api_key)])
 class QueryRequest(BaseModel):
     query: str
     top_k: int = 4
-    source: Optional[str] = None  
+    source: str = ""
     use_query_rewriting: bool = True
 
 @router.post("")
-# @limiter.limit(f"{TO_}/24hour")
+@limiter.limit(f"{TO_}/24hour")
 async def query_documents(
     request: Request,
     body: QueryRequest,
-    user_id: Optional[str] = Header(None, alias="X-User-Id")
+    user_id: str = Header(None, alias="X-User-Id")
 ) -> Dict[str, Any]:
     """
     Query your uploaded documents and log performance metrics.
@@ -89,7 +90,8 @@ async def query_documents(
         else:
             print("Not rewriting query as it seems to be email related.")
             email_present = True
-            
+
+        # print(f"body: {body}")
         # Pass source filter to query function
         result = await query_multimodal(
             processed_query, 

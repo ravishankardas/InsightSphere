@@ -27,3 +27,4 @@ langgraph
 httpx
 resend
 sendgrid
+tavily-python

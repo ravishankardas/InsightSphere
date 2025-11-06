@@ -1,4 +1,9 @@
 {
     "python-envs.defaultEnvManager": "ms-python.python:system",
-    "python-envs.pythonProjects": []
+    "python-envs.pythonProjects": [],
+    "python.analysis.extraPaths": [
+        "./backend/app/services/clear_",
+        "./backend/app/services/clear_",
+        "./backend/app/services/clear_"
+    ]
 }

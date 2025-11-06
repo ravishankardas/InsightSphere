@@ -100,3 +100,26 @@ body = "it works!"
 success = send_email_action(recipient_email, subject, body)
 if success:
     print("Email sent successfully.")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# from rag_agent import build_rag_agent
+# from IPython.display import display, Image
+
+# def draw_graph(app):
+#     display(Image(app.get_graph().draw_mermaid_png()))
+
+# rag_agent = build_rag_agent()
+
+# draw_graph(rag_agent)
