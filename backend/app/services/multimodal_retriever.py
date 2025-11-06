@@ -19,7 +19,7 @@ from sentence_transformers import SentenceTransformer
 import numpy as np
 
 # --- Agent Imports ---
-from app.services.rag_agent import RAG_AGENT_APP, AgentState 
+from app.services.rag_agent import RAG_AGENT_APP, AgentState  # type: ignore
 # ---------------------
 
 load_dotenv()
