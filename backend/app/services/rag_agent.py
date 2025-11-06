@@ -42,7 +42,8 @@ OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
 API_BASE_URL = os.getenv("RAILWAY_PUBLIC_DOMAIN")
 if not API_BASE_URL:
     API_BASE_URL = "http://localhost:8000"
-
+else:
+    API_BASE_URL = f"https://{API_BASE_URL}"
 
 
 # --- 3. Tool Schema (Used by Intent Detector) ---
