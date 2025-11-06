@@ -84,9 +84,9 @@ async def query_documents(
                 if query_rewriter.should_rewrite(body.query):
                     processed_query = query_rewriter.rewrite_query(
                         original_query=body.query,
-                        document_context=body.source
                     )
                     print(f"✏️ Query rewritten: '{body.query}' → '{processed_query}'")
+            pass
         else:
             print("Not rewriting query as it seems to be email related.")
             email_present = True
