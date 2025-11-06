@@ -3,6 +3,7 @@
 from openai import OpenAI
 from typing import List, Optional
 import os
+query_cache = {}
 
 class QueryRewriter:
     """
@@ -25,6 +26,10 @@ class QueryRewriter:
         Returns:
             Rewritten query string
         """
+
+        if original_query in query_cache:
+            print("Using cached rewritten query.")
+            return query_cache[original_query]
         
         system_prompt = """You are a query optimization expert. Your job is to rewrite user queries to be more specific, clear, and effective for document retrieval.
 
@@ -59,7 +64,9 @@ class QueryRewriter:
             # Remove quotes if LLM added them
             if rewritten.startswith('"') and rewritten.endswith('"'):
                 rewritten = rewritten[1:-1]
-            
+
+            query_cache[original_query] = rewritten
+
             return rewritten
             
         except Exception as e:

@@ -253,8 +253,16 @@ async def query_multimodal(query: str, user_id: str, top_k: int = 6, source_filt
         "tool_call": None,
         "action_performed": False,
         "email_present": email_present,
-        "query_type": "RAG_ANSWER"
+        "query_type": "RAG_ANSWER",
+        "tool_calls": [],
+        "intermediate_results": [],
+        "execution_plan": [],
+        "confidence": 0.0,
+        "current_step": 0,
+        "max_steps": 3
     }
+
+    # print("context passed to RAG Agent:", context)
     
     try:
         # Use ainvoke for async graph execution
