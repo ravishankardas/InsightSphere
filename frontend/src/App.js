@@ -131,49 +131,81 @@ export default function App() {
   }, [userId, API_KEY, apiUrl, selectedDocument]);
 
   // ---- Load All Chat History on Login ----
-  useEffect(() => {
-    const loadAllChatHistory = async () => {
-      if (isSignedIn && userId && documents.length > 0) {
-        try {
-          setLoadingChatHistory(true);
-          console.log("📚 Loading all chat history to cache...");
-          
-          const allChats = {};
-          let loadedCount = 0;
-          
-          // Load chat history for ALL documents
-          for (const doc of documents) {
-            const docName = typeof doc === "string" ? doc : (doc.source || doc.name || doc.file || "");
-            if (docName) {
-              try {
-                const messages = await loadChatFromBackend(docName);
-                allChats[docName] = messages;
-                loadedCount++;
-                console.log(`✅ Cached ${messages.length} messages for ${docName}`);
-              } catch (error) {
-                console.error(`❌ Failed to load chat for ${docName}:`, error);
-                allChats[docName] = [];
+  // ---- Load Documents AND Chat History on Login ----
+useEffect(() => {
+  const loadDocumentsAndChats = async () => {
+    if (isSignedIn && userId) {
+      try {
+        setLoadingDocuments(true);
+        setLoadingChatHistory(true);
+        
+        console.log("📚 Loading documents and chat history...");
+        
+        // 1. Load documents first
+        const headers = { "X-API-Key": API_KEY, "X-User-Id": userId };
+        const res = await fetch(`${apiUrl}/api/documents`, { method: "GET", headers });
+
+        if (res.ok) {
+          const documentsData = await res.json();
+          setDocuments(documentsData || []);
+          console.log(`✅ Loaded ${documentsData.length} documents`);
+
+          // 2. Load chat history for ALL documents
+          if (documentsData && documentsData.length > 0) {
+            const allChats = {};
+            let loadedCount = 0;
+            
+            for (const doc of documentsData) {
+              const docName = typeof doc === "string" ? doc : (doc.source || doc.name || doc.file || "");
+              if (docName) {
+                try {
+                  const messages = await loadChatFromBackend(docName);
+                  allChats[docName] = messages;
+                  loadedCount++;
+                  console.log(`✅ Cached ${messages.length} messages for ${docName}`);
+                } catch (error) {
+                  console.error(`❌ Failed to load chat for ${docName}:`, error);
+                  allChats[docName] = [];
+                }
               }
             }
+            
+            // Store in localStorage for fast access
+            localStorage.setItem(`chatHistory_${userId}`, JSON.stringify(allChats));
+            setDocumentChats(allChats);
+            
+            // 3. Auto-select first document and load its messages
+            const firstDoc = documentsData[0];
+            const firstName = typeof firstDoc === "string" ? firstDoc : (firstDoc.source || firstDoc.name || firstDoc.file || "");
+            if (firstName) {
+              setSelectedDocument(firstName);
+              setMessages(allChats[firstName] || []);
+            }
+            
+            console.log(`🎉 Loaded ${loadedCount} document chats to cache`);
           }
-          
-          // Store in localStorage for fast access
-          localStorage.setItem(`chatHistory_${userId}`, JSON.stringify(allChats));
-          setDocumentChats(allChats);
-          
-          console.log(`🎉 Loaded ${loadedCount} document chats to cache`);
-        } catch (error) {
-          console.error("Error loading all chat history:", error);
-        } finally {
-          setLoadingChatHistory(false);
+        } else {
+          console.error("Failed to load documents");
         }
+      } catch (error) {
+        console.error("Error loading documents and chats:", error);
+      } finally {
+        setLoadingDocuments(false);
+        setLoadingChatHistory(false);
       }
-    };
-
-    if (documents.length > 0) {
-      loadAllChatHistory();
     }
-  }, [isSignedIn, userId, documents]);
+  };
+
+  if (isSignedIn && userId) {
+    loadDocumentsAndChats();
+  } else {
+    // Clear everything on logout
+    setDocuments([]);
+    setSelectedDocument(null);
+    setMessages([]);
+    setDocumentChats({});
+  }
+}, [isSignedIn, userId, API_KEY, apiUrl]);
 
   const handleDeleteConfirm = async () => {
     if (!docToDelete) return;
@@ -755,14 +787,14 @@ export default function App() {
     }
   }, [uploadStatus, uploading, selectedDocument]);
 
-  useEffect(() => {
-    if (isSignedIn && userId) {
-      loadDocuments();
-    } else {
-      setDocuments([]);
-      setSelectedDocument(null);
-    }
-  }, [isSignedIn, userId, loadDocuments]);
+  // useEffect(() => {
+  //   if (isSignedIn && userId) {
+  //     loadDocuments();
+  //   } else {
+  //     setDocuments([]);
+  //     setSelectedDocument(null);
+  //   }
+  // }, [isSignedIn, userId, loadDocuments]);
 
   useEffect(() => {
     testBackendConnection();
