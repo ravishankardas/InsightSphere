@@ -9,7 +9,7 @@ from app.services.pdf_complexity_analyzer import (
 )
 from app.core.auth import validate_api_key
 from app.logger import setup_logger
-from app.database_service.db_service import save_chat_to_db
+from app.database_service.db_service import load_chat_from_db, save_chat_to_db
 
 logger = setup_logger()
 
@@ -80,11 +80,22 @@ async def upload_pdf_auto(
                 fast_mode=False
             )
 
-        await save_chat_to_db(
-            user_id=user_id, 
-            document_name=filename, 
-            messages=[]
-        )
+        uploaded_filename = filename  # or wherever you get the filename
+        normalized_name = uploaded_filename.lower()
+
+        # Check if chat history already exists
+        existing_chat = await load_chat_from_db(user_id, normalized_name)
+
+        if not existing_chat:
+            # Only create empty record if no history exists
+            await save_chat_to_db(
+                user_id=user_id, 
+                document_name=normalized_name,
+                messages=[]  # Empty array for new document
+            )
+            logger.info(f"Created empty chat record for new document: {normalized_name}")
+        else:
+            logger.info(f"Document {normalized_name} already has chat history, preserving it")
         
         return {
             "status": "indexed",

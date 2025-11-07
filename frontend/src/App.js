@@ -332,57 +332,95 @@ useEffect(() => {
 };
 
   // ---- Upload & Query Handlers ---
-  const handleUpload = async (selectedFile) => {
-    if (!API_KEY || !isSignedIn || !selectedFile) {
-      if (!isSignedIn) { setAuthMode("signup"); setShowAuthModal(true); }
-      return;
-    }
+ const handleUpload = async (selectedFile) => {
+  if (!API_KEY || !isSignedIn || !selectedFile) {
+    if (!isSignedIn) { setAuthMode("signup"); setShowAuthModal(true); }
+    return;
+  }
 
-    setUploading(true);
-    setUploadStatus({ type: "info", message: "Uploading and processing document..." });
+  setUploading(true);
+  setUploadStatus({ type: "info", message: "Uploading and processing document..." });
+  
+  const formData = new FormData();
+  formData.append("file", selectedFile);
+
+  try {
+    const headers = { "X-API-Key": API_KEY };
+    if (userId) headers["X-User-Id"] = userId;
     
-    const formData = new FormData();
-    formData.append("file", selectedFile);
-
-    try {
-      const headers = { "X-API-Key": API_KEY };
-      if (userId) headers["X-User-Id"] = userId;
-      
-      const res = await fetch(`${apiUrl}/api/upload/pdf/auto?preset=balanced`, { method: "POST", headers, body: formData });
-      const data = await res.json();
-      
-      if (res.ok) {
-        const chunks = data.text_chunks || data.indexed_chunks || 0;
-        const tables = data.tables || 0;
-        const images = data.images || 0;
-        let message = `✅ Document uploaded successfully! Processed ${chunks} text chunks`;
-        if (tables > 0 || images > 0) {
-          const parts = [];
-          if (tables > 0) parts.push(`${tables} tables`);
-          if (images > 0) parts.push(`${images} images`);
-          message += ` and extracted ${parts.join(', ')}`;
-        }
-        setUploadStatus({ type: "success", message: message });
-
-        setTimeout(() => { loadDocuments(); }, 2000);
-        const returnedName = data?.file?.source || data?.source || selectedFile?.name;
-        if (returnedName) setSelectedDocument(returnedName);
-        
-        // Clear file input
-        const fileInput = document.getElementById('file-upload');
-        if (fileInput) fileInput.value = '';
-
-      } else {
-        const errorMsg = data.detail || "Upload failed";
-        setUploadStatus({ type: "error", message: `Upload failed: ${errorMsg}` });
+    const res = await fetch(`${apiUrl}/api/upload/pdf/auto?preset=balanced`, { method: "POST", headers, body: formData });
+    const data = await res.json();
+    
+    if (res.ok) {
+      const chunks = data.text_chunks || data.indexed_chunks || 0;
+      const tables = data.tables || 0;
+      const images = data.images || 0;
+      let message = `✅ Document uploaded successfully! Processed ${chunks} text chunks`;
+      if (tables > 0 || images > 0) {
+        const parts = [];
+        if (tables > 0) parts.push(`${tables} tables`);
+        if (images > 0) parts.push(`${images} images`);
+        message += ` and extracted ${parts.join(', ')}`;
       }
-    } catch (err) {
-      setUploadStatus({ type: "error", message: `Network error: ${err.message}.` });
-    } finally {
-      setUploading(false);
-      setFile(null);
+      setUploadStatus({ type: "success", message: message });
+
+      // Save current chat before switching to new document
+      if (selectedDocument && messages.length > 0) {
+        await saveChatToBackend(selectedDocument, messages);
+      }
+
+      const returnedName = data?.file?.source || data?.source || selectedFile?.name;
+      if (returnedName) {
+        const normalizedName = returnedName.toLowerCase();
+        
+        // Check if this document already has chat history
+        setLoadingChatHistory(true);
+        try {
+          const existingChat = await loadChatFromBackend(normalizedName);
+          
+          if (existingChat && existingChat.length > 0) {
+            // Document has existing chat history - load it
+            setMessages(existingChat);
+            updateCache(normalizedName, existingChat);
+            console.log(`📖 Loaded existing chat history (${existingChat.length} messages) for ${normalizedName}`);
+          } else {
+            // New document - clear chat area
+            setMessages([]);
+            console.log(`🆕 New document - chat area cleared for ${normalizedName}`);
+            
+            // Create empty chat record for new document
+            await saveChatToBackend(normalizedName, []);
+          }
+        } catch (error) {
+          console.error("Error checking chat history:", error);
+          // If there's an error, assume it's a new document
+          setMessages([]);
+          await saveChatToBackend(normalizedName, []);
+        } finally {
+          setLoadingChatHistory(false);
+        }
+        
+        setSelectedDocument(normalizedName);
+      }
+      
+      // Refresh documents list
+      setTimeout(() => { loadDocuments(); }, 2000);
+      
+      // Clear file input
+      const fileInput = document.getElementById('file-upload');
+      if (fileInput) fileInput.value = '';
+
+    } else {
+      const errorMsg = data.detail || "Upload failed";
+      setUploadStatus({ type: "error", message: `Upload failed: ${errorMsg}` });
     }
-  };
+  } catch (err) {
+    setUploadStatus({ type: "error", message: `Network error: ${err.message}.` });
+  } finally {
+    setUploading(false);
+    setFile(null);
+  }
+};
 
   const handleFileChange = async (e) => {
     if (!isSignedIn) { setAuthMode("signup"); setShowAuthModal(true); return; }
@@ -619,40 +657,45 @@ useEffect(() => {
 
   // API functions for chat persistence
   const saveChatToBackend = async (documentName, messages) => {
-    if (!isSignedIn || !userId || !documentName) {
-      console.log("Skipping save - not signed in or no document selected");
-      return;
-    }
+  if (!isSignedIn || !userId || !documentName) {
+    console.log("Skipping save - not signed in or no document selected");
+    return;
+  }
+  
+  // Don't save if we're just creating an empty record (let backend handle this)
+  if (messages.length === 0) {
+    console.log("Skipping save - no messages to save");
+    return;
+  }
+  
+  try {
+    const headers = {
+      "Content-Type": "application/json",
+      "X-API-Key": API_KEY,
+      "X-User-Id": userId,
+    };
+
+    console.log(`💾 Saving ${messages.length} messages for: ${documentName}`);
     
-    try {
-      const headers = {
-        "Content-Type": "application/json",
-        "X-API-Key": API_KEY,
-        "X-User-Id": userId,
-      };
+    const response = await fetch(`${apiUrl}/api/query/chats/save`, {
+      method: "POST",
+      headers,
+      body: JSON.stringify({
+        document_name: documentName,
+        messages: messages
+      }),
+    });
 
-      console.log(`💾 Saving ${messages.length} messages for: ${documentName}`);
-      
-      const response = await fetch(`${apiUrl}/api/query/chats/save`, {
-        method: "POST",
-        headers,
-        body: JSON.stringify({
-          document_name: documentName,
-          messages: messages
-        }),
-      });
-
-      const data = await response.json();
-      if (data.success) {
-        console.log("✅ Chat saved successfully");
-      } else {
-        console.error("❌ Failed to save chat:", data.message);
-      }
-    } catch (error) {
-      console.error("❌ Error saving chat to backend:", error);
+    const data = await response.json();
+    if (data.success) {
+      console.log("✅ Chat saved successfully");
+    } else {
+      console.error("❌ Failed to save chat:", data.message);
     }
-  };
-
+  } catch (error) {
+    console.error("❌ Error saving chat to backend:", error);
+  }
+};
 
   // Conversation memory helper
   const getConversationContext = (currentQuery) => {

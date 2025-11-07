@@ -1055,3 +1055,31 @@
 2025-11-07 21:02:12 | InsightSphere | INFO | db_service.py:76 | ✅ Loaded 4 messages for ml_llm_interview_cheat_sheet.pdf
 2025-11-07 21:02:18 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf, messages: 4
 2025-11-07 21:02:18 | InsightSphere | INFO | db_service.py:45 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ml_llm_interview_cheat_sheet.pdf
+2025-11-07 21:19:23 | InsightSphere | INFO | database.py:19 | using dev
+2025-11-07 21:20:11 | InsightSphere | INFO | db_service.py:15 | using dev
+2025-11-07 21:20:17 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 21:20:24 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 21:20:25 | InsightSphere | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 21:20:29 | InsightSphere | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 21:20:32 | InsightSphere | INFO | database.py:64 | ✅ Database tables created successfully
+2025-11-07 21:20:32 | InsightSphere | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 21:25:44 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf, messages: 4
+2025-11-07 21:25:44 | InsightSphere | INFO | db_service.py:45 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ml_llm_interview_cheat_sheet.pdf
+2025-11-07 21:26:02 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf, messages: 4
+2025-11-07 21:26:02 | InsightSphere | INFO | db_service.py:45 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ml_llm_interview_cheat_sheet.pdf
+2025-11-07 21:28:14 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf, messages: 4
+2025-11-07 21:28:14 | InsightSphere | INFO | db_service.py:45 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ml_llm_interview_cheat_sheet.pdf
+2025-11-07 21:28:38 | InsightSphere | INFO | database.py:19 | using dev
+2025-11-07 21:29:00 | InsightSphere | INFO | db_service.py:15 | using dev
+2025-11-07 21:29:05 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 21:29:08 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 21:29:09 | InsightSphere | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 21:29:12 | InsightSphere | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 21:29:13 | InsightSphere | INFO | database.py:64 | ✅ Database tables created successfully
+2025-11-07 21:29:13 | InsightSphere | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 21:29:17 | InsightSphere | INFO | database.py:19 | using dev
+2025-11-07 21:29:40 | InsightSphere | INFO | db_service.py:15 | using dev
+2025-11-07 21:29:45 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 21:29:49 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 21:29:49 | InsightSphere | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 21:29:52 | InsightSphere | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
