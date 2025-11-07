@@ -968,3 +968,90 @@
 2025-11-07 20:57:21 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
 2025-11-07 20:57:22 | InsightSphere | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
 2025-11-07 20:57:27 | InsightSphere | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 20:57:28 | InsightSphere | INFO | database.py:64 | ✅ Database tables created successfully
+2025-11-07 20:57:28 | InsightSphere | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 20:57:46 | InsightSphere | INFO | db_service.py:99 | ✅ Loaded 2 chat conversations for user ravishankerdas020@gmail.com
+2025-11-07 20:57:46 | InsightSphere | INFO | documents.py:35 | 📋 Found 2 documents with chat history for user ravishankerdas020@gmail.com
+2025-11-07 20:57:46 | InsightSphere | INFO | query.py:211 | 📂 Loading chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf
+2025-11-07 20:57:46 | InsightSphere | INFO | db_service.py:76 | ✅ Loaded 14 messages for ml_llm_interview_cheat_sheet.pdf
+2025-11-07 20:57:46 | InsightSphere | INFO | query.py:211 | 📂 Loading chat for user ravishankerdas020@gmail.com, document: ravi_attentive.pdf
+2025-11-07 20:57:46 | InsightSphere | INFO | db_service.py:76 | ✅ Loaded 4 messages for ravi_attentive.pdf
+2025-11-07 20:57:51 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf, messages: 14
+2025-11-07 20:57:51 | InsightSphere | INFO | db_service.py:45 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ml_llm_interview_cheat_sheet.pdf
+2025-11-07 20:58:13 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf, messages: 14
+2025-11-07 20:58:13 | InsightSphere | INFO | db_service.py:45 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ml_llm_interview_cheat_sheet.pdf
+2025-11-07 20:58:17 | InsightSphere | INFO | db_service.py:116 | ✅ Deleted chat history for user ravishankerdas020@gmail.com, document ravi_attentive.pdf
+2025-11-07 20:58:17 | InsightSphere | INFO | documents.py:67 | ✅ Deleted chat history for document 'ravi_attentive.pdf' for user ravishankerdas020@gmail.com
+2025-11-07 20:58:17 | InsightSphere | INFO | query.py:244 | 🗑️ Deleting chat for user ravishankerdas020@gmail.com, document: ravi_attentive.pdf
+2025-11-07 20:58:17 | InsightSphere | INFO | db_service.py:116 | ✅ Deleted chat history for user ravishankerdas020@gmail.com, document ravi_attentive.pdf
+2025-11-07 20:58:50 | InsightSphere | INFO | db_service.py:116 | ✅ Deleted chat history for user ravishankerdas020@gmail.com, document ml_llm_interview_cheat_sheet.pdf
+2025-11-07 20:58:50 | InsightSphere | INFO | documents.py:67 | ✅ Deleted chat history for document 'ml_llm_interview_cheat_sheet.pdf' for user ravishankerdas020@gmail.com
+2025-11-07 20:58:50 | InsightSphere | INFO | query.py:244 | 🗑️ Deleting chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf
+2025-11-07 20:58:50 | InsightSphere | INFO | db_service.py:116 | ✅ Deleted chat history for user ravishankerdas020@gmail.com, document ml_llm_interview_cheat_sheet.pdf
+2025-11-07 20:59:33 | InsightSphere | INFO | db_service.py:99 | ✅ Loaded 0 chat conversations for user ravishankerdas020@gmail.com
+2025-11-07 20:59:33 | InsightSphere | INFO | documents.py:35 | 📋 Found 0 documents with chat history for user ravishankerdas020@gmail.com
+2025-11-07 20:59:44 | InsightSphere | INFO | upload.py:61 | 
+🔍 PDF Analysis for ml_llm_interview_cheat_sheet.pdf:
+2025-11-07 20:59:44 | InsightSphere | INFO | upload.py:62 |    Complexity: 30/100
+2025-11-07 20:59:44 | InsightSphere | INFO | upload.py:63 |    Analysis: Moderately complex layout - contains tables
+2025-11-07 20:59:44 | InsightSphere | INFO | upload.py:64 |    Recommended: fast mode with max_images=2
+2025-11-07 20:59:44 | InsightSphere | INFO | upload.py:65 |    Estimated time: ~21s
+2025-11-07 20:59:44 | InsightSphere | INFO | multimodal_ingest.py:228 | 
+============================================================
+2025-11-07 20:59:44 | InsightSphere | INFO | multimodal_ingest.py:229 | FAST MULTIMODAL INGEST: ml_llm_interview_cheat_sheet.pdf
+2025-11-07 20:59:44 | InsightSphere | INFO | multimodal_ingest.py:230 | Mode: FAST | split_page=True | concurrency=5
+2025-11-07 20:59:44 | InsightSphere | INFO | multimodal_ingest.py:231 | ============================================================
+2025-11-07 20:59:44 | InsightSphere | INFO | multimodal_ingest.py:174 |   🔎 Calling partition_pdf with args: strategy=fast, split_page=True, concurrency=5
+2025-11-07 20:59:46 | InsightSphere | INFO | multimodal_ingest.py:203 |   📄 36 text blocks, 📊 0 tables, 🖼️  0 images
+2025-11-07 20:59:46 | InsightSphere | INFO | multimodal_ingest.py:243 |   ⏱️  Extraction time: 2.55 seconds
+2025-11-07 20:59:46 | InsightSphere | INFO | multimodal_ingest.py:266 |   ⏱️  Image/Table processing time: 0.00 seconds
+2025-11-07 20:59:46 | InsightSphere | INFO | multimodal_ingest.py:271 |   ⏱️  Text chunking time: 0.00 seconds
+2025-11-07 20:59:46 | InsightSphere | INFO | multimodal_ingest.py:273 | 
+📄 Text chunks: 36
+2025-11-07 20:59:46 | InsightSphere | INFO | multimodal_ingest.py:274 | ####################################################################################################
+2025-11-07 20:59:46 | InsightSphere | INFO | multimodal_ingest.py:275 | 📊 Table summaries: 0
+2025-11-07 20:59:46 | InsightSphere | INFO | multimodal_ingest.py:280 | 🖼️  Image descriptions: 0
+2025-11-07 20:59:46 | InsightSphere | INFO | multimodal_ingest.py:309 | 
+🔢 Generating embeddings for 36 items.
+2025-11-07 20:59:50 | InsightSphere | INFO | ingest.py:26 | ✓ Ingest: ChromaDB PersistentClient initialized at ./chroma_db
+2025-11-07 20:59:51 | InsightSphere | INFO | ingest.py:59 | ✓ Ingest: Collection 'user_ravishankerdas020_at_gmail_com_docs' loaded with 41 items
+2025-11-07 20:59:51 | InsightSphere | INFO | multimodal_ingest.py:316 | 📊 Collection count before: 41
+2025-11-07 20:59:51 | InsightSphere | INFO | multimodal_ingest.py:318 | 📊 Collection count after: 77
+2025-11-07 20:59:51 | InsightSphere | INFO | multimodal_ingest.py:321 | ✅ Stored 36 items in 77 total
+2025-11-07 20:59:51 | InsightSphere | INFO | multimodal_ingest.py:323 | Total ingestion time: 7.12 seconds
+2025-11-07 20:59:51 | InsightSphere | INFO | db_service.py:54 | ✅ Created new chat for user ravishankerdas020@gmail.com, document ml_llm_interview_cheat_sheet.pdf
+2025-11-07 20:59:51 | InsightSphere | INFO | query.py:211 | 📂 Loading chat for user ravishankerdas020@gmail.com, document: ML_LLM_Interview_Cheat_Sheet.pdf
+2025-11-07 20:59:51 | InsightSphere | INFO | db_service.py:76 | ✅ Loaded 0 messages for ml_llm_interview_cheat_sheet.pdf
+2025-11-07 20:59:53 | InsightSphere | INFO | db_service.py:99 | ✅ Loaded 1 chat conversations for user ravishankerdas020@gmail.com
+2025-11-07 20:59:53 | InsightSphere | INFO | documents.py:35 | 📋 Found 1 documents with chat history for user ravishankerdas020@gmail.com
+2025-11-07 20:59:53 | InsightSphere | INFO | query.py:211 | 📂 Loading chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf
+2025-11-07 20:59:53 | InsightSphere | INFO | db_service.py:76 | ✅ Loaded 0 messages for ml_llm_interview_cheat_sheet.pdf
+2025-11-07 21:00:17 | InsightSphere | INFO | multimodal_retriever.py:245 | Invoking RAG Agent...
+2025-11-07 21:00:17 | InsightSphere | INFO | semantic_rag_cache.py:62 | source_filter in cache search: ml_llm_interview_cheat_sheet.pdf
+2025-11-07 21:00:22 | InsightSphere | INFO | semantic_rag_cache.py:91 | 🔍 Semantic cache MISS (best similarity: 0.0%)
+2025-11-07 21:00:22 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf, messages: 1
+2025-11-07 21:00:22 | InsightSphere | INFO | db_service.py:45 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ml_llm_interview_cheat_sheet.pdf
+2025-11-07 21:00:24 | InsightSphere | INFO | semantic_rag_cache.py:122 | 💾 Saved to semantic cache (TTL: 7 days), cache_key: rag:semantic:93ce87498f71:ml_llm_interview_cheat_sheet.pdf:afa5a58e
+2025-11-07 21:00:25 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf, messages: 2
+2025-11-07 21:00:25 | InsightSphere | INFO | db_service.py:45 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ml_llm_interview_cheat_sheet.pdf
+2025-11-07 21:00:30 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf, messages: 2
+2025-11-07 21:00:30 | InsightSphere | INFO | db_service.py:45 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ml_llm_interview_cheat_sheet.pdf
+2025-11-07 21:01:00 | InsightSphere | INFO | multimodal_retriever.py:245 | Invoking RAG Agent...
+2025-11-07 21:01:00 | InsightSphere | INFO | semantic_rag_cache.py:62 | source_filter in cache search: ml_llm_interview_cheat_sheet.pdf
+2025-11-07 21:01:04 | InsightSphere | INFO | semantic_rag_cache.py:88 | ✅ Semantic cache HIT (similarity: 93.7%)
+2025-11-07 21:01:04 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf, messages: 4
+2025-11-07 21:01:04 | InsightSphere | INFO | db_service.py:45 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ml_llm_interview_cheat_sheet.pdf
+2025-11-07 21:01:09 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf, messages: 4
+2025-11-07 21:01:09 | InsightSphere | INFO | db_service.py:45 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ml_llm_interview_cheat_sheet.pdf
+2025-11-07 21:02:03 | InsightSphere | INFO | db_service.py:99 | ✅ Loaded 1 chat conversations for user ravishankerdas020@gmail.com
+2025-11-07 21:02:03 | InsightSphere | INFO | documents.py:35 | 📋 Found 1 documents with chat history for user ravishankerdas020@gmail.com
+2025-11-07 21:02:03 | InsightSphere | INFO | query.py:211 | 📂 Loading chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf
+2025-11-07 21:02:03 | InsightSphere | INFO | db_service.py:76 | ✅ Loaded 4 messages for ml_llm_interview_cheat_sheet.pdf
+2025-11-07 21:02:08 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf, messages: 4
+2025-11-07 21:02:09 | InsightSphere | INFO | db_service.py:45 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ml_llm_interview_cheat_sheet.pdf
+2025-11-07 21:02:12 | InsightSphere | INFO | db_service.py:99 | ✅ Loaded 1 chat conversations for user ravishankerdas020@gmail.com
+2025-11-07 21:02:12 | InsightSphere | INFO | documents.py:35 | 📋 Found 1 documents with chat history for user ravishankerdas020@gmail.com
+2025-11-07 21:02:12 | InsightSphere | INFO | query.py:211 | 📂 Loading chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf
+2025-11-07 21:02:12 | InsightSphere | INFO | db_service.py:76 | ✅ Loaded 4 messages for ml_llm_interview_cheat_sheet.pdf
+2025-11-07 21:02:18 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf, messages: 4
+2025-11-07 21:02:18 | InsightSphere | INFO | db_service.py:45 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ml_llm_interview_cheat_sheet.pdf
