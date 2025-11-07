@@ -36,29 +36,25 @@ export default function App() {
   const [loadingDocuments, setLoadingDocuments] = useState(false);
   const [selectedDocument, setSelectedDocument] = useState(null);
   const [deletingDoc, setDeletingDoc] = useState(null);
-  // Add this with your other state variables
   const [loadingChatHistory, setLoadingChatHistory] = useState(false);
-  
   
   // Upload State
   const [uploading, setUploading] = useState(false);
   const [uploadStatus, setUploadStatus] = useState(null);
-  const [file, setFile] = useState(null); // Kept for auto-upload logic
+  const [file, setFile] = useState(null);
 
   // Chat/Query State
   const [query, setQuery] = useState("");
   const [querying, setQuerying] = useState(false);
   const [documentChats, setDocumentChats] = useState({});
   const [loadingChats, setLoadingChats] = useState(false);
-   // { docName: [messages] }
-  const [messages, setMessages] = useState([]); // Current doc messages
+  const [messages, setMessages] = useState([]);
   const [rateLimited, setRateLimited] = useState(false);
   const [retryAfter, setRetryAfter] = useState(0);
   
   // Delete Modal State
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [docToDelete, setDocToDelete] = useState(null);
-
 
   // --- Helper & Utility Functions ---
   const testBackendConnection = useCallback(async () => {
@@ -73,6 +69,38 @@ export default function App() {
     }
     return false;
   }, [apiUrl]);
+
+  // ---- Cache Management Functions ----
+  const getCachedChats = useCallback(() => {
+    if (!userId) return {};
+    try {
+      return JSON.parse(localStorage.getItem(`chatHistory_${userId}`) || '{}');
+    } catch (error) {
+      console.error("Error reading cache:", error);
+      return {};
+    }
+  }, [userId]);
+
+  const updateCache = useCallback((documentName, messages) => {
+    if (!userId || !documentName) return;
+    
+    const cachedChats = getCachedChats();
+    const updatedCache = {
+      ...cachedChats,
+      [documentName]: messages
+    };
+    
+    localStorage.setItem(`chatHistory_${userId}`, JSON.stringify(updatedCache));
+    setDocumentChats(updatedCache);
+  }, [userId, getCachedChats]);
+
+  const clearCache = useCallback(() => {
+    if (userId) {
+      localStorage.removeItem(`chatHistory_${userId}`);
+    }
+    setDocumentChats({});
+    setMessages([]);
+  }, [userId]);
 
   // ---- Document Functions ----
   const loadDocuments = useCallback(async () => {
@@ -102,6 +130,51 @@ export default function App() {
     }
   }, [userId, API_KEY, apiUrl, selectedDocument]);
 
+  // ---- Load All Chat History on Login ----
+  useEffect(() => {
+    const loadAllChatHistory = async () => {
+      if (isSignedIn && userId && documents.length > 0) {
+        try {
+          setLoadingChatHistory(true);
+          console.log("📚 Loading all chat history to cache...");
+          
+          const allChats = {};
+          let loadedCount = 0;
+          
+          // Load chat history for ALL documents
+          for (const doc of documents) {
+            const docName = typeof doc === "string" ? doc : (doc.source || doc.name || doc.file || "");
+            if (docName) {
+              try {
+                const messages = await loadChatFromBackend(docName);
+                allChats[docName] = messages;
+                loadedCount++;
+                console.log(`✅ Cached ${messages.length} messages for ${docName}`);
+              } catch (error) {
+                console.error(`❌ Failed to load chat for ${docName}:`, error);
+                allChats[docName] = [];
+              }
+            }
+          }
+          
+          // Store in localStorage for fast access
+          localStorage.setItem(`chatHistory_${userId}`, JSON.stringify(allChats));
+          setDocumentChats(allChats);
+          
+          console.log(`🎉 Loaded ${loadedCount} document chats to cache`);
+        } catch (error) {
+          console.error("Error loading all chat history:", error);
+        } finally {
+          setLoadingChatHistory(false);
+        }
+      }
+    };
+
+    if (documents.length > 0) {
+      loadAllChatHistory();
+    }
+  }, [isSignedIn, userId, documents]);
+
   const handleDeleteConfirm = async () => {
     if (!docToDelete) return;
 
@@ -115,6 +188,13 @@ export default function App() {
       if (res.ok) {
         setDocuments(documents.filter(doc => doc !== docToDelete));
         if (selectedDocument === docToDelete) setSelectedDocument(null);
+        
+        // Remove from cache
+        const cachedChats = getCachedChats();
+        delete cachedChats[docToDelete];
+        localStorage.setItem(`chatHistory_${userId}`, JSON.stringify(cachedChats));
+        setDocumentChats(cachedChats);
+        
         setUploadStatus({ type: "success", message: `Document "${docToDelete}" deleted successfully.` });
       } else {
         const data = await res.json();
@@ -129,52 +209,45 @@ export default function App() {
   };
 
   const handleDocumentClick = async (filename) => {
-  if (selectedDocument === filename) return;
-  
-  console.log(`🔄 Switching from ${selectedDocument} to ${filename}`);
-  
-  // Save current document before switching
-  if (selectedDocument && messages.length > 0) {
-    await saveChatToBackend(selectedDocument, messages);
-  }
-  
-  setLoadingChatHistory(true); // 🔥 START LOADING
-  
-  // Check if we have the chat in local state
-  if (documentChats[filename]) {
-    // Load from local state (fast)
-    setMessages(documentChats[filename]);
-    setLoadingChatHistory(false); // 🔥 STOP LOADING immediately for local
-    console.log(`✅ Loaded ${documentChats[filename].length} messages from local state`);
-  } else {
-    // Load from backend (first time or page refresh)
-    setLoadingChats(true);
-    try {
-      const loadedMessages = await loadChatFromBackend(filename);
-      setMessages(loadedMessages);
-      
-      // Update local state with loaded messages
-      if (loadedMessages.length > 0) {
-        setDocumentChats(prev => ({
-          ...prev,
-          [filename]: loadedMessages
-        }));
-      }
-      console.log(`✅ Loaded ${loadedMessages.length} messages from backend`);
-    } catch (error) {
-      console.error("Error loading chat:", error);
-      setMessages([]); // Start fresh if error
-    } finally {
-      setLoadingChats(false);
-      setLoadingChatHistory(false); // 🔥 STOP LOADING
+    if (selectedDocument === filename) return;
+    
+    console.log(`🔄 Switching from ${selectedDocument} to ${filename}`);
+    
+    // Save current document before switching
+    if (selectedDocument && messages.length > 0) {
+      await saveChatToBackend(selectedDocument, messages);
     }
-  }
-  
-  setSelectedDocument(filename);
-};
+    
+    setLoadingChatHistory(true);
+    
+    // Try to load from cache FIRST (instant)
+    const cachedChats = getCachedChats();
+    
+    if (cachedChats[filename]) {
+      setMessages(cachedChats[filename]);
+      setLoadingChatHistory(false);
+      console.log(`⚡ Loaded ${cachedChats[filename].length} messages from cache`);
+    } else {
+      // Fallback to API (should rarely happen after initial cache)
+      try {
+        const loadedMessages = await loadChatFromBackend(filename);
+        setMessages(loadedMessages);
+        
+        // Update cache for next time
+        updateCache(filename, loadedMessages);
+        console.log(`✅ Loaded ${loadedMessages.length} messages from backend and cached`);
+      } catch (error) {
+        console.error("Error loading chat:", error);
+        setMessages([]);
+      } finally {
+        setLoadingChatHistory(false);
+      }
+    }
+    
+    setSelectedDocument(filename);
+  };
 
   // ---- Upload & Query Handlers ---
-
   const handleUpload = async (selectedFile) => {
     if (!API_KEY || !isSignedIn || !selectedFile) {
       if (!isSignedIn) { setAuthMode("signup"); setShowAuthModal(true); }
@@ -207,7 +280,7 @@ export default function App() {
         }
         setUploadStatus({ type: "success", message: message });
 
-        setTimeout(() => { loadDocuments(); }, 2000); // Reload docs
+        setTimeout(() => { loadDocuments(); }, 2000);
         const returnedName = data?.file?.source || data?.source || selectedFile?.name;
         if (returnedName) setSelectedDocument(returnedName);
         
@@ -223,7 +296,7 @@ export default function App() {
       setUploadStatus({ type: "error", message: `Network error: ${err.message}.` });
     } finally {
       setUploading(false);
-      setFile(null); // Clear file state
+      setFile(null);
     }
   };
 
@@ -303,14 +376,10 @@ export default function App() {
       timestamp: new Date().toISOString()
     };
     
-    // Update messages and save to local state immediately
+    // Update messages and cache immediately
     setMessages(prev => {
       const newMessages = [...prev, userMessage];
-      // Update document chats in local state
-      setDocumentChats(prevChats => ({
-        ...prevChats,
-        [selectedDocument]: newMessages
-      }));
+      updateCache(selectedDocument, newMessages);
       return newMessages;
     });
     
@@ -347,7 +416,6 @@ export default function App() {
         setRateLimited(true);
         setRetryAfter(waitTime);
         
-        // Start countdown
         const interval = setInterval(() => {
           setRetryAfter(prev => {
             if (prev <= 1) {
@@ -374,18 +442,14 @@ export default function App() {
             timestamp: new Date().toISOString()
           };
           
-          // Update messages with assistant response and save to local state
+          // Update messages with assistant response and cache
           setMessages(prev => {
             const newMessages = [...prev, assistantMessage];
-            // Update document chats in local state
-            setDocumentChats(prevChats => ({
-              ...prevChats,
-              [selectedDocument]: newMessages
-            }));
+            updateCache(selectedDocument, newMessages);
             return newMessages;
           });
 
-          // Save to backend immediately after successful response
+          // Save to backend
           setTimeout(() => {
             saveChatToBackend(selectedDocument, [...messages, userMessage, assistantMessage]);
           }, 100);
@@ -403,15 +467,10 @@ export default function App() {
           
           setMessages(prev => {
             const newMessages = [...prev, errorResponse];
-            // Update document chats in local state
-            setDocumentChats(prevChats => ({
-              ...prevChats,
-              [selectedDocument]: newMessages
-            }));
+            updateCache(selectedDocument, newMessages);
             return newMessages;
           });
 
-          // Save error message to backend
           setTimeout(() => {
             saveChatToBackend(selectedDocument, [...messages, userMessage, errorResponse]);
           }, 100);
@@ -437,15 +496,10 @@ export default function App() {
         
         setMessages(prev => {
           const newMessages = [...prev, errorMessage];
-          // Update document chats in local state
-          setDocumentChats(prevChats => ({
-            ...prevChats,
-            [selectedDocument]: newMessages
-          }));
+          updateCache(selectedDocument, newMessages);
           return newMessages;
         });
 
-        // Save error to backend
         setTimeout(() => {
           saveChatToBackend(selectedDocument, [...messages, userMessage, errorMessage]);
         }, 100);
@@ -460,15 +514,10 @@ export default function App() {
       
       setMessages(prev => {
         const newMessages = [...prev, errorMessage];
-        // Update document chats in local state
-        setDocumentChats(prevChats => ({
-          ...prevChats,
-          [selectedDocument]: newMessages
-        }));
+        updateCache(selectedDocument, newMessages);
         return newMessages;
       });
 
-      // Save network error to backend
       setTimeout(() => {
         saveChatToBackend(selectedDocument, [...messages, userMessage, errorMessage]);
       }, 100);
@@ -483,6 +532,7 @@ export default function App() {
       handleQuery();
     }
   };
+
   // API functions for chat persistence
   const saveChatToBackend = async (documentName, messages) => {
     if (!isSignedIn || !userId || !documentName) {
@@ -552,119 +602,63 @@ export default function App() {
     }
   };
 
-  const loadAllChatsFromBackend = async () => {
-    console.log("loadAllChatsFromBackend was called")
-    // if (!isSignedIn || !userId) {
-    //   console.log("Skipping load all - not signed in");
-    //   return {};
-    // }
-    
-    // try {
-    //   const headers = {
-    //     "X-API-Key": API_KEY,
-    //     "X-User-Id": userId,
-    //   };
-
-    //   console.log("📚 Loading all chats for user");
-      
-    //   const response = await fetch(`${apiUrl}/api/query/chats/all`, {
-    //     method: "GET",
-    //     headers,
-    //   });
-
-    //   const data = await response.json();
-    //   if (data.success) {
-    //     console.log(`✅ Loaded ${Object.keys(data.chats).length} document chats`);
-    //     return data.chats;
-    //   } else {
-    //     console.error("❌ Failed to load all chats:", data.message);
-    //     return {};
-    //   }
-    // } catch (error) {
-    //   console.error("❌ Error loading all chats from backend:", error);
-    //   return {};
-    // }
-  };
-
-
   // Auto-save when messages change (with debounce)
   useEffect(() => {
     if (selectedDocument && messages.length > 0) {
-      // Update local state immediately
-      setDocumentChats(prev => ({
-        ...prev,
-        [selectedDocument]: messages
-      }));
+      // Update cache immediately
+      updateCache(selectedDocument, messages);
       
       // Debounced save to backend
       const saveTimeout = setTimeout(() => {
         saveChatToBackend(selectedDocument, messages);
-      }, 5000); // Save after 5 seconds of inactivity
+      }, 5000);
       
       return () => clearTimeout(saveTimeout);
     }
-  }, [messages, selectedDocument]);
+  }, [messages, selectedDocument, updateCache]);
 
-
-  // Add this useEffect to load chat history when page loads or document changes
-// Load chat history when page loads or document changes
-// Load chat history when page loads or document changes
-useEffect(() => {
-  const loadChatHistory = async () => {
-    if (selectedDocument && userId) {
-      setLoadingChatHistory(true); // 🔥 START LOADING
-      try {
-        const headers = {
-          "X-API-Key": API_KEY,
-          "X-User-Id": userId,
-        };
-
-        console.log(`📂 Loading chat for: ${selectedDocument}`);
-        
-        const response = await fetch(`${apiUrl}/api/query/chats/load/${encodeURIComponent(selectedDocument)}`, {
-          method: "GET",
-          headers,
-        });
-
-        const data = await response.json();
-        if (data.success) {
-          console.log(`✅ Loaded ${data.messages.length} messages for ${selectedDocument}`);
-          setMessages(data.messages);
-          
-          // Also update local documentChats state
-          setDocumentChats(prev => ({
-            ...prev,
-            [selectedDocument]: data.messages
-          }));
-        } else {
-          console.log("No previous chat history found");
-          setMessages([]); // Start fresh if no history
-        }
-      } catch (error) {
-        console.log("No previous chat history found or error loading:", error);
-        setMessages([]); // Start fresh on error
-      } finally {
-        setLoadingChatHistory(false); // 🔥 STOP LOADING (always runs)
-      }
-    } else {
-      setMessages([]); // Clear messages if no document selected
-      setLoadingChatHistory(false); // 🔥 STOP LOADING
+  // Clear cache on logout
+  useEffect(() => {
+    if (!isSignedIn) {
+      clearCache();
     }
-  };
+  }, [isSignedIn, clearCache]);
 
-  loadChatHistory();
-}, [selectedDocument, userId, API_KEY, apiUrl]);
+  // Load initial chat from cache when document is selected
+  useEffect(() => {
+    if (selectedDocument && userId) {
+      const cachedChats = getCachedChats();
+      if (cachedChats[selectedDocument]) {
+        setMessages(cachedChats[selectedDocument]);
+        console.log(`⚡ Loaded ${cachedChats[selectedDocument].length} messages from cache for ${selectedDocument}`);
+      } else {
+        // If not in cache, load from backend
+        const loadFromBackend = async () => {
+          setLoadingChatHistory(true);
+          try {
+            const loadedMessages = await loadChatFromBackend(selectedDocument);
+            setMessages(loadedMessages);
+            updateCache(selectedDocument, loadedMessages);
+          } catch (error) {
+            console.error("Error loading chat:", error);
+            setMessages([]);
+          } finally {
+            setLoadingChatHistory(false);
+          }
+        };
+        loadFromBackend();
+      }
+    }
+  }, [selectedDocument, userId, getCachedChats, updateCache]);
 
-
-
-  useEffect(() => { // Auto-scroll to bottom
+  useEffect(() => {
     const chatMessages = document.querySelector('.chat-messages');
     if (chatMessages) {
       chatMessages.scrollTop = chatMessages.scrollHeight;
     }
-  }, [messages, querying]); 
+  }, [messages, querying]);
 
-  useEffect(() => { // Auto-dismiss success messages
+  useEffect(() => {
     if (uploadStatus?.type === 'success') {
       const timer = setTimeout(() => setUploadStatus(null), 4000);
       return () => clearTimeout(timer);
@@ -677,7 +671,7 @@ useEffect(() => {
     }
   }, [uploadStatus, uploading, selectedDocument]);
 
-  useEffect(() => { // Load documents on sign in
+  useEffect(() => {
     if (isSignedIn && userId) {
       loadDocuments();
     } else {
@@ -686,10 +680,9 @@ useEffect(() => {
     }
   }, [isSignedIn, userId, loadDocuments]);
 
-  useEffect(() => { // Initial connection test
+  useEffect(() => {
     testBackendConnection();
   }, [apiUrl, testBackendConnection]);
-
 
   const openSignUp = () => { setAuthMode("signup"); setShowAuthModal(true); };
   const openSignIn = () => { setAuthMode("signin"); setShowAuthModal(true); };
@@ -751,7 +744,7 @@ useEffect(() => {
           rateLimited={rateLimited}
           numQueriesAllowed={NUM_QUERIES_ALLOWED}
           loadingChats={loadingChats}
-          loadingChatHistory={loadingChatHistory} // Add this line
+          loadingChatHistory={loadingChatHistory}
         />
       </div>
     </div>
