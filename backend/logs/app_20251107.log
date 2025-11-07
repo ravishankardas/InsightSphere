@@ -253,3 +253,638 @@
 2025-11-07 16:51:08 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
 2025-11-07 16:51:08 | InsightSphere | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
 2025-11-07 16:51:11 | InsightSphere | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 16:51:20 | InsightSphere | INFO | database.py:55 | ✅ Database tables created successfully
+2025-11-07 16:51:20 | InsightSphere | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 16:51:38 | InsightSphere | INFO | query.py:110 | 🧠 Memory context detected - using enhanced query
+2025-11-07 16:51:38 | InsightSphere | INFO | query.py:111 | Enhanced query length: 274
+2025-11-07 16:51:38 | InsightSphere | INFO | ingest.py:26 | ✓ Ingest: ChromaDB PersistentClient initialized at ./chroma_db
+2025-11-07 16:51:38 | InsightSphere | INFO | ingest.py:59 | ✓ Ingest: Collection 'user_ravishankerdas020_at_gmail_com_docs' loaded with 41 items
+2025-11-07 16:51:41 | InsightSphere | INFO | multimodal_retriever.py:245 | Invoking RAG Agent...
+2025-11-07 16:51:41 | InsightSphere | INFO | semantic_rag_cache.py:62 | source_filter in cache search: ravi_attentive.pdf
+2025-11-07 16:51:43 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ravi_attentive.pdf, messages: 15
+2025-11-07 16:51:46 | InsightSphere | INFO | semantic_rag_cache.py:91 | 🔍 Semantic cache MISS (best similarity: 0.0%)
+2025-11-07 16:51:47 | InsightSphere | INFO | db_service.py:27 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ravi_attentive.pdf
+2025-11-07 16:51:49 | InsightSphere | INFO | semantic_rag_cache.py:122 | 💾 Saved to semantic cache (TTL: 7 days), cache_key: rag:semantic:93ce87498f71:ravi_attentive.pdf:49563b5e
+2025-11-07 16:51:50 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ravi_attentive.pdf, messages: 16
+2025-11-07 16:51:54 | InsightSphere | INFO | db_service.py:27 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ravi_attentive.pdf
+2025-11-07 16:51:55 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ravi_attentive.pdf, messages: 16
+2025-11-07 16:51:58 | InsightSphere | INFO | db_service.py:27 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ravi_attentive.pdf
+2025-11-07 17:11:12 | InsightSphere | INFO | query.py:211 | 📂 Loading chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf
+2025-11-07 17:11:15 | InsightSphere | INFO | db_service.py:52 | ✅ Loaded 10 messages for ml_llm_interview_cheat_sheet.pdf
+2025-11-07 17:11:16 | InsightSphere | INFO | query.py:211 | 📂 Loading chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf
+2025-11-07 17:11:16 | InsightSphere | INFO | query.py:211 | 📂 Loading chat for user ravishankerdas020@gmail.com, document: ravi_attentive.pdf
+2025-11-07 17:11:19 | InsightSphere | INFO | db_service.py:52 | ✅ Loaded 10 messages for ml_llm_interview_cheat_sheet.pdf
+2025-11-07 17:11:19 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ravi_attentive.pdf, messages: 16
+2025-11-07 17:11:19 | InsightSphere | INFO | db_service.py:52 | ✅ Loaded 8 messages for ravi_attentive.pdf
+2025-11-07 17:11:20 | InsightSphere | INFO | query.py:211 | 📂 Loading chat for user ravishankerdas020@gmail.com, document: ravi_attentive.pdf
+2025-11-07 17:11:22 | InsightSphere | INFO | db_service.py:52 | ✅ Loaded 8 messages for ravi_attentive.pdf
+2025-11-07 17:11:23 | InsightSphere | INFO | db_service.py:27 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ravi_attentive.pdf
+2025-11-07 17:11:41 | InsightSphere | INFO | query.py:211 | 📂 Loading chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf
+2025-11-07 17:11:46 | InsightSphere | INFO | db_service.py:52 | ✅ Loaded 10 messages for ml_llm_interview_cheat_sheet.pdf
+2025-11-07 17:11:46 | InsightSphere | INFO | query.py:211 | 📂 Loading chat for user ravishankerdas020@gmail.com, document: ravi_attentive.pdf
+2025-11-07 17:11:47 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ravi_attentive.pdf, messages: 16
+2025-11-07 17:11:49 | InsightSphere | INFO | query.py:211 | 📂 Loading chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf
+2025-11-07 17:11:50 | InsightSphere | INFO | db_service.py:52 | ✅ Loaded 16 messages for ravi_attentive.pdf
+2025-11-07 17:11:52 | InsightSphere | INFO | db_service.py:52 | ✅ Loaded 10 messages for ml_llm_interview_cheat_sheet.pdf
+2025-11-07 17:11:52 | InsightSphere | INFO | db_service.py:27 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ravi_attentive.pdf
+2025-11-07 17:11:52 | InsightSphere | INFO | query.py:211 | 📂 Loading chat for user ravishankerdas020@gmail.com, document: ravi_attentive.pdf
+2025-11-07 17:11:55 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ravi_attentive.pdf, messages: 16
+2025-11-07 17:11:56 | InsightSphere | INFO | db_service.py:52 | ✅ Loaded 16 messages for ravi_attentive.pdf
+2025-11-07 17:11:59 | InsightSphere | INFO | db_service.py:27 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ravi_attentive.pdf
+2025-11-07 17:13:31 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 17:13:37 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 17:13:38 | InsightSphere | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 17:13:42 | InsightSphere | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 17:13:53 | InsightSphere | INFO | database.py:55 | ✅ Database tables created successfully
+2025-11-07 17:13:53 | InsightSphere | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 17:14:30 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 17:14:36 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 17:14:37 | InsightSphere | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 17:14:42 | InsightSphere | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 17:15:00 | InsightSphere | INFO | database.py:55 | ✅ Database tables created successfully
+2025-11-07 17:15:01 | InsightSphere | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 17:15:52 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 17:15:57 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 17:15:58 | InsightSphere | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 17:16:48 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 17:16:55 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 17:16:56 | InsightSphere | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 17:17:02 | InsightSphere | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 17:17:15 | InsightSphere | INFO | database.py:55 | ✅ Database tables created successfully
+2025-11-07 17:17:15 | InsightSphere | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 17:17:47 | InsightSphere | INFO | ingest.py:26 | ✓ Ingest: ChromaDB PersistentClient initialized at ./chroma_db
+2025-11-07 17:17:47 | InsightSphere | INFO | ingest.py:59 | ✓ Ingest: Collection 'user_ravishankerdas020_at_gmail_com_docs' loaded with 41 items
+2025-11-07 17:17:50 | InsightSphere | INFO | query.py:211 | 📂 Loading chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf
+2025-11-07 17:17:50 | InsightSphere | INFO | query.py:244 | 🗑️ Deleting chat for user ravishankerdas020@gmail.com, document: ravi_attentive.pdf
+2025-11-07 17:17:53 | InsightSphere | ERROR | db_service.py:97 | ❌ Error deleting chat history: relation "chat_history" does not exist
+2025-11-07 17:17:53 | InsightSphere | INFO | db_service.py:52 | ✅ Loaded 10 messages for ml_llm_interview_cheat_sheet.pdf
+2025-11-07 17:17:53 | InsightSphere | INFO | query.py:211 | 📂 Loading chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf
+2025-11-07 17:17:55 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf, messages: 10
+2025-11-07 17:17:56 | InsightSphere | INFO | db_service.py:52 | ✅ Loaded 10 messages for ml_llm_interview_cheat_sheet.pdf
+2025-11-07 17:17:56 | InsightSphere | INFO | query.py:211 | 📂 Loading chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf
+2025-11-07 17:17:59 | InsightSphere | INFO | db_service.py:52 | ✅ Loaded 10 messages for ml_llm_interview_cheat_sheet.pdf
+2025-11-07 17:17:59 | InsightSphere | INFO | db_service.py:27 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ml_llm_interview_cheat_sheet.pdf
+2025-11-07 17:21:24 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 17:21:31 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 17:21:32 | InsightSphere | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 17:21:36 | InsightSphere | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 17:21:45 | InsightSphere | INFO | database.py:55 | ✅ Database tables created successfully
+2025-11-07 17:21:45 | InsightSphere | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 17:22:18 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 17:22:24 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 17:22:25 | InsightSphere | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 17:22:30 | InsightSphere | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 17:22:41 | InsightSphere | INFO | database.py:55 | ✅ Database tables created successfully
+2025-11-07 17:22:42 | InsightSphere | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 17:22:55 | InsightSphere | INFO | ingest.py:26 | ✓ Ingest: ChromaDB PersistentClient initialized at ./chroma_db
+2025-11-07 17:22:55 | InsightSphere | INFO | ingest.py:59 | ✓ Ingest: Collection 'user_ravishankerdas020_at_gmail_com_docs' loaded with 36 items
+2025-11-07 17:22:55 | InsightSphere | INFO | query.py:211 | 📂 Loading chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf
+2025-11-07 17:22:58 | InsightSphere | INFO | query.py:244 | 🗑️ Deleting chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf
+2025-11-07 17:22:58 | InsightSphere | INFO | db_service.py:58 | ✅ Loaded 10 messages for ml_llm_interview_cheat_sheet.pdf
+2025-11-07 17:22:59 | InsightSphere | INFO | query.py:211 | 📂 Loading chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf
+2025-11-07 17:23:01 | InsightSphere | INFO | db_service.py:98 | ✅ Deleted chat history for user ravishankerdas020@gmail.com, document ml_llm_interview_cheat_sheet.pdf
+2025-11-07 17:23:02 | InsightSphere | INFO | db_service.py:61 | ℹ️ No existing chat found for ml_llm_interview_cheat_sheet.pdf
+2025-11-07 18:13:01 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 18:13:04 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 18:13:05 | InsightSphere | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 18:13:09 | InsightSphere | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 18:13:39 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 18:13:43 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 18:13:44 | InsightSphere | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 18:13:46 | InsightSphere | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 18:14:21 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 18:14:25 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 18:14:26 | InsightSphere | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 18:14:29 | InsightSphere | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 18:15:30 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 18:15:33 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 18:15:34 | InsightSphere | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 18:15:37 | InsightSphere | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 18:16:11 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 18:16:14 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 18:16:15 | InsightSphere | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 18:16:18 | InsightSphere | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 18:17:00 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 18:17:04 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 18:17:05 | InsightSphere | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 18:17:08 | InsightSphere | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 18:19:22 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 18:19:26 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 18:19:26 | InsightSphere | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 18:19:29 | InsightSphere | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 18:20:38 | InsightSphere | INFO | database.py:15 | postgresql://postgres:G@te@2175@127.0.0.1:5432/chat_conversations
+2025-11-07 18:21:16 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 18:21:19 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 18:21:20 | InsightSphere | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 18:21:23 | InsightSphere | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 18:22:03 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 18:22:07 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 18:22:08 | InsightSphere | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 18:22:11 | InsightSphere | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 18:23:14 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 18:23:17 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 18:23:18 | InsightSphere | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 18:23:21 | InsightSphere | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 18:23:50 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 18:23:54 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 18:23:55 | InsightSphere | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 18:23:57 | InsightSphere | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 18:24:48 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 18:24:52 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 18:24:52 | InsightSphere | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 18:24:55 | InsightSphere | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 18:26:02 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 18:26:06 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 18:26:07 | InsightSphere | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 18:26:10 | InsightSphere | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 18:26:43 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 18:26:47 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 18:26:47 | InsightSphere | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 18:26:50 | InsightSphere | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 18:29:35 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 18:29:40 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 18:29:40 | InsightSphere | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 18:29:43 | InsightSphere | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 18:30:30 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 18:30:34 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 18:30:34 | InsightSphere | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 18:30:37 | InsightSphere | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 18:34:09 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 18:34:12 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 18:34:13 | InsightSphere | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 18:34:16 | InsightSphere | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 18:35:18 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 18:35:23 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 18:35:25 | InsightSphere | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 18:35:28 | InsightSphere | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 18:35:30 | InsightSphere | INFO | database.py:56 | ✅ Database tables created successfully
+2025-11-07 18:35:30 | InsightSphere | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 18:36:01 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 18:36:05 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 18:36:06 | InsightSphere | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 18:36:09 | InsightSphere | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 18:36:11 | InsightSphere | INFO | database.py:56 | ✅ Database tables created successfully
+2025-11-07 18:36:11 | InsightSphere | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 18:37:18 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 18:37:22 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 18:37:23 | InsightSphere | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 18:37:26 | InsightSphere | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 18:37:28 | InsightSphere | INFO | database.py:57 | ✅ Database tables created successfully
+2025-11-07 18:37:28 | InsightSphere | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 18:38:06 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 18:38:12 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 18:38:13 | InsightSphere | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 18:38:18 | InsightSphere | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 18:38:27 | InsightSphere | INFO | database.py:62 | ✅ Database tables created successfully
+2025-11-07 18:38:27 | InsightSphere | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 18:38:32 | InsightSphere | INFO | database.py:19 | using dev
+2025-11-07 18:39:04 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 18:39:08 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 18:39:10 | InsightSphere | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 18:39:13 | InsightSphere | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 18:39:22 | InsightSphere | INFO | database.py:63 | ✅ Database tables created successfully
+2025-11-07 18:39:22 | InsightSphere | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 18:39:23 | InsightSphere | INFO | ingest.py:26 | ✓ Ingest: ChromaDB PersistentClient initialized at ./chroma_db
+2025-11-07 18:39:23 | InsightSphere | INFO | ingest.py:59 | ✓ Ingest: Collection 'user_ravishankerdas020_at_gmail_com_docs' loaded with 0 items
+2025-11-07 18:39:23 | InsightSphere | INFO | upload.py:58 | 
+🔍 PDF Analysis for ml_llm_interview_cheat_sheet.pdf:
+2025-11-07 18:39:23 | InsightSphere | INFO | upload.py:59 |    Complexity: 30/100
+2025-11-07 18:39:23 | InsightSphere | INFO | upload.py:60 |    Analysis: Moderately complex layout - contains tables
+2025-11-07 18:39:23 | InsightSphere | INFO | upload.py:61 |    Recommended: fast mode with max_images=2
+2025-11-07 18:39:23 | InsightSphere | INFO | upload.py:62 |    Estimated time: ~21s
+2025-11-07 18:39:23 | InsightSphere | INFO | multimodal_ingest.py:228 | 
+============================================================
+2025-11-07 18:39:23 | InsightSphere | INFO | multimodal_ingest.py:229 | FAST MULTIMODAL INGEST: ml_llm_interview_cheat_sheet.pdf
+2025-11-07 18:39:23 | InsightSphere | INFO | multimodal_ingest.py:230 | Mode: FAST | split_page=True | concurrency=5
+2025-11-07 18:39:23 | InsightSphere | INFO | multimodal_ingest.py:231 | ============================================================
+2025-11-07 18:39:23 | InsightSphere | INFO | multimodal_ingest.py:174 |   🔎 Calling partition_pdf with args: strategy=fast, split_page=True, concurrency=5
+2025-11-07 18:39:25 | InsightSphere | INFO | multimodal_ingest.py:203 |   📄 36 text blocks, 📊 0 tables, 🖼️  0 images
+2025-11-07 18:39:25 | InsightSphere | INFO | multimodal_ingest.py:243 |   ⏱️  Extraction time: 2.09 seconds
+2025-11-07 18:39:25 | InsightSphere | INFO | multimodal_ingest.py:266 |   ⏱️  Image/Table processing time: 0.00 seconds
+2025-11-07 18:39:25 | InsightSphere | INFO | multimodal_ingest.py:271 |   ⏱️  Text chunking time: 0.00 seconds
+2025-11-07 18:39:25 | InsightSphere | INFO | multimodal_ingest.py:273 | 
+📄 Text chunks: 36
+2025-11-07 18:39:25 | InsightSphere | INFO | multimodal_ingest.py:274 | ####################################################################################################
+2025-11-07 18:39:25 | InsightSphere | INFO | multimodal_ingest.py:275 | 📊 Table summaries: 0
+2025-11-07 18:39:25 | InsightSphere | INFO | multimodal_ingest.py:280 | 🖼️  Image descriptions: 0
+2025-11-07 18:39:25 | InsightSphere | INFO | multimodal_ingest.py:309 | 
+🔢 Generating embeddings for 36 items.
+2025-11-07 18:39:29 | InsightSphere | INFO | multimodal_ingest.py:316 | 📊 Collection count before: 0
+2025-11-07 18:39:29 | InsightSphere | INFO | multimodal_ingest.py:318 | 📊 Collection count after: 36
+2025-11-07 18:39:29 | InsightSphere | INFO | multimodal_ingest.py:321 | ✅ Stored 36 items in 36 total
+2025-11-07 18:39:29 | InsightSphere | INFO | multimodal_ingest.py:323 | Total ingestion time: 6.13 seconds
+2025-11-07 18:39:29 | InsightSphere | INFO | query.py:211 | 📂 Loading chat for user ravishankerdas020@gmail.com, document: ML_LLM_Interview_Cheat_Sheet.pdf
+2025-11-07 18:39:29 | InsightSphere | INFO | query.py:211 | 📂 Loading chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf
+2025-11-07 18:39:32 | InsightSphere | INFO | db_service.py:61 | ℹ️ No existing chat found for ml_llm_interview_cheat_sheet.pdf
+2025-11-07 18:39:32 | InsightSphere | INFO | query.py:211 | 📂 Loading chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf
+2025-11-07 18:39:32 | InsightSphere | INFO | db_service.py:61 | ℹ️ No existing chat found for ML_LLM_Interview_Cheat_Sheet.pdf
+2025-11-07 18:39:35 | InsightSphere | INFO | db_service.py:61 | ℹ️ No existing chat found for ml_llm_interview_cheat_sheet.pdf
+2025-11-07 18:39:35 | InsightSphere | INFO | query.py:211 | 📂 Loading chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf
+2025-11-07 18:39:37 | InsightSphere | INFO | db_service.py:61 | ℹ️ No existing chat found for ml_llm_interview_cheat_sheet.pdf
+2025-11-07 18:39:41 | InsightSphere | INFO | multimodal_retriever.py:245 | Invoking RAG Agent...
+2025-11-07 18:39:41 | InsightSphere | INFO | semantic_rag_cache.py:62 | source_filter in cache search: ml_llm_interview_cheat_sheet.pdf
+2025-11-07 18:39:45 | InsightSphere | INFO | semantic_rag_cache.py:88 | ✅ Semantic cache HIT (similarity: 94.9%)
+2025-11-07 18:39:46 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf, messages: 2
+2025-11-07 18:39:49 | InsightSphere | INFO | db_service.py:39 | ✅ Created new chat for user ravishankerdas020@gmail.com, document ml_llm_interview_cheat_sheet.pdf
+2025-11-07 18:39:51 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf, messages: 2
+2025-11-07 18:39:54 | InsightSphere | INFO | db_service.py:30 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ml_llm_interview_cheat_sheet.pdf
+2025-11-07 18:43:15 | InsightSphere | INFO | query.py:211 | 📂 Loading chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf
+2025-11-07 18:43:18 | InsightSphere | INFO | db_service.py:58 | ✅ Loaded 2 messages for ml_llm_interview_cheat_sheet.pdf
+2025-11-07 18:43:26 | InsightSphere | INFO | multimodal_retriever.py:245 | Invoking RAG Agent...
+2025-11-07 18:43:26 | InsightSphere | INFO | semantic_rag_cache.py:62 | source_filter in cache search: ml_llm_interview_cheat_sheet.pdf
+2025-11-07 18:43:29 | InsightSphere | INFO | semantic_rag_cache.py:91 | 🔍 Semantic cache MISS (best similarity: 0.0%)
+2025-11-07 18:43:31 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf, messages: 3
+2025-11-07 18:43:32 | InsightSphere | INFO | semantic_rag_cache.py:122 | 💾 Saved to semantic cache (TTL: 7 days), cache_key: rag:semantic:93ce87498f71:ml_llm_interview_cheat_sheet.pdf:ef2f6b06
+2025-11-07 18:43:32 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf, messages: 4
+2025-11-07 18:43:34 | InsightSphere | INFO | db_service.py:30 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ml_llm_interview_cheat_sheet.pdf
+2025-11-07 18:43:35 | InsightSphere | INFO | db_service.py:30 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ml_llm_interview_cheat_sheet.pdf
+2025-11-07 18:43:37 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf, messages: 4
+2025-11-07 18:43:39 | InsightSphere | INFO | db_service.py:30 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ml_llm_interview_cheat_sheet.pdf
+2025-11-07 18:43:54 | InsightSphere | INFO | multimodal_retriever.py:245 | Invoking RAG Agent...
+2025-11-07 18:43:54 | InsightSphere | INFO | semantic_rag_cache.py:62 | source_filter in cache search: ml_llm_interview_cheat_sheet.pdf
+2025-11-07 18:43:57 | InsightSphere | INFO | semantic_rag_cache.py:88 | ✅ Semantic cache HIT (similarity: 93.6%)
+2025-11-07 18:43:58 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf, messages: 6
+2025-11-07 18:44:01 | InsightSphere | INFO | db_service.py:30 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ml_llm_interview_cheat_sheet.pdf
+2025-11-07 18:44:03 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf, messages: 6
+2025-11-07 18:44:06 | InsightSphere | INFO | db_service.py:30 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ml_llm_interview_cheat_sheet.pdf
+2025-11-07 18:46:30 | InsightSphere | INFO | database.py:19 | using dev
+2025-11-07 18:47:03 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 18:47:06 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 18:47:07 | InsightSphere | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 18:47:10 | InsightSphere | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 18:47:18 | InsightSphere | INFO | database.py:63 | ✅ Database tables created successfully
+2025-11-07 18:47:18 | InsightSphere | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 18:47:22 | InsightSphere | INFO | database.py:19 | using dev
+2025-11-07 18:47:50 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 18:47:54 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 18:47:55 | InsightSphere | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 18:47:58 | InsightSphere | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 18:48:06 | InsightSphere | INFO | database.py:63 | ✅ Database tables created successfully
+2025-11-07 18:48:06 | InsightSphere | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 18:48:22 | InsightSphere | INFO | ingest.py:26 | ✓ Ingest: ChromaDB PersistentClient initialized at ./chroma_db
+2025-11-07 18:48:22 | InsightSphere | INFO | ingest.py:59 | ✓ Ingest: Collection 'user_ravishankerdas020_at_gmail_com_docs' loaded with 36 items
+2025-11-07 18:48:26 | InsightSphere | INFO | multimodal_retriever.py:245 | Invoking RAG Agent...
+2025-11-07 18:48:26 | InsightSphere | INFO | semantic_rag_cache.py:62 | source_filter in cache search: ml_llm_interview_cheat_sheet.pdf
+2025-11-07 18:48:27 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf, messages: 7
+2025-11-07 18:48:27 | InsightSphere | INFO | db_service.py:11 | 🔄 Attempting to save chat - User: ravishankerdas020@gmail.com, Document: ml_llm_interview_cheat_sheet.pdf
+2025-11-07 18:48:27 | InsightSphere | INFO | db_service.py:12 | 📝 Messages to save: [{'type': 'user', 'content': 'tell me the tools listed in this doc', 'isUser': True, 'timestamp': '2025-11-07T13:09:41.589Z', 'retrieved': None}, {'type': 'assistant', 'content': 'The tools listed in the document include techniques to avoid overfitting such as Dropout, early stopping, and data augmentation.', 'isUser': False, 'timestamp': '2025-11-07T13:09:45.341Z', 'retrieved': [{'index': 1, 'type': 'text', 'content': 'Metrics? -> Accuracy, Precision, Recall, F1-score (important for imbalance).', 'snippet': 'Metrics? -> Accuracy, Precision, Recall, F1-score (important for imbalance).', 'distance': 1.3154, 'metadata': {'source': 'ml_llm_interview_cheat_sheet.pdf', 'page': 'N/A', 'table_index': None, 'image_index': None}}, {'index': 2, 'type': 'text', 'content': 'FAISS/ChromaDB? -> Store embeddings; FAISS fast search, Chroma persistent DB.', 'snippet': 'FAISS/ChromaDB? -> Store embeddings; FAISS fast search, Chroma persistent DB.', 'distance': 1.6541, 'metadata': {'source': 'ml_llm_interview_cheat_sheet.pdf', 'page': 'N/A', 'table_index': None, 'image_index': None}}, {'index': 3, 'type': 'text', 'content': 'What is RAG? -> Retrieval-Augmented Generation = vector search + LLM generation.', 'snippet': 'What is RAG? -> Retrieval-Augmented Generation = vector search + LLM generation.', 'distance': 1.2915, 'metadata': {'source': 'ml_llm_interview_cheat_sheet.pdf', 'page': 'N/A', 'table_index': None, 'image_index': None}}, {'index': 4, 'type': 'text', 'content': 'Pretraining vs Fine-tuning? -> Pretraining = unsupervised generic; Fine-tuning = supervised task-specific.', 'snippet': 'Pretraining vs Fine-tuning? -> Pretraining = unsupervised generic; Fine-tuning = supervised task-specific.', 'distance': 1.6778, 'metadata': {'source': 'ml_llm_interview_cheat_sheet.pdf', 'page': 'N/A', 'table_index': None, 'image_index': None}}, {'index': 5, 'type': 'text', 'content': 'spectrogram-like ECG data.', 'snippet': 'spectrogram-like ECG data.', 'distance': 1.5373, 'metadata': {'source': 'ml_llm_interview_cheat_sheet.pdf', 'page': 'N/A', 'table_index': None, 'image_index': None}}, {'index': 6, 'type': 'text', 'content': 'RAG with ChromaDB', 'snippet': 'RAG with ChromaDB', 'distance': 1.6618, 'metadata': {'source': 'ml_llm_interview_cheat_sheet.pdf', 'page': 'N/A', 'table_index': None, 'image_index': None}}]}, {'type': 'user', 'content': 'which CV model was used in this doc', 'isUser': True, 'timestamp': '2025-11-07T13:13:26.461Z', 'retrieved': None}, {'type': 'assistant', 'content': 'The document does not specify a particular computer vision (CV) model used.', 'isUser': False, 'timestamp': '2025-11-07T13:13:32.046Z', 'retrieved': [{'index': 1, 'type': 'text', 'content': 'Deploy model on AWS? -> Dockerize -> push to ECR -> deploy ECS/EC2 -> FastAPI endpoint.', 'snippet': 'Deploy model on AWS? -> Dockerize -> push to ECR -> deploy ECS/EC2 -> FastAPI endpoint.', 'distance': 1.8137, 'metadata': {'source': 'ml_llm_interview_cheat_sheet.pdf', 'page': 'N/A', 'table_index': None, 'image_index': None}}, {'index': 2, 'type': 'text', 'content': 'CI/CD in ML? -> Auto build/test/deploy pipeline for models.', 'snippet': 'CI/CD in ML? -> Auto build/test/deploy pipeline for models.', 'distance': 1.5389, 'metadata': {'source': 'ml_llm_interview_cheat_sheet.pdf', 'page': 'N/A', 'table_index': None, 'image_index': None}}, {'index': 3, 'type': 'text', 'content': 'Transfer learning? -> Reuse pretrained model, fine-tune for domain tasks.', 'snippet': 'Transfer learning? -> Reuse pretrained model, fine-tune for domain tasks.', 'distance': 1.6183, 'metadata': {'source': 'ml_llm_interview_cheat_sheet.pdf', 'page': 'N/A', 'table_index': None, 'image_index': None}}, {'index': 4, 'type': 'text', 'content': 'Metrics? -> Accuracy, Precision, Recall, F1-score (important for imbalance).', 'snippet': 'Metrics? -> Accuracy, Precision, Recall, F1-score (important for imbalance).', 'distance': 1.5948, 'metadata': {'source': 'ml_llm_interview_cheat_sheet.pdf', 'page': 'N/A', 'table_index': None, 'image_index': None}}, {'index': 5, 'type': 'text', 'content': 'spectrogram-like ECG data.', 'snippet': 'spectrogram-like ECG data.', 'distance': 1.5471, 'metadata': {'source': 'ml_llm_interview_cheat_sheet.pdf', 'page': 'N/A', 'table_index': None, 'image_index': None}}, {'index': 6, 'type': 'text', 'content': 'BERT architecture? -> Bidirectional transformer encoder, MLM + NSP.', 'snippet': 'BERT architecture? -> Bidirectional transformer encoder, MLM + NSP.', 'distance': 1.6478, 'metadata': {'source': 'ml_llm_interview_cheat_sheet.pdf', 'page': 'N/A', 'table_index': None, 'image_index': None}}]}, {'type': 'user', 'content': 'which CV model was used for multi modal AI project', 'isUser': True, 'timestamp': '2025-11-07T13:13:53.876Z', 'retrieved': None}, {'type': 'assistant', 'content': 'The CV model used for Multi-modal AI is InceptionV3.', 'isUser': False, 'timestamp': '2025-11-07T13:13:57.608Z', 'retrieved': [{'index': 1, 'type': 'text', 'content': 'Multi-modal AI (InceptionV3 + GPT-4)', 'snippet': 'Multi-modal AI (InceptionV3 + GPT-4)', 'distance': 0.7947, 'metadata': {'source': 'ml_llm_interview_cheat_sheet.pdf', 'page': 'N/A', 'table_index': None, 'image_index': None}}, {'index': 2, 'type': 'text', 'content': 'Multi-Agent Voice AI (LangGraph + LiveKit)', 'snippet': 'Multi-Agent Voice AI (LangGraph + LiveKit)', 'distance': 1.1867, 'metadata': {'source': 'ml_llm_interview_cheat_sheet.pdf', 'page': 'N/A', 'table_index': None, 'image_index': None}}, {'index': 3, 'type': 'text', 'content': 'Medical AI Assistant (LangGraph)', 'snippet': 'Medical AI Assistant (LangGraph)', 'distance': 1.3118, 'metadata': {'source': 'ml_llm_interview_cheat_sheet.pdf', 'page': 'N/A', 'table_index': None, 'image_index': None}}, {'index': 4, 'type': 'text', 'content': 'CI/CD in ML? -> Auto build/test/deploy pipeline for models.', 'snippet': 'CI/CD in ML? -> Auto build/test/deploy pipeline for models.', 'distance': 1.5223, 'metadata': {'source': 'ml_llm_interview_cheat_sheet.pdf', 'page': 'N/A', 'table_index': None, 'image_index': None}}, {'index': 5, 'type': 'text', 'content': 'Transfer learning? -> Reuse pretrained model, fine-tune for domain tasks.', 'snippet': 'Transfer learning? -> Reuse pretrained model, fine-tune for domain tasks.', 'distance': 1.455, 'metadata': {'source': 'ml_llm_interview_cheat_sheet.pdf', 'page': 'N/A', 'table_index': None, 'image_index': None}}, {'index': 6, 'type': 'text', 'content': 'Metrics? -> Accuracy, Precision, Recall, F1-score (important for imbalance).', 'snippet': 'Metrics? -> Accuracy, Precision, Recall, F1-score (important for imbalance).', 'distance': 1.7409, 'metadata': {'source': 'ml_llm_interview_cheat_sheet.pdf', 'page': 'N/A', 'table_index': None, 'image_index': None}}]}, {'type': 'user', 'content': 'which vector database is used for RAG', 'isUser': True, 'timestamp': '2025-11-07T13:18:21.841Z', 'retrieved': None}]
+2025-11-07 18:48:29 | InsightSphere | INFO | db_service.py:22 | 🔍 Existing record found: True
+2025-11-07 18:48:30 | InsightSphere | INFO | db_service.py:32 | ✅ Update result: UPDATE 1
+2025-11-07 18:48:30 | InsightSphere | INFO | semantic_rag_cache.py:91 | 🔍 Semantic cache MISS (best similarity: 0.0%)
+2025-11-07 18:48:36 | InsightSphere | INFO | rag_agent.py:380 | 🔧 Agentic tool executed: sql_query -> False
+2025-11-07 18:48:42 | InsightSphere | INFO | rag_agent.py:380 | 🔧 Agentic tool executed: tavily_search -> True
+2025-11-07 18:48:44 | InsightSphere | INFO | rag_agent.py:380 | 🔧 Agentic tool executed: tavily_search -> True
+2025-11-07 18:48:44 | InsightSphere | INFO | rag_agent.py:380 | 🔧 Agentic tool executed: sql_query -> False
+2025-11-07 18:48:57 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf, messages: 8
+2025-11-07 18:48:57 | InsightSphere | INFO | db_service.py:11 | 🔄 Attempting to save chat - User: ravishankerdas020@gmail.com, Document: ml_llm_interview_cheat_sheet.pdf
+2025-11-07 18:48:57 | InsightSphere | INFO | db_service.py:12 | 📝 Messages to save: [{'type': 'user', 'content': 'tell me the tools listed in this doc', 'isUser': True, 'timestamp': '2025-11-07T13:09:41.589Z', 'retrieved': None}, {'type': 'assistant', 'content': 'The tools listed in the document include techniques to avoid overfitting such as Dropout, early stopping, and data augmentation.', 'isUser': False, 'timestamp': '2025-11-07T13:09:45.341Z', 'retrieved': [{'index': 1, 'type': 'text', 'content': 'Metrics? -> Accuracy, Precision, Recall, F1-score (important for imbalance).', 'snippet': 'Metrics? -> Accuracy, Precision, Recall, F1-score (important for imbalance).', 'distance': 1.3154, 'metadata': {'source': 'ml_llm_interview_cheat_sheet.pdf', 'page': 'N/A', 'table_index': None, 'image_index': None}}, {'index': 2, 'type': 'text', 'content': 'FAISS/ChromaDB? -> Store embeddings; FAISS fast search, Chroma persistent DB.', 'snippet': 'FAISS/ChromaDB? -> Store embeddings; FAISS fast search, Chroma persistent DB.', 'distance': 1.6541, 'metadata': {'source': 'ml_llm_interview_cheat_sheet.pdf', 'page': 'N/A', 'table_index': None, 'image_index': None}}, {'index': 3, 'type': 'text', 'content': 'What is RAG? -> Retrieval-Augmented Generation = vector search + LLM generation.', 'snippet': 'What is RAG? -> Retrieval-Augmented Generation = vector search + LLM generation.', 'distance': 1.2915, 'metadata': {'source': 'ml_llm_interview_cheat_sheet.pdf', 'page': 'N/A', 'table_index': None, 'image_index': None}}, {'index': 4, 'type': 'text', 'content': 'Pretraining vs Fine-tuning? -> Pretraining = unsupervised generic; Fine-tuning = supervised task-specific.', 'snippet': 'Pretraining vs Fine-tuning? -> Pretraining = unsupervised generic; Fine-tuning = supervised task-specific.', 'distance': 1.6778, 'metadata': {'source': 'ml_llm_interview_cheat_sheet.pdf', 'page': 'N/A', 'table_index': None, 'image_index': None}}, {'index': 5, 'type': 'text', 'content': 'spectrogram-like ECG data.', 'snippet': 'spectrogram-like ECG data.', 'distance': 1.5373, 'metadata': {'source': 'ml_llm_interview_cheat_sheet.pdf', 'page': 'N/A', 'table_index': None, 'image_index': None}}, {'index': 6, 'type': 'text', 'content': 'RAG with ChromaDB', 'snippet': 'RAG with ChromaDB', 'distance': 1.6618, 'metadata': {'source': 'ml_llm_interview_cheat_sheet.pdf', 'page': 'N/A', 'table_index': None, 'image_index': None}}]}, {'type': 'user', 'content': 'which CV model was used in this doc', 'isUser': True, 'timestamp': '2025-11-07T13:13:26.461Z', 'retrieved': None}, {'type': 'assistant', 'content': 'The document does not specify a particular computer vision (CV) model used.', 'isUser': False, 'timestamp': '2025-11-07T13:13:32.046Z', 'retrieved': [{'index': 1, 'type': 'text', 'content': 'Deploy model on AWS? -> Dockerize -> push to ECR -> deploy ECS/EC2 -> FastAPI endpoint.', 'snippet': 'Deploy model on AWS? -> Dockerize -> push to ECR -> deploy ECS/EC2 -> FastAPI endpoint.', 'distance': 1.8137, 'metadata': {'source': 'ml_llm_interview_cheat_sheet.pdf', 'page': 'N/A', 'table_index': None, 'image_index': None}}, {'index': 2, 'type': 'text', 'content': 'CI/CD in ML? -> Auto build/test/deploy pipeline for models.', 'snippet': 'CI/CD in ML? -> Auto build/test/deploy pipeline for models.', 'distance': 1.5389, 'metadata': {'source': 'ml_llm_interview_cheat_sheet.pdf', 'page': 'N/A', 'table_index': None, 'image_index': None}}, {'index': 3, 'type': 'text', 'content': 'Transfer learning? -> Reuse pretrained model, fine-tune for domain tasks.', 'snippet': 'Transfer learning? -> Reuse pretrained model, fine-tune for domain tasks.', 'distance': 1.6183, 'metadata': {'source': 'ml_llm_interview_cheat_sheet.pdf', 'page': 'N/A', 'table_index': None, 'image_index': None}}, {'index': 4, 'type': 'text', 'content': 'Metrics? -> Accuracy, Precision, Recall, F1-score (important for imbalance).', 'snippet': 'Metrics? -> Accuracy, Precision, Recall, F1-score (important for imbalance).', 'distance': 1.5948, 'metadata': {'source': 'ml_llm_interview_cheat_sheet.pdf', 'page': 'N/A', 'table_index': None, 'image_index': None}}, {'index': 5, 'type': 'text', 'content': 'spectrogram-like ECG data.', 'snippet': 'spectrogram-like ECG data.', 'distance': 1.5471, 'metadata': {'source': 'ml_llm_interview_cheat_sheet.pdf', 'page': 'N/A', 'table_index': None, 'image_index': None}}, {'index': 6, 'type': 'text', 'content': 'BERT architecture? -> Bidirectional transformer encoder, MLM + NSP.', 'snippet': 'BERT architecture? -> Bidirectional transformer encoder, MLM + NSP.', 'distance': 1.6478, 'metadata': {'source': 'ml_llm_interview_cheat_sheet.pdf', 'page': 'N/A', 'table_index': None, 'image_index': None}}]}, {'type': 'user', 'content': 'which CV model was used for multi modal AI project', 'isUser': True, 'timestamp': '2025-11-07T13:13:53.876Z', 'retrieved': None}, {'type': 'assistant', 'content': 'The CV model used for Multi-modal AI is InceptionV3.', 'isUser': False, 'timestamp': '2025-11-07T13:13:57.608Z', 'retrieved': [{'index': 1, 'type': 'text', 'content': 'Multi-modal AI (InceptionV3 + GPT-4)', 'snippet': 'Multi-modal AI (InceptionV3 + GPT-4)', 'distance': 0.7947, 'metadata': {'source': 'ml_llm_interview_cheat_sheet.pdf', 'page': 'N/A', 'table_index': None, 'image_index': None}}, {'index': 2, 'type': 'text', 'content': 'Multi-Agent Voice AI (LangGraph + LiveKit)', 'snippet': 'Multi-Agent Voice AI (LangGraph + LiveKit)', 'distance': 1.1867, 'metadata': {'source': 'ml_llm_interview_cheat_sheet.pdf', 'page': 'N/A', 'table_index': None, 'image_index': None}}, {'index': 3, 'type': 'text', 'content': 'Medical AI Assistant (LangGraph)', 'snippet': 'Medical AI Assistant (LangGraph)', 'distance': 1.3118, 'metadata': {'source': 'ml_llm_interview_cheat_sheet.pdf', 'page': 'N/A', 'table_index': None, 'image_index': None}}, {'index': 4, 'type': 'text', 'content': 'CI/CD in ML? -> Auto build/test/deploy pipeline for models.', 'snippet': 'CI/CD in ML? -> Auto build/test/deploy pipeline for models.', 'distance': 1.5223, 'metadata': {'source': 'ml_llm_interview_cheat_sheet.pdf', 'page': 'N/A', 'table_index': None, 'image_index': None}}, {'index': 5, 'type': 'text', 'content': 'Transfer learning? -> Reuse pretrained model, fine-tune for domain tasks.', 'snippet': 'Transfer learning? -> Reuse pretrained model, fine-tune for domain tasks.', 'distance': 1.455, 'metadata': {'source': 'ml_llm_interview_cheat_sheet.pdf', 'page': 'N/A', 'table_index': None, 'image_index': None}}, {'index': 6, 'type': 'text', 'content': 'Metrics? -> Accuracy, Precision, Recall, F1-score (important for imbalance).', 'snippet': 'Metrics? -> Accuracy, Precision, Recall, F1-score (important for imbalance).', 'distance': 1.7409, 'metadata': {'source': 'ml_llm_interview_cheat_sheet.pdf', 'page': 'N/A', 'table_index': None, 'image_index': None}}]}, {'type': 'user', 'content': 'which vector database is used for RAG', 'isUser': True, 'timestamp': '2025-11-07T13:18:21.841Z', 'retrieved': None}, {'type': 'assistant', 'content': "Retrieval-Augmented Generation (RAG) is a powerful approach that combines vector search with large language model (LLM) generation to enhance the performance of AI systems. To effectively implement RAG, the choice of a vector database is crucial, as it serves as the backbone for managing high-dimensional vector data derived from various sources like text, images, or sounds.\n\n### Popular Vector Databases for RAG\n\n1. **Pinecone**: Known for its ease of use and scalability, Pinecone is a managed vector database that simplifies the process of building and deploying RAG applications.\n\n2. **Milvus**: This open-source vector database is designed for high performance and can handle billions of vectors, making it suitable for enterprise-level applications. Milvus is particularly noted for its speed and memory safety.\n\n3. **Weaviate**: Another popular choice, Weaviate is an open-source vector database that supports semantic search and is designed to work seamlessly with machine learning models.\n\n4. **Qdrant**: This open-source vector search engine is built for RAG applications, focusing on speed and memory efficiency. It offers a free tier for small-scale usage.\n\n5. **Chroma**: A newer entry in the vector database space, Chroma is designed for ease of use and integration with various machine learning frameworks.\n\n6. **Vespa**: While more complex to set up, Vespa is a powerful option for applications that require advanced search capabilities alongside vector storage.\n\n7. **pgvector**: An extension for PostgreSQL, pgvector allows users to store and query vector embeddings directly within a relational database, making it a good option for those already using PostgreSQL.\n\n8. **Redis and MongoDB**: These NoSQL databases also offer vector support, providing flexibility for applications that require both traditional and vector-based querying.\n\n### Factors to Consider When Choosing a Vector Database\n\nWhen selecting a vector database for RAG, consider the following factors:\n\n- **Scalability**: Ensure the database can handle your expected data volume and query load.\n- **Integration**: Look for compatibility with existing systems and frameworks you are using.\n- **Performance**: Evaluate the database's speed in processing queries and its ability to handle high-dimensional vectors efficiently.\n- **Cost**: Consider the pricing model, especially if you expect to scale your application.\n- **Ease of Use**: Some databases may require more setup and maintenance than others, impacting your development timeline.\n\n### Conclusion\n\nThe effectiveness of a RAG model is intrinsically linked to the performance of the vector database used. Popular choices like Pinecone, Milvus, and Weaviate offer various features that cater to different needs, from ease of use to high scalability. By carefully evaluating your specific requirements, you can select the most suitable vector database to enhance your RAG applications.", 'isUser': False, 'timestamp': '2025-11-07T13:18:56.550Z', 'retrieved': [{'index': 1, 'type': 'text', 'content': 'What is RAG? -> Retrieval-Augmented Generation = vector search + LLM generation.', 'snippet': 'What is RAG? -> Retrieval-Augmented Generation = vector search + LLM generation.', 'distance': 0.6236, 'metadata': {'source': 'ml_llm_interview_cheat_sheet.pdf', 'page': 'N/A', 'table_index': None, 'image_index': None}}, {'index': 2, 'type': 'text', 'content': 'RAG with ChromaDB', 'snippet': 'RAG with ChromaDB', 'distance': 1.1209, 'metadata': {'source': 'ml_llm_interview_cheat_sheet.pdf', 'page': 'N/A', 'table_index': None, 'image_index': None}}, {'index': 3, 'type': 'text', 'content': 'BM25 vs Vector search? -> BM25 = keywords; Vector = semantics; hybrid improves precision+recall.', 'snippet': 'BM25 vs Vector search? -> BM25 = keywords; Vector = semantics; hybrid improves precision+recall.', 'distance': 1.2916, 'metadata': {'source': 'ml_llm_interview_cheat_sheet.pdf', 'page': 'N/A', 'table_index': None, 'image_index': None}}, {'index': 4, 'type': 'text', 'content': 'Memory mgmt? -> Conversation buffer + vector memory to persist context.', 'snippet': 'Memory mgmt? -> Conversation buffer + vector memory to persist context.', 'distance': 1.5801, 'metadata': {'source': 'ml_llm_interview_cheat_sheet.pdf', 'page': 'N/A', 'table_index': None, 'image_index': None}}, {'index': 5, 'type': 'text', 'content': 'spectrogram-like ECG data.', 'snippet': 'spectrogram-like ECG data.', 'distance': 1.5486, 'metadata': {'source': 'ml_llm_interview_cheat_sheet.pdf', 'page': 'N/A', 'table_index': None, 'image_index': None}}, {'index': 6, 'type': 'text', 'content': 'Metrics? -> Accuracy, Precision, Recall, F1-score (important for imbalance).', 'snippet': 'Metrics? -> Accuracy, Precision, Recall, F1-score (important for imbalance).', 'distance': 1.4132, 'metadata': {'source': 'ml_llm_interview_cheat_sheet.pdf', 'page': 'N/A', 'table_index': None, 'image_index': None}}]}]
+2025-11-07 18:48:59 | InsightSphere | INFO | db_service.py:22 | 🔍 Existing record found: True
+2025-11-07 18:49:00 | InsightSphere | INFO | db_service.py:32 | ✅ Update result: UPDATE 1
+2025-11-07 18:49:02 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf, messages: 8
+2025-11-07 18:49:02 | InsightSphere | INFO | db_service.py:11 | 🔄 Attempting to save chat - User: ravishankerdas020@gmail.com, Document: ml_llm_interview_cheat_sheet.pdf
+2025-11-07 18:49:02 | InsightSphere | INFO | db_service.py:12 | 📝 Messages to save: [{'type': 'user', 'content': 'tell me the tools listed in this doc', 'isUser': True, 'timestamp': '2025-11-07T13:09:41.589Z', 'retrieved': None}, {'type': 'assistant', 'content': 'The tools listed in the document include techniques to avoid overfitting such as Dropout, early stopping, and data augmentation.', 'isUser': False, 'timestamp': '2025-11-07T13:09:45.341Z', 'retrieved': [{'index': 1, 'type': 'text', 'content': 'Metrics? -> Accuracy, Precision, Recall, F1-score (important for imbalance).', 'snippet': 'Metrics? -> Accuracy, Precision, Recall, F1-score (important for imbalance).', 'distance': 1.3154, 'metadata': {'source': 'ml_llm_interview_cheat_sheet.pdf', 'page': 'N/A', 'table_index': None, 'image_index': None}}, {'index': 2, 'type': 'text', 'content': 'FAISS/ChromaDB? -> Store embeddings; FAISS fast search, Chroma persistent DB.', 'snippet': 'FAISS/ChromaDB? -> Store embeddings; FAISS fast search, Chroma persistent DB.', 'distance': 1.6541, 'metadata': {'source': 'ml_llm_interview_cheat_sheet.pdf', 'page': 'N/A', 'table_index': None, 'image_index': None}}, {'index': 3, 'type': 'text', 'content': 'What is RAG? -> Retrieval-Augmented Generation = vector search + LLM generation.', 'snippet': 'What is RAG? -> Retrieval-Augmented Generation = vector search + LLM generation.', 'distance': 1.2915, 'metadata': {'source': 'ml_llm_interview_cheat_sheet.pdf', 'page': 'N/A', 'table_index': None, 'image_index': None}}, {'index': 4, 'type': 'text', 'content': 'Pretraining vs Fine-tuning? -> Pretraining = unsupervised generic; Fine-tuning = supervised task-specific.', 'snippet': 'Pretraining vs Fine-tuning? -> Pretraining = unsupervised generic; Fine-tuning = supervised task-specific.', 'distance': 1.6778, 'metadata': {'source': 'ml_llm_interview_cheat_sheet.pdf', 'page': 'N/A', 'table_index': None, 'image_index': None}}, {'index': 5, 'type': 'text', 'content': 'spectrogram-like ECG data.', 'snippet': 'spectrogram-like ECG data.', 'distance': 1.5373, 'metadata': {'source': 'ml_llm_interview_cheat_sheet.pdf', 'page': 'N/A', 'table_index': None, 'image_index': None}}, {'index': 6, 'type': 'text', 'content': 'RAG with ChromaDB', 'snippet': 'RAG with ChromaDB', 'distance': 1.6618, 'metadata': {'source': 'ml_llm_interview_cheat_sheet.pdf', 'page': 'N/A', 'table_index': None, 'image_index': None}}]}, {'type': 'user', 'content': 'which CV model was used in this doc', 'isUser': True, 'timestamp': '2025-11-07T13:13:26.461Z', 'retrieved': None}, {'type': 'assistant', 'content': 'The document does not specify a particular computer vision (CV) model used.', 'isUser': False, 'timestamp': '2025-11-07T13:13:32.046Z', 'retrieved': [{'index': 1, 'type': 'text', 'content': 'Deploy model on AWS? -> Dockerize -> push to ECR -> deploy ECS/EC2 -> FastAPI endpoint.', 'snippet': 'Deploy model on AWS? -> Dockerize -> push to ECR -> deploy ECS/EC2 -> FastAPI endpoint.', 'distance': 1.8137, 'metadata': {'source': 'ml_llm_interview_cheat_sheet.pdf', 'page': 'N/A', 'table_index': None, 'image_index': None}}, {'index': 2, 'type': 'text', 'content': 'CI/CD in ML? -> Auto build/test/deploy pipeline for models.', 'snippet': 'CI/CD in ML? -> Auto build/test/deploy pipeline for models.', 'distance': 1.5389, 'metadata': {'source': 'ml_llm_interview_cheat_sheet.pdf', 'page': 'N/A', 'table_index': None, 'image_index': None}}, {'index': 3, 'type': 'text', 'content': 'Transfer learning? -> Reuse pretrained model, fine-tune for domain tasks.', 'snippet': 'Transfer learning? -> Reuse pretrained model, fine-tune for domain tasks.', 'distance': 1.6183, 'metadata': {'source': 'ml_llm_interview_cheat_sheet.pdf', 'page': 'N/A', 'table_index': None, 'image_index': None}}, {'index': 4, 'type': 'text', 'content': 'Metrics? -> Accuracy, Precision, Recall, F1-score (important for imbalance).', 'snippet': 'Metrics? -> Accuracy, Precision, Recall, F1-score (important for imbalance).', 'distance': 1.5948, 'metadata': {'source': 'ml_llm_interview_cheat_sheet.pdf', 'page': 'N/A', 'table_index': None, 'image_index': None}}, {'index': 5, 'type': 'text', 'content': 'spectrogram-like ECG data.', 'snippet': 'spectrogram-like ECG data.', 'distance': 1.5471, 'metadata': {'source': 'ml_llm_interview_cheat_sheet.pdf', 'page': 'N/A', 'table_index': None, 'image_index': None}}, {'index': 6, 'type': 'text', 'content': 'BERT architecture? -> Bidirectional transformer encoder, MLM + NSP.', 'snippet': 'BERT architecture? -> Bidirectional transformer encoder, MLM + NSP.', 'distance': 1.6478, 'metadata': {'source': 'ml_llm_interview_cheat_sheet.pdf', 'page': 'N/A', 'table_index': None, 'image_index': None}}]}, {'type': 'user', 'content': 'which CV model was used for multi modal AI project', 'isUser': True, 'timestamp': '2025-11-07T13:13:53.876Z', 'retrieved': None}, {'type': 'assistant', 'content': 'The CV model used for Multi-modal AI is InceptionV3.', 'isUser': False, 'timestamp': '2025-11-07T13:13:57.608Z', 'retrieved': [{'index': 1, 'type': 'text', 'content': 'Multi-modal AI (InceptionV3 + GPT-4)', 'snippet': 'Multi-modal AI (InceptionV3 + GPT-4)', 'distance': 0.7947, 'metadata': {'source': 'ml_llm_interview_cheat_sheet.pdf', 'page': 'N/A', 'table_index': None, 'image_index': None}}, {'index': 2, 'type': 'text', 'content': 'Multi-Agent Voice AI (LangGraph + LiveKit)', 'snippet': 'Multi-Agent Voice AI (LangGraph + LiveKit)', 'distance': 1.1867, 'metadata': {'source': 'ml_llm_interview_cheat_sheet.pdf', 'page': 'N/A', 'table_index': None, 'image_index': None}}, {'index': 3, 'type': 'text', 'content': 'Medical AI Assistant (LangGraph)', 'snippet': 'Medical AI Assistant (LangGraph)', 'distance': 1.3118, 'metadata': {'source': 'ml_llm_interview_cheat_sheet.pdf', 'page': 'N/A', 'table_index': None, 'image_index': None}}, {'index': 4, 'type': 'text', 'content': 'CI/CD in ML? -> Auto build/test/deploy pipeline for models.', 'snippet': 'CI/CD in ML? -> Auto build/test/deploy pipeline for models.', 'distance': 1.5223, 'metadata': {'source': 'ml_llm_interview_cheat_sheet.pdf', 'page': 'N/A', 'table_index': None, 'image_index': None}}, {'index': 5, 'type': 'text', 'content': 'Transfer learning? -> Reuse pretrained model, fine-tune for domain tasks.', 'snippet': 'Transfer learning? -> Reuse pretrained model, fine-tune for domain tasks.', 'distance': 1.455, 'metadata': {'source': 'ml_llm_interview_cheat_sheet.pdf', 'page': 'N/A', 'table_index': None, 'image_index': None}}, {'index': 6, 'type': 'text', 'content': 'Metrics? -> Accuracy, Precision, Recall, F1-score (important for imbalance).', 'snippet': 'Metrics? -> Accuracy, Precision, Recall, F1-score (important for imbalance).', 'distance': 1.7409, 'metadata': {'source': 'ml_llm_interview_cheat_sheet.pdf', 'page': 'N/A', 'table_index': None, 'image_index': None}}]}, {'type': 'user', 'content': 'which vector database is used for RAG', 'isUser': True, 'timestamp': '2025-11-07T13:18:21.841Z', 'retrieved': None}, {'type': 'assistant', 'content': "Retrieval-Augmented Generation (RAG) is a powerful approach that combines vector search with large language model (LLM) generation to enhance the performance of AI systems. To effectively implement RAG, the choice of a vector database is crucial, as it serves as the backbone for managing high-dimensional vector data derived from various sources like text, images, or sounds.\n\n### Popular Vector Databases for RAG\n\n1. **Pinecone**: Known for its ease of use and scalability, Pinecone is a managed vector database that simplifies the process of building and deploying RAG applications.\n\n2. **Milvus**: This open-source vector database is designed for high performance and can handle billions of vectors, making it suitable for enterprise-level applications. Milvus is particularly noted for its speed and memory safety.\n\n3. **Weaviate**: Another popular choice, Weaviate is an open-source vector database that supports semantic search and is designed to work seamlessly with machine learning models.\n\n4. **Qdrant**: This open-source vector search engine is built for RAG applications, focusing on speed and memory efficiency. It offers a free tier for small-scale usage.\n\n5. **Chroma**: A newer entry in the vector database space, Chroma is designed for ease of use and integration with various machine learning frameworks.\n\n6. **Vespa**: While more complex to set up, Vespa is a powerful option for applications that require advanced search capabilities alongside vector storage.\n\n7. **pgvector**: An extension for PostgreSQL, pgvector allows users to store and query vector embeddings directly within a relational database, making it a good option for those already using PostgreSQL.\n\n8. **Redis and MongoDB**: These NoSQL databases also offer vector support, providing flexibility for applications that require both traditional and vector-based querying.\n\n### Factors to Consider When Choosing a Vector Database\n\nWhen selecting a vector database for RAG, consider the following factors:\n\n- **Scalability**: Ensure the database can handle your expected data volume and query load.\n- **Integration**: Look for compatibility with existing systems and frameworks you are using.\n- **Performance**: Evaluate the database's speed in processing queries and its ability to handle high-dimensional vectors efficiently.\n- **Cost**: Consider the pricing model, especially if you expect to scale your application.\n- **Ease of Use**: Some databases may require more setup and maintenance than others, impacting your development timeline.\n\n### Conclusion\n\nThe effectiveness of a RAG model is intrinsically linked to the performance of the vector database used. Popular choices like Pinecone, Milvus, and Weaviate offer various features that cater to different needs, from ease of use to high scalability. By carefully evaluating your specific requirements, you can select the most suitable vector database to enhance your RAG applications.", 'isUser': False, 'timestamp': '2025-11-07T13:18:56.550Z', 'retrieved': [{'index': 1, 'type': 'text', 'content': 'What is RAG? -> Retrieval-Augmented Generation = vector search + LLM generation.', 'snippet': 'What is RAG? -> Retrieval-Augmented Generation = vector search + LLM generation.', 'distance': 0.6236, 'metadata': {'source': 'ml_llm_interview_cheat_sheet.pdf', 'page': 'N/A', 'table_index': None, 'image_index': None}}, {'index': 2, 'type': 'text', 'content': 'RAG with ChromaDB', 'snippet': 'RAG with ChromaDB', 'distance': 1.1209, 'metadata': {'source': 'ml_llm_interview_cheat_sheet.pdf', 'page': 'N/A', 'table_index': None, 'image_index': None}}, {'index': 3, 'type': 'text', 'content': 'BM25 vs Vector search? -> BM25 = keywords; Vector = semantics; hybrid improves precision+recall.', 'snippet': 'BM25 vs Vector search? -> BM25 = keywords; Vector = semantics; hybrid improves precision+recall.', 'distance': 1.2916, 'metadata': {'source': 'ml_llm_interview_cheat_sheet.pdf', 'page': 'N/A', 'table_index': None, 'image_index': None}}, {'index': 4, 'type': 'text', 'content': 'Memory mgmt? -> Conversation buffer + vector memory to persist context.', 'snippet': 'Memory mgmt? -> Conversation buffer + vector memory to persist context.', 'distance': 1.5801, 'metadata': {'source': 'ml_llm_interview_cheat_sheet.pdf', 'page': 'N/A', 'table_index': None, 'image_index': None}}, {'index': 5, 'type': 'text', 'content': 'spectrogram-like ECG data.', 'snippet': 'spectrogram-like ECG data.', 'distance': 1.5486, 'metadata': {'source': 'ml_llm_interview_cheat_sheet.pdf', 'page': 'N/A', 'table_index': None, 'image_index': None}}, {'index': 6, 'type': 'text', 'content': 'Metrics? -> Accuracy, Precision, Recall, F1-score (important for imbalance).', 'snippet': 'Metrics? -> Accuracy, Precision, Recall, F1-score (important for imbalance).', 'distance': 1.4132, 'metadata': {'source': 'ml_llm_interview_cheat_sheet.pdf', 'page': 'N/A', 'table_index': None, 'image_index': None}}]}]
+2025-11-07 18:49:05 | InsightSphere | INFO | db_service.py:22 | 🔍 Existing record found: True
+2025-11-07 18:49:06 | InsightSphere | INFO | db_service.py:32 | ✅ Update result: UPDATE 1
+2025-11-07 18:49:47 | InsightSphere | INFO | database.py:19 | using dev
+2025-11-07 18:50:14 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 18:50:17 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 18:50:18 | InsightSphere | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 18:50:21 | InsightSphere | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 18:50:29 | InsightSphere | INFO | database.py:63 | ✅ Database tables created successfully
+2025-11-07 18:50:30 | InsightSphere | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 18:50:37 | InsightSphere | INFO | database.py:19 | using dev
+2025-11-07 18:51:05 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 18:51:09 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 18:51:09 | InsightSphere | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 18:51:13 | InsightSphere | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 18:51:20 | InsightSphere | INFO | database.py:63 | ✅ Database tables created successfully
+2025-11-07 18:51:21 | InsightSphere | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 18:51:24 | InsightSphere | INFO | database.py:19 | using dev
+2025-11-07 18:51:49 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 18:51:52 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 18:51:53 | InsightSphere | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 18:51:56 | InsightSphere | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 18:52:05 | InsightSphere | INFO | database.py:63 | ✅ Database tables created successfully
+2025-11-07 18:52:05 | InsightSphere | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 18:52:09 | InsightSphere | INFO | database.py:19 | using dev
+2025-11-07 18:52:33 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 18:52:36 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 18:52:37 | InsightSphere | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 18:52:40 | InsightSphere | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 18:52:48 | InsightSphere | INFO | database.py:63 | ✅ Database tables created successfully
+2025-11-07 18:52:49 | InsightSphere | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 18:52:52 | InsightSphere | INFO | database.py:19 | using dev
+2025-11-07 18:53:15 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 18:53:19 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 18:53:20 | InsightSphere | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 18:53:23 | InsightSphere | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 18:53:31 | InsightSphere | INFO | database.py:63 | ✅ Database tables created successfully
+2025-11-07 18:53:31 | InsightSphere | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 18:53:35 | InsightSphere | INFO | database.py:19 | using dev
+2025-11-07 18:53:59 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 18:54:02 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 18:54:03 | InsightSphere | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 18:54:06 | InsightSphere | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 18:54:15 | InsightSphere | INFO | database.py:63 | ✅ Database tables created successfully
+2025-11-07 18:54:15 | InsightSphere | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 18:54:20 | InsightSphere | INFO | database.py:19 | using dev
+2025-11-07 18:54:52 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 18:54:55 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 18:54:56 | InsightSphere | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 18:54:59 | InsightSphere | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 18:55:07 | InsightSphere | INFO | database.py:63 | ✅ Database tables created successfully
+2025-11-07 18:55:07 | InsightSphere | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 18:55:43 | InsightSphere | INFO | ingest.py:26 | ✓ Ingest: ChromaDB PersistentClient initialized at ./chroma_db
+2025-11-07 18:55:43 | InsightSphere | INFO | ingest.py:59 | ✓ Ingest: Collection 'user_ravishankerdas020_at_gmail_com_docs' loaded with 36 items
+2025-11-07 18:55:48 | InsightSphere | INFO | multimodal_retriever.py:245 | Invoking RAG Agent...
+2025-11-07 18:55:48 | InsightSphere | INFO | semantic_rag_cache.py:62 | source_filter in cache search: ml_llm_interview_cheat_sheet.pdf
+2025-11-07 18:55:49 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf, messages: 9
+2025-11-07 18:55:49 | InsightSphere | INFO | db_service.py:11 | 🔄 Attempting to save chat - User: ravishankerdas020@gmail.com, Document: ml_llm_interview_cheat_sheet.pdf
+2025-11-07 18:55:52 | InsightSphere | INFO | db_service.py:22 | 🔍 Existing record found: True
+2025-11-07 18:55:52 | InsightSphere | INFO | semantic_rag_cache.py:91 | 🔍 Semantic cache MISS (best similarity: 0.0%)
+2025-11-07 18:55:53 | InsightSphere | INFO | rag_agent.py:226 | 🌍 General Query Node: Answering without context...
+2025-11-07 18:55:56 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf, messages: 10
+2025-11-07 18:55:56 | InsightSphere | INFO | db_service.py:11 | 🔄 Attempting to save chat - User: ravishankerdas020@gmail.com, Document: ml_llm_interview_cheat_sheet.pdf
+2025-11-07 18:55:58 | InsightSphere | INFO | db_service.py:22 | 🔍 Existing record found: True
+2025-11-07 18:56:01 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf, messages: 10
+2025-11-07 18:56:01 | InsightSphere | INFO | db_service.py:11 | 🔄 Attempting to save chat - User: ravishankerdas020@gmail.com, Document: ml_llm_interview_cheat_sheet.pdf
+2025-11-07 18:56:05 | InsightSphere | INFO | db_service.py:22 | 🔍 Existing record found: True
+2025-11-07 19:03:10 | InsightSphere | INFO | database.py:19 | using dev
+2025-11-07 19:03:33 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 19:03:37 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 19:03:38 | InsightSphere | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 19:03:42 | InsightSphere | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 19:03:50 | InsightSphere | INFO | database.py:63 | ✅ Database tables created successfully
+2025-11-07 19:03:50 | InsightSphere | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 19:03:53 | InsightSphere | INFO | database.py:19 | using dev
+2025-11-07 19:03:53 | InsightSphere | INFO | db_service.py:11 | 🔄 Attempting to save chat - User: ravishankerdas020@gmail.com, Document: ml_llm_interview_cheat_sheet.pdf
+2025-11-07 19:03:54 | InsightSphere | INFO | database.py:19 | using dev
+2025-11-07 19:03:56 | InsightSphere | INFO | db_service.py:22 | 🔍 Existing record found: True
+2025-11-07 19:03:59 | InsightSphere | INFO | db_service.py:60 | ✅ Loaded 2 messages for ml_llm_interview_cheat_sheet.pdf
+2025-11-07 19:04:15 | InsightSphere | INFO | database.py:19 | using dev
+2025-11-07 19:04:15 | InsightSphere | INFO | db_service.py:11 | 🔄 Attempting to save chat - User: ravishankerdas020@gmail.com, Document: ml_llm_interview_cheat_sheet.pdf
+2025-11-07 19:04:16 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 19:04:17 | InsightSphere | INFO | db_service.py:22 | 🔍 Existing record found: True
+2025-11-07 19:04:20 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 19:04:20 | InsightSphere | INFO | db_service.py:60 | ✅ Loaded 2 messages for ml_llm_interview_cheat_sheet.pdf
+2025-11-07 19:04:21 | InsightSphere | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 19:04:24 | InsightSphere | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 19:04:31 | InsightSphere | INFO | database.py:63 | ✅ Database tables created successfully
+2025-11-07 19:04:31 | InsightSphere | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 19:07:01 | InsightSphere | INFO | ingest.py:26 | ✓ Ingest: ChromaDB PersistentClient initialized at ./chroma_db
+2025-11-07 19:07:02 | InsightSphere | INFO | ingest.py:59 | ✓ Ingest: Collection 'user_ravishankerdas020_at_gmail_com_docs' loaded with 36 items
+2025-11-07 19:07:02 | InsightSphere | INFO | query.py:211 | 📂 Loading chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf
+2025-11-07 19:07:04 | InsightSphere | INFO | db_service.py:60 | ✅ Loaded 2 messages for ml_llm_interview_cheat_sheet.pdf
+2025-11-07 19:07:07 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf, messages: 10
+2025-11-07 19:07:07 | InsightSphere | INFO | db_service.py:11 | 🔄 Attempting to save chat - User: ravishankerdas020@gmail.com, Document: ml_llm_interview_cheat_sheet.pdf
+2025-11-07 19:07:09 | InsightSphere | INFO | db_service.py:22 | 🔍 Existing record found: True
+2025-11-07 19:08:55 | InsightSphere | INFO | database.py:19 | using dev
+2025-11-07 19:09:18 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 19:09:22 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 19:09:22 | InsightSphere | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 19:09:25 | InsightSphere | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 19:09:33 | InsightSphere | INFO | database.py:63 | ✅ Database tables created successfully
+2025-11-07 19:09:33 | InsightSphere | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 19:14:50 | InsightSphere | INFO | database.py:19 | using dev
+2025-11-07 19:15:11 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 19:15:15 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 19:15:16 | InsightSphere | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 19:15:19 | InsightSphere | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 19:15:27 | InsightSphere | INFO | database.py:64 | ✅ Database tables created successfully
+2025-11-07 19:15:27 | InsightSphere | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 19:17:29 | InsightSphere | INFO | database.py:19 | using dev
+2025-11-07 19:17:49 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 19:17:52 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 19:17:53 | InsightSphere | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 19:17:55 | InsightSphere | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 19:18:05 | InsightSphere | INFO | database.py:64 | ✅ Database tables created successfully
+2025-11-07 19:18:05 | InsightSphere | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 19:18:08 | InsightSphere | INFO | database.py:19 | using dev
+2025-11-07 19:18:27 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 19:18:30 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 19:18:31 | InsightSphere | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 19:18:34 | InsightSphere | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 19:18:42 | InsightSphere | INFO | database.py:64 | ✅ Database tables created successfully
+2025-11-07 19:18:43 | InsightSphere | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 19:18:45 | InsightSphere | INFO | database.py:19 | using dev
+2025-11-07 19:19:08 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 19:19:11 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 19:19:12 | InsightSphere | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 19:19:15 | InsightSphere | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 19:19:22 | InsightSphere | INFO | database.py:64 | ✅ Database tables created successfully
+2025-11-07 19:19:22 | InsightSphere | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 19:19:25 | InsightSphere | INFO | database.py:19 | using dev
+2025-11-07 19:19:48 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 19:19:51 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 19:19:52 | InsightSphere | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 19:19:55 | InsightSphere | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 19:20:00 | InsightSphere | INFO | database.py:19 | using dev
+2025-11-07 19:20:00 | InsightSphere | INFO | db_service.py:25 | 🔄 Attempting to save chat - User: test_fix_user, Document: test_fix_document.pdf
+2025-11-07 19:20:00 | InsightSphere | ERROR | db_service.py:65 | ❌ Error saving chat to DB: name 'asyncpg' is not defined
+2025-11-07 19:20:02 | InsightSphere | INFO | database.py:64 | ✅ Database tables created successfully
+2025-11-07 19:20:02 | InsightSphere | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 19:20:05 | InsightSphere | INFO | database.py:19 | using dev
+2025-11-07 19:20:27 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 19:20:31 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 19:20:31 | InsightSphere | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 19:20:34 | InsightSphere | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 19:20:36 | InsightSphere | INFO | database.py:19 | using dev
+2025-11-07 19:20:36 | InsightSphere | INFO | db_service.py:25 | 🔄 Attempting to save chat - User: test_fix_user, Document: test_fix_document.pdf
+2025-11-07 19:20:38 | InsightSphere | INFO | db_service.py:36 | 🔍 Existing record found: False
+2025-11-07 19:20:38 | InsightSphere | INFO | db_service.py:55 | ✅ INSERT completed - INSERT 0 1
+2025-11-07 19:20:39 | InsightSphere | INFO | db_service.py:62 | 💾 Data committed successfully
+2025-11-07 19:20:41 | InsightSphere | INFO | database.py:64 | ✅ Database tables created successfully
+2025-11-07 19:20:42 | InsightSphere | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 19:20:44 | InsightSphere | INFO | database.py:19 | using dev
+2025-11-07 19:21:04 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 19:21:08 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 19:21:09 | InsightSphere | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 19:21:11 | InsightSphere | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 19:21:20 | InsightSphere | INFO | database.py:64 | ✅ Database tables created successfully
+2025-11-07 19:21:20 | InsightSphere | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 19:21:23 | InsightSphere | INFO | database.py:19 | using dev
+2025-11-07 19:21:48 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 19:21:52 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 19:21:53 | InsightSphere | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 19:21:56 | InsightSphere | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 19:22:03 | InsightSphere | INFO | database.py:64 | ✅ Database tables created successfully
+2025-11-07 19:22:04 | InsightSphere | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 19:23:35 | InsightSphere | INFO | database.py:19 | using dev
+2025-11-07 19:24:05 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 19:24:09 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 19:24:10 | InsightSphere | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 19:24:12 | InsightSphere | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 19:24:14 | InsightSphere | INFO | database.py:64 | ✅ Database tables created successfully
+2025-11-07 19:24:14 | InsightSphere | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 19:24:41 | InsightSphere | INFO | database.py:19 | using dev
+2025-11-07 19:24:41 | InsightSphere | INFO | db_service.py:25 | 🔄 Attempting to save chat - User: test_fix_user, Document: test_fix_document.pdf
+2025-11-07 19:24:43 | InsightSphere | INFO | db_service.py:36 | 🔍 Existing record found: True
+2025-11-07 19:24:44 | InsightSphere | INFO | db_service.py:46 | ✅ UPDATE completed - UPDATE 1
+2025-11-07 19:24:44 | InsightSphere | INFO | db_service.py:62 | 💾 Data committed successfully
+2025-11-07 19:27:53 | InsightSphere | INFO | database.py:19 | using dev
+2025-11-07 19:28:16 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 19:28:20 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 19:28:21 | InsightSphere | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 19:28:23 | InsightSphere | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 19:28:24 | InsightSphere | INFO | db_service.py:15 | using dev
+2025-11-07 19:28:24 | InsightSphere | INFO | database.py:64 | ✅ Database tables created successfully
+2025-11-07 19:28:24 | InsightSphere | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 19:28:28 | InsightSphere | INFO | database.py:19 | using dev
+2025-11-07 19:28:53 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 19:28:57 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 19:28:57 | InsightSphere | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 19:29:00 | InsightSphere | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 19:29:00 | InsightSphere | INFO | db_service.py:15 | using dev
+2025-11-07 19:29:01 | InsightSphere | INFO | database.py:64 | ✅ Database tables created successfully
+2025-11-07 19:29:01 | InsightSphere | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 19:29:01 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf, messages: 11
+2025-11-07 19:29:01 | InsightSphere | INFO | db_service.py:31 | 🔄 Attempting to save chat - User: ravishankerdas020@gmail.com, Document: ml_llm_interview_cheat_sheet.pdf
+2025-11-07 19:29:01 | InsightSphere | INFO | ingest.py:26 | ✓ Ingest: ChromaDB PersistentClient initialized at ./chroma_db
+2025-11-07 19:29:01 | InsightSphere | INFO | ingest.py:59 | ✓ Ingest: Collection 'user_ravishankerdas020_at_gmail_com_docs' loaded with 36 items
+2025-11-07 19:29:05 | InsightSphere | INFO | multimodal_retriever.py:245 | Invoking RAG Agent...
+2025-11-07 19:29:05 | InsightSphere | INFO | semantic_rag_cache.py:62 | source_filter in cache search: ml_llm_interview_cheat_sheet.pdf
+2025-11-07 19:29:05 | InsightSphere | INFO | db_service.py:42 | 🔍 Existing record found: False
+2025-11-07 19:29:05 | InsightSphere | INFO | db_service.py:61 | ✅ INSERT completed - INSERT 0 1
+2025-11-07 19:29:05 | InsightSphere | INFO | db_service.py:68 | 💾 Data committed successfully
+2025-11-07 19:29:09 | InsightSphere | INFO | semantic_rag_cache.py:91 | 🔍 Semantic cache MISS (best similarity: 0.0%)
+2025-11-07 19:29:14 | InsightSphere | INFO | semantic_rag_cache.py:122 | 💾 Saved to semantic cache (TTL: 7 days), cache_key: rag:semantic:93ce87498f71:ml_llm_interview_cheat_sheet.pdf:0162a17b
+2025-11-07 19:29:15 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf, messages: 12
+2025-11-07 19:29:15 | InsightSphere | INFO | db_service.py:31 | 🔄 Attempting to save chat - User: ravishankerdas020@gmail.com, Document: ml_llm_interview_cheat_sheet.pdf
+2025-11-07 19:29:15 | InsightSphere | INFO | db_service.py:42 | 🔍 Existing record found: True
+2025-11-07 19:29:15 | InsightSphere | INFO | db_service.py:52 | ✅ UPDATE completed - UPDATE 1
+2025-11-07 19:29:15 | InsightSphere | INFO | db_service.py:68 | 💾 Data committed successfully
+2025-11-07 19:29:20 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf, messages: 12
+2025-11-07 19:29:20 | InsightSphere | INFO | db_service.py:31 | 🔄 Attempting to save chat - User: ravishankerdas020@gmail.com, Document: ml_llm_interview_cheat_sheet.pdf
+2025-11-07 19:29:20 | InsightSphere | INFO | db_service.py:42 | 🔍 Existing record found: True
+2025-11-07 19:29:20 | InsightSphere | INFO | db_service.py:52 | ✅ UPDATE completed - UPDATE 1
+2025-11-07 19:29:20 | InsightSphere | INFO | db_service.py:68 | 💾 Data committed successfully
+2025-11-07 19:30:58 | InsightSphere | INFO | database.py:19 | using dev
+2025-11-07 19:31:28 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 19:31:33 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 19:31:34 | InsightSphere | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 19:31:37 | InsightSphere | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 19:31:38 | InsightSphere | INFO | db_service.py:15 | using dev
+2025-11-07 19:31:38 | InsightSphere | INFO | database.py:64 | ✅ Database tables created successfully
+2025-11-07 19:31:38 | InsightSphere | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 19:31:43 | InsightSphere | INFO | database.py:19 | using dev
+2025-11-07 19:32:02 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 19:32:06 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 19:32:06 | InsightSphere | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 19:32:09 | InsightSphere | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 19:32:10 | InsightSphere | INFO | db_service.py:15 | using dev
+2025-11-07 19:32:10 | InsightSphere | INFO | database.py:64 | ✅ Database tables created successfully
+2025-11-07 19:32:10 | InsightSphere | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 19:32:10 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf, messages: 13
+2025-11-07 19:32:10 | InsightSphere | INFO | ingest.py:26 | ✓ Ingest: ChromaDB PersistentClient initialized at ./chroma_db
+2025-11-07 19:32:10 | InsightSphere | INFO | ingest.py:59 | ✓ Ingest: Collection 'user_ravishankerdas020_at_gmail_com_docs' loaded with 36 items
+2025-11-07 19:32:14 | InsightSphere | INFO | multimodal_retriever.py:245 | Invoking RAG Agent...
+2025-11-07 19:32:14 | InsightSphere | INFO | semantic_rag_cache.py:62 | source_filter in cache search: ml_llm_interview_cheat_sheet.pdf
+2025-11-07 19:32:15 | InsightSphere | INFO | db_service.py:45 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ml_llm_interview_cheat_sheet.pdf
+2025-11-07 19:32:19 | InsightSphere | INFO | semantic_rag_cache.py:91 | 🔍 Semantic cache MISS (best similarity: 0.0%)
+2025-11-07 19:32:28 | InsightSphere | INFO | rag_agent.py:380 | 🔧 Agentic tool executed: sql_query -> False
+2025-11-07 19:32:33 | InsightSphere | INFO | rag_agent.py:380 | 🔧 Agentic tool executed: tavily_search -> True
+2025-11-07 19:32:35 | InsightSphere | INFO | rag_agent.py:380 | 🔧 Agentic tool executed: tavily_search -> True
+2025-11-07 19:32:46 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf, messages: 14
+2025-11-07 19:32:46 | InsightSphere | INFO | db_service.py:45 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ml_llm_interview_cheat_sheet.pdf
+2025-11-07 19:32:50 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf, messages: 14
+2025-11-07 19:32:50 | InsightSphere | INFO | db_service.py:45 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ml_llm_interview_cheat_sheet.pdf
+2025-11-07 19:33:42 | InsightSphere | INFO | upload.py:58 | 
+🔍 PDF Analysis for ravi_attentive.pdf:
+2025-11-07 19:33:42 | InsightSphere | INFO | upload.py:59 |    Complexity: 0/100
+2025-11-07 19:33:42 | InsightSphere | INFO | upload.py:60 |    Analysis: Simple text document - text-only
+2025-11-07 19:33:42 | InsightSphere | INFO | upload.py:61 |    Recommended: text mode with max_images=0
+2025-11-07 19:33:42 | InsightSphere | INFO | upload.py:62 |    Estimated time: ~0s
+2025-11-07 19:33:42 | InsightSphere | INFO | text_only_ingest.py:60 | 
+============================================================
+2025-11-07 19:33:42 | InsightSphere | INFO | text_only_ingest.py:61 | FAST TEXT-ONLY INGEST: ravi_attentive.pdf
+2025-11-07 19:33:42 | InsightSphere | INFO | text_only_ingest.py:62 | ============================================================
+2025-11-07 19:33:42 | InsightSphere | INFO | text_only_ingest.py:65 | 📄 Extracting text...
+2025-11-07 19:33:42 | InsightSphere | INFO | text_only_ingest.py:69 | ✂️  Chunking text...
+2025-11-07 19:33:42 | InsightSphere | INFO | text_only_ingest.py:72 | ✅ Created 5 chunks
+2025-11-07 19:33:42 | InsightSphere | INFO | text_only_ingest.py:88 | 🔢 Generating embeddings...
+2025-11-07 19:33:42 | InsightSphere | INFO | text_only_ingest.py:92 | 💾 Storing in database...
+2025-11-07 19:33:42 | InsightSphere | INFO | text_only_ingest.py:101 | ✅ Done! Stored 5 chunks
+2025-11-07 19:33:42 | InsightSphere | INFO | text_only_ingest.py:102 | ============================================================
+
+2025-11-07 19:33:42 | InsightSphere | INFO | query.py:211 | 📂 Loading chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf
+2025-11-07 19:33:42 | InsightSphere | INFO | db_service.py:76 | ✅ Loaded 14 messages for ml_llm_interview_cheat_sheet.pdf
+2025-11-07 19:33:42 | InsightSphere | INFO | query.py:211 | 📂 Loading chat for user ravishankerdas020@gmail.com, document: ravi_attentive.pdf
+2025-11-07 19:33:42 | InsightSphere | INFO | db_service.py:79 | ℹ️ No existing chat found for ravi_attentive.pdf
+2025-11-07 19:33:44 | InsightSphere | INFO | query.py:211 | 📂 Loading chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf
+2025-11-07 19:33:44 | InsightSphere | INFO | db_service.py:76 | ✅ Loaded 14 messages for ml_llm_interview_cheat_sheet.pdf
+2025-11-07 19:33:44 | InsightSphere | INFO | query.py:211 | 📂 Loading chat for user ravishankerdas020@gmail.com, document: ravi_attentive.pdf
+2025-11-07 19:33:44 | InsightSphere | INFO | db_service.py:79 | ℹ️ No existing chat found for ravi_attentive.pdf
+2025-11-07 19:33:45 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: Ravi_Attentive.pdf, messages: 14
+2025-11-07 19:33:45 | InsightSphere | INFO | db_service.py:54 | ✅ Created new chat for user ravishankerdas020@gmail.com, document ravi_attentive.pdf
+2025-11-07 19:33:45 | InsightSphere | INFO | query.py:211 | 📂 Loading chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf
+2025-11-07 19:33:45 | InsightSphere | INFO | db_service.py:76 | ✅ Loaded 14 messages for ml_llm_interview_cheat_sheet.pdf
+2025-11-07 19:33:45 | InsightSphere | INFO | query.py:211 | 📂 Loading chat for user ravishankerdas020@gmail.com, document: ravi_attentive.pdf
+2025-11-07 19:33:46 | InsightSphere | INFO | db_service.py:76 | ✅ Loaded 14 messages for ravi_attentive.pdf
+2025-11-07 19:33:56 | InsightSphere | INFO | multimodal_retriever.py:245 | Invoking RAG Agent...
+2025-11-07 19:33:56 | InsightSphere | INFO | semantic_rag_cache.py:62 | source_filter in cache search: ravi_attentive.pdf
+2025-11-07 19:34:01 | InsightSphere | INFO | semantic_rag_cache.py:88 | ✅ Semantic cache HIT (similarity: 92.3%)
+2025-11-07 19:34:02 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ravi_attentive.pdf, messages: 2
+2025-11-07 19:34:02 | InsightSphere | INFO | db_service.py:45 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ravi_attentive.pdf
+2025-11-07 19:34:07 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ravi_attentive.pdf, messages: 2
+2025-11-07 19:34:07 | InsightSphere | INFO | db_service.py:45 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ravi_attentive.pdf
+2025-11-07 19:35:03 | InsightSphere | INFO | multimodal_retriever.py:245 | Invoking RAG Agent...
+2025-11-07 19:35:03 | InsightSphere | INFO | semantic_rag_cache.py:62 | source_filter in cache search: ravi_attentive.pdf
+2025-11-07 19:35:07 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ravi_attentive.pdf, messages: 3
+2025-11-07 19:35:07 | InsightSphere | INFO | db_service.py:45 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ravi_attentive.pdf
+2025-11-07 19:35:08 | InsightSphere | INFO | semantic_rag_cache.py:88 | ✅ Semantic cache HIT (similarity: 93.1%)
+2025-11-07 19:35:08 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ravi_attentive.pdf, messages: 4
+2025-11-07 19:35:08 | InsightSphere | INFO | db_service.py:45 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ravi_attentive.pdf
+2025-11-07 19:35:14 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ravi_attentive.pdf, messages: 4
+2025-11-07 19:35:14 | InsightSphere | INFO | db_service.py:45 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ravi_attentive.pdf
+2025-11-07 19:36:12 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ravi_attentive.pdf, messages: 4
+2025-11-07 19:36:12 | InsightSphere | INFO | db_service.py:45 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ravi_attentive.pdf
+2025-11-07 19:36:12 | InsightSphere | INFO | query.py:211 | 📂 Loading chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf
+2025-11-07 19:36:13 | InsightSphere | INFO | db_service.py:76 | ✅ Loaded 14 messages for ml_llm_interview_cheat_sheet.pdf
+2025-11-07 19:36:13 | InsightSphere | INFO | query.py:211 | 📂 Loading chat for user ravishankerdas020@gmail.com, document: ravi_attentive.pdf
+2025-11-07 19:36:13 | InsightSphere | INFO | db_service.py:76 | ✅ Loaded 4 messages for ravi_attentive.pdf
+2025-11-07 19:36:14 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf, messages: 14
+2025-11-07 19:36:14 | InsightSphere | INFO | db_service.py:45 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ml_llm_interview_cheat_sheet.pdf
+2025-11-07 19:36:14 | InsightSphere | INFO | query.py:211 | 📂 Loading chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf
+2025-11-07 19:36:14 | InsightSphere | INFO | db_service.py:76 | ✅ Loaded 14 messages for ml_llm_interview_cheat_sheet.pdf
+2025-11-07 19:36:14 | InsightSphere | INFO | query.py:211 | 📂 Loading chat for user ravishankerdas020@gmail.com, document: ravi_attentive.pdf
+2025-11-07 19:36:14 | InsightSphere | INFO | db_service.py:76 | ✅ Loaded 4 messages for ravi_attentive.pdf
+2025-11-07 19:36:31 | InsightSphere | INFO | query.py:211 | 📂 Loading chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf
+2025-11-07 19:36:31 | InsightSphere | INFO | db_service.py:76 | ✅ Loaded 14 messages for ml_llm_interview_cheat_sheet.pdf
+2025-11-07 19:36:31 | InsightSphere | INFO | query.py:211 | 📂 Loading chat for user ravishankerdas020@gmail.com, document: ravi_attentive.pdf
+2025-11-07 19:36:31 | InsightSphere | INFO | query.py:211 | 📂 Loading chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf
+2025-11-07 19:36:31 | InsightSphere | INFO | db_service.py:76 | ✅ Loaded 4 messages for ravi_attentive.pdf
+2025-11-07 19:36:31 | InsightSphere | INFO | db_service.py:76 | ✅ Loaded 14 messages for ml_llm_interview_cheat_sheet.pdf
+2025-11-07 19:36:31 | InsightSphere | INFO | query.py:211 | 📂 Loading chat for user ravishankerdas020@gmail.com, document: ravi_attentive.pdf
+2025-11-07 19:36:31 | InsightSphere | INFO | db_service.py:76 | ✅ Loaded 4 messages for ravi_attentive.pdf
+2025-11-07 19:36:32 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf, messages: 14
+2025-11-07 19:36:32 | InsightSphere | INFO | db_service.py:45 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ml_llm_interview_cheat_sheet.pdf
+2025-11-07 19:36:32 | InsightSphere | INFO | query.py:211 | 📂 Loading chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf
+2025-11-07 19:36:32 | InsightSphere | INFO | db_service.py:76 | ✅ Loaded 14 messages for ml_llm_interview_cheat_sheet.pdf
+2025-11-07 19:36:32 | InsightSphere | INFO | query.py:211 | 📂 Loading chat for user ravishankerdas020@gmail.com, document: ravi_attentive.pdf
+2025-11-07 19:36:33 | InsightSphere | INFO | db_service.py:76 | ✅ Loaded 4 messages for ravi_attentive.pdf
+2025-11-07 19:36:33 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ravi_attentive.pdf, messages: 4
+2025-11-07 19:36:33 | InsightSphere | INFO | db_service.py:45 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ravi_attentive.pdf
+2025-11-07 19:36:33 | InsightSphere | INFO | query.py:211 | 📂 Loading chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf
+2025-11-07 19:36:33 | InsightSphere | INFO | db_service.py:76 | ✅ Loaded 14 messages for ml_llm_interview_cheat_sheet.pdf
+2025-11-07 19:36:34 | InsightSphere | INFO | query.py:211 | 📂 Loading chat for user ravishankerdas020@gmail.com, document: ravi_attentive.pdf
+2025-11-07 19:36:34 | InsightSphere | INFO | db_service.py:76 | ✅ Loaded 4 messages for ravi_attentive.pdf
+2025-11-07 19:36:34 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf, messages: 14
+2025-11-07 19:36:34 | InsightSphere | INFO | db_service.py:45 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ml_llm_interview_cheat_sheet.pdf
+2025-11-07 19:36:34 | InsightSphere | INFO | query.py:211 | 📂 Loading chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf
+2025-11-07 19:36:35 | InsightSphere | INFO | db_service.py:76 | ✅ Loaded 14 messages for ml_llm_interview_cheat_sheet.pdf
+2025-11-07 19:36:35 | InsightSphere | INFO | query.py:211 | 📂 Loading chat for user ravishankerdas020@gmail.com, document: ravi_attentive.pdf
+2025-11-07 19:36:35 | InsightSphere | INFO | db_service.py:76 | ✅ Loaded 4 messages for ravi_attentive.pdf
+2025-11-07 19:36:35 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ravi_attentive.pdf, messages: 4
+2025-11-07 19:36:35 | InsightSphere | INFO | db_service.py:45 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ravi_attentive.pdf
+2025-11-07 19:36:35 | InsightSphere | INFO | query.py:211 | 📂 Loading chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf
+2025-11-07 19:36:35 | InsightSphere | INFO | db_service.py:76 | ✅ Loaded 14 messages for ml_llm_interview_cheat_sheet.pdf
+2025-11-07 19:36:35 | InsightSphere | INFO | query.py:211 | 📂 Loading chat for user ravishankerdas020@gmail.com, document: ravi_attentive.pdf
+2025-11-07 19:36:35 | InsightSphere | INFO | db_service.py:76 | ✅ Loaded 4 messages for ravi_attentive.pdf
+2025-11-07 19:36:36 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf, messages: 14
+2025-11-07 19:36:36 | InsightSphere | INFO | db_service.py:45 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ml_llm_interview_cheat_sheet.pdf
+2025-11-07 19:36:36 | InsightSphere | INFO | query.py:211 | 📂 Loading chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf
+2025-11-07 19:36:36 | InsightSphere | INFO | db_service.py:76 | ✅ Loaded 14 messages for ml_llm_interview_cheat_sheet.pdf
+2025-11-07 19:36:36 | InsightSphere | INFO | query.py:211 | 📂 Loading chat for user ravishankerdas020@gmail.com, document: ravi_attentive.pdf
+2025-11-07 19:36:36 | InsightSphere | INFO | db_service.py:76 | ✅ Loaded 4 messages for ravi_attentive.pdf
+2025-11-07 19:36:42 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ravi_attentive.pdf, messages: 4
+2025-11-07 19:36:42 | InsightSphere | INFO | db_service.py:45 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ravi_attentive.pdf

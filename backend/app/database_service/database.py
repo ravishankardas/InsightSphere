@@ -11,7 +11,15 @@ from app.database_service.models import Base
 load_dotenv()
 
 # Get database URL from environment
-DATABASE_URL = os.getenv("DATABASE_URL")
+API_BASE_URL = os.getenv("RAILWAY_PUBLIC_DOMAIN")
+if API_BASE_URL:
+    logger.info("using prod")
+    DATABASE_URL = os.getenv("DATABASE_URL_PROD")
+else:
+    logger.info("using dev")
+    DATABASE_URL = os.getenv("DATABASE_URL_DEV")
+
+# logger.info(DATABASE_URL)
 
 # Replace postgresql:// with postgresql+asyncpg:// for async support
 if DATABASE_URL and DATABASE_URL.startswith("postgresql://"):
@@ -35,7 +43,8 @@ async def get_db_pool():
         DATABASE_URL,
         min_size=1,
         max_size=10,  # Adjust based on your needs
-        max_inactive_connection_lifetime=300  # Close idle connections after 5 minutes
+        max_inactive_connection_lifetime=300,  # Close idle connections after 5 minutes
+        statement_cache_size=0 
     )
     return pool
 

@@ -4,6 +4,7 @@
     "python.analysis.extraPaths": [
         "./backend/app/services/clear_",
         "./backend/app/services/clear_",
-        "./backend/app/services/clear_"
+        "./backend/app/services/clear_",
+        "./backend/app/database_service"
     ]
 }

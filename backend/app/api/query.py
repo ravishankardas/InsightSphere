@@ -226,7 +226,43 @@ async def load_chat_conversation(
             messages=[],
             document_name=document_name
         )
+
+@router.delete("/chats/delete/{document_name}")
+async def delete_chat_conversation(
+    document_name: str,
+    user_id: str = Header(None, alias="X-User-Id")
+):
+    """
+    Delete chat conversation for a specific document
+    """
+    if not user_id:
+        raise HTTPException(
+            status_code=401,
+            detail="Authentication required. Please provide X-User-Id header."
+        )
     
+    logger.info(f"🗑️ Deleting chat for user {user_id}, document: {document_name}")
+    
+    try:
+        # Import your database service
+        from app.database_service.db_service import delete_chat_from_db
+        
+        # Delete from database
+        await delete_chat_from_db(user_id, document_name)
+        
+        return {
+            "success": True,
+            "message": "Chat conversation deleted successfully",
+            "document_name": document_name
+        }
+        
+    except Exception as e:
+        print(f"❌ Error deleting chat: {e}")
+        return {
+            "success": False,
+            "message": f"Failed to delete chat: {str(e)}"
+        }
+        
 @router.post("/evaluate")
 async def evaluate_rag(
     user_id: Optional[str] = Header(None, alias="X-User-Id"),

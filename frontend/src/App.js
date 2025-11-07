@@ -186,14 +186,23 @@ export default function App() {
       const res = await fetch(`${apiUrl}/api/documents/${encodeURIComponent(docToDelete)}`, { method: "DELETE", headers });
 
       if (res.ok) {
+        // 1. Remove document from documents list
         setDocuments(documents.filter(doc => doc !== docToDelete));
-        if (selectedDocument === docToDelete) setSelectedDocument(null);
         
-        // Remove from cache
-        const cachedChats = getCachedChats();
+        // 2. Clear chat history from localStorage cache
+        const cachedChats = JSON.parse(localStorage.getItem(`chatHistory_${userId}`) || '{}');
         delete cachedChats[docToDelete];
         localStorage.setItem(`chatHistory_${userId}`, JSON.stringify(cachedChats));
         setDocumentChats(cachedChats);
+        
+        // 3. Clear current messages if viewing the deleted document
+        if (selectedDocument === docToDelete) {
+          setSelectedDocument(null);
+          setMessages([]);
+        }
+        
+        // 4. Also delete from backend database (optional but recommended)
+        await deleteChatHistoryFromBackend(docToDelete);
         
         setUploadStatus({ type: "success", message: `Document "${docToDelete}" deleted successfully.` });
       } else {
@@ -207,6 +216,38 @@ export default function App() {
       setDocToDelete(null);
     }
   };
+
+  const deleteChatHistoryFromBackend = async (documentName) => {
+    if (!isSignedIn || !userId || !documentName) {
+      console.log("Skipping chat history deletion - not signed in");
+      return;
+    }
+    
+    try {
+      const headers = {
+        "Content-Type": "application/json",
+        "X-API-Key": API_KEY,
+        "X-User-Id": userId,
+      };
+
+      console.log(`🗑️ Deleting chat history for: ${documentName}`);
+      
+      const response = await fetch(`${apiUrl}/api/query/chats/delete/${encodeURIComponent(documentName)}`, {
+        method: "DELETE",
+        headers,
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        console.log("✅ Chat history deleted from backend");
+      } else {
+        console.error("❌ Failed to delete chat history from backend:", data.message);
+      }
+    } catch (error) {
+      console.error("❌ Error deleting chat history from backend:", error);
+    }
+  };
+
 
   const handleDocumentClick = async (filename) => {
     if (selectedDocument === filename) return;
@@ -399,7 +440,7 @@ export default function App() {
       const bodyPayload = {
         query: getConversationContext(userMessage.content),
         top_k: 6,
-        source: selectedDocument,
+        source: selectedDocument.toLowerCase(),
         use_query_rewriting: false,
       };
 
