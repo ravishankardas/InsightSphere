@@ -7,6 +7,8 @@ from starlette.status import HTTP_429_TOO_MANY_REQUESTS
 
 # --- FIX: Import limiter from the new config file ---
 from app.core.rate_limiter_config import limiter
+from app.database_service.database import create_tables
+
 from slowapi.errors import RateLimitExceeded # type: ignore
 # ----------------------------------------------------
 
@@ -22,6 +24,11 @@ app = FastAPI(
     redoc_url="/redoc"
 )
 
+@app.on_event("startup")
+async def startup_event():
+    await create_tables()
+    print("🚀 Application started and database tables verified")
+    
 # Attach the limiter instance to the app state
 app.state.limiter = limiter
 

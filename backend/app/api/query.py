@@ -17,6 +17,8 @@ from app.services.intent_classifier import detect_email_intent
 from dotenv import load_dotenv
 import os
 
+from app.database_service.db_service import load_chat_from_db, save_chat_to_db
+
 load_dotenv()
 
 TO_ = os.getenv("TO") 
@@ -31,8 +33,31 @@ class QueryRequest(BaseModel):
     source: str = ""
     use_query_rewriting: bool = True
 
+
+# Request/Response models for chat saving
+class ChatMessage(BaseModel):
+    type: str  # "user" or "assistant" or "error"
+    content: str
+    isUser: bool
+    timestamp: str
+    retrieved: Optional[List[Dict[str, Any]]] = None
+
+class SaveChatRequest(BaseModel):
+    document_name: str
+    messages: List[ChatMessage]
+
+class SaveChatResponse(BaseModel):
+    success: bool
+    message: str
+    document_name: Optional[str] = None
+
+class LoadChatResponse(BaseModel):
+    success: bool
+    messages: List[Dict[str, Any]]
+    document_name: Optional[str] = None
+
 @router.post("")
-@limiter.limit(f"{TO_}/24hour")
+# @limiter.limit(f"{TO_}/24hour")
 async def query_documents(
     request: Request,
     body: QueryRequest,
@@ -125,6 +150,83 @@ async def query_documents(
         log_query(log_data)
 
 
+# Add this to your existing router in query.py
+@router.post("/chats/save")
+async def save_chat_conversation(
+    request: Request,
+    body: SaveChatRequest,
+    user_id: str = Header(None, alias="X-User-Id")
+):
+    """
+    Save chat conversation for a specific document
+    """
+    if not user_id:
+        raise HTTPException(
+            status_code=401,
+            detail="Authentication required. Please provide X-User-Id header."
+        )
+    
+    if not body.document_name:
+        raise HTTPException(
+            status_code=400,
+            detail="Document name is required."
+        )
+    
+    print(f"💾 Saving chat for user {user_id}, document: {body.document_name}, messages: {len(body.messages)}")
+    
+    try:
+        # Convert Pydantic models to dict for JSON storage
+        messages_dict = [message.dict() for message in body.messages]
+        
+        # Save to database
+        await save_chat_to_db(user_id, body.document_name, messages_dict)
+        
+        return SaveChatResponse(
+            success=True,
+            message="Chat conversation saved successfully",
+            document_name=body.document_name
+        )
+        
+    except Exception as e:
+        print(f"❌ Error saving chat: {e}")
+        return SaveChatResponse(
+            success=False,
+            message=f"Failed to save chat: {str(e)}"
+        )
+
+@router.get("/chats/load/{document_name}")
+async def load_chat_conversation(
+    document_name: str,
+    user_id: str = Header(None, alias="X-User-Id")
+):
+    """
+    Load chat conversation for a specific document
+    """
+    if not user_id:
+        raise HTTPException(
+            status_code=401,
+            detail="Authentication required. Please provide X-User-Id header."
+        )
+    
+    print(f"📂 Loading chat for user {user_id}, document: {document_name}")
+    
+    try:
+        messages = await load_chat_from_db(user_id, document_name)
+        
+        return LoadChatResponse(
+            success=True,
+            messages=messages,
+            document_name=document_name
+        )
+        
+    except Exception as e:
+        print(f"❌ Error loading chat: {e}")
+        return LoadChatResponse(
+            success=False,
+            messages=[],
+            document_name=document_name
+        )
+    
 @router.post("/evaluate")
 async def evaluate_rag(
     user_id: Optional[str] = Header(None, alias="X-User-Id"),

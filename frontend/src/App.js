@@ -36,6 +36,9 @@ export default function App() {
   const [loadingDocuments, setLoadingDocuments] = useState(false);
   const [selectedDocument, setSelectedDocument] = useState(null);
   const [deletingDoc, setDeletingDoc] = useState(null);
+  // Add this with your other state variables
+  const [loadingChatHistory, setLoadingChatHistory] = useState(false);
+  
   
   // Upload State
   const [uploading, setUploading] = useState(false);
@@ -45,7 +48,9 @@ export default function App() {
   // Chat/Query State
   const [query, setQuery] = useState("");
   const [querying, setQuerying] = useState(false);
-  const [documentChats, setDocumentChats] = useState({}); // { docName: [messages] }
+  const [documentChats, setDocumentChats] = useState({});
+  const [loadingChats, setLoadingChats] = useState(false);
+   // { docName: [messages] }
   const [messages, setMessages] = useState([]); // Current doc messages
   const [rateLimited, setRateLimited] = useState(false);
   const [retryAfter, setRetryAfter] = useState(0);
@@ -123,19 +128,50 @@ export default function App() {
     }
   };
 
-  const handleDocumentClick = (filename) => {
-    if (selectedDocument === filename) return;
-
-    // Save current document's chat history before switching
-    if (selectedDocument && messages.length > 0) {
-      setDocumentChats(prev => ({ ...prev, [selectedDocument]: messages }));
+  const handleDocumentClick = async (filename) => {
+  if (selectedDocument === filename) return;
+  
+  console.log(`🔄 Switching from ${selectedDocument} to ${filename}`);
+  
+  // Save current document before switching
+  if (selectedDocument && messages.length > 0) {
+    await saveChatToBackend(selectedDocument, messages);
+  }
+  
+  setLoadingChatHistory(true); // 🔥 START LOADING
+  
+  // Check if we have the chat in local state
+  if (documentChats[filename]) {
+    // Load from local state (fast)
+    setMessages(documentChats[filename]);
+    setLoadingChatHistory(false); // 🔥 STOP LOADING immediately for local
+    console.log(`✅ Loaded ${documentChats[filename].length} messages from local state`);
+  } else {
+    // Load from backend (first time or page refresh)
+    setLoadingChats(true);
+    try {
+      const loadedMessages = await loadChatFromBackend(filename);
+      setMessages(loadedMessages);
+      
+      // Update local state with loaded messages
+      if (loadedMessages.length > 0) {
+        setDocumentChats(prev => ({
+          ...prev,
+          [filename]: loadedMessages
+        }));
+      }
+      console.log(`✅ Loaded ${loadedMessages.length} messages from backend`);
+    } catch (error) {
+      console.error("Error loading chat:", error);
+      setMessages([]); // Start fresh if error
+    } finally {
+      setLoadingChats(false);
+      setLoadingChatHistory(false); // 🔥 STOP LOADING
     }
-
-    // Load the new document's chat history
-    const newDocumentMessages = documentChats[filename] || [];
-    setMessages(newDocumentMessages);
-    setSelectedDocument(filename);
-  };
+  }
+  
+  setSelectedDocument(filename);
+};
 
   // ---- Upload & Query Handlers ---
 
@@ -208,45 +244,103 @@ export default function App() {
   };
 
   const handleQuery = async () => {
-    // ... [Copy the full logic for handleQuery from original App.js] ...
     if (rateLimited) {
-      setMessages(prev => [...prev, {
+      const errorMessage = {
         type: "error",
         content: `Rate limited. Only allowed ${NUM_QUERIES_ALLOWED} queries per day.`,
-        isUser: false
-      }]);
+        isUser: false,
+        timestamp: new Date().toISOString()
+      };
+      setMessages(prev => [...prev, errorMessage]);
       return;
     }
+
     if (!API_KEY) {
-      setMessages(prev => [...prev, { type: "error", content: "Configuration Error: Missing API Key.", isUser: false }]);
+      const errorMessage = {
+        type: "error", 
+        content: "Configuration Error: Missing API Key.", 
+        isUser: false,
+        timestamp: new Date().toISOString()
+      };
+      setMessages(prev => [...prev, errorMessage]);
       setQuerying(false);
       return;
     }
-    if (!isSignedIn) { setAuthMode("signup"); setShowAuthModal(true); return; }
-    if (!query.trim()) { setMessages(prev => [...prev, { type: "error", content: "Please enter a question.", isUser: false }]); return; }
-    if (!selectedDocument) { setMessages(prev => [...prev, { type: "error", content: "Please upload and select a document first.", isUser: false }]); return; }
-  
+
+    if (!isSignedIn) {
+      setAuthMode("signup");
+      setShowAuthModal(true);
+      return;
+    }
+
+    if (!query.trim()) {
+      const errorMessage = {
+        type: "error",
+        content: "Please enter a question.",
+        isUser: false,
+        timestamp: new Date().toISOString()
+      };
+      setMessages(prev => [...prev, errorMessage]);
+      return;
+    }
+
+    if (!selectedDocument) {
+      const errorMessage = {
+        type: "error",
+        content: "Please upload and select a document first.",
+        isUser: false,
+        timestamp: new Date().toISOString()
+      };
+      setMessages(prev => [...prev, errorMessage]);
+      return;
+    }
+
     // Add user message to chat
-    const userMessage = { type: "user", content: query.trim(), isUser: true, timestamp: new Date().toISOString() };
-    setMessages(prev => [...prev, userMessage]);
+    const userMessage = {
+      type: "user",
+      content: query.trim(),
+      isUser: true,
+      timestamp: new Date().toISOString()
+    };
+    
+    // Update messages and save to local state immediately
+    setMessages(prev => {
+      const newMessages = [...prev, userMessage];
+      // Update document chats in local state
+      setDocumentChats(prevChats => ({
+        ...prevChats,
+        [selectedDocument]: newMessages
+      }));
+      return newMessages;
+    });
+    
     setQuerying(true);
     setQuery("");
-  
+
     try {
-      const headers = { "Content-Type": "application/json", "X-API-Key": API_KEY };
-      if (userId) headers["X-User-Id"] = userId;
-  
+      const headers = {
+        "Content-Type": "application/json",
+        "X-API-Key": API_KEY,
+      };
+
+      if (userId) {
+        headers["X-User-Id"] = userId;
+      }
+
       const bodyPayload = {
         query: userMessage.content,
         top_k: 6,
         source: selectedDocument,
         use_query_rewriting: false,
       };
-  
-      const res = await fetch(`${apiUrl}/api/query`, { method: "POST", headers, body: JSON.stringify(bodyPayload) });
-      const data = await res.json();
-  
-       if (res.status === 429) {
+
+      const res = await fetch(`${apiUrl}/api/query`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify(bodyPayload),
+      });
+
+      if (res.status === 429) {
         const retryAfterHeader = res.headers.get('Retry-After');
         const waitTime = retryAfterHeader ? parseInt(retryAfterHeader) : 60;
         
@@ -264,10 +358,12 @@ export default function App() {
             return prev - 1;
           });
         }, 1000);
-  
+
         throw new Error(`Rate limited. Only allowed ${NUM_QUERIES_ALLOWED} queries per day.`);
       }
-  
+
+      const data = await res.json();
+
       if (res.ok) {
         if (data.answer && !data.answer.includes("OpenAI is not configured") && !data.answer.includes("no context found")) {
           const assistantMessage = {
@@ -277,22 +373,82 @@ export default function App() {
             retrieved: data.sources || data.retrieved || [],
             timestamp: new Date().toISOString()
           };
-          setMessages(prev => [...prev, assistantMessage]);
+          
+          // Update messages with assistant response and save to local state
+          setMessages(prev => {
+            const newMessages = [...prev, assistantMessage];
+            // Update document chats in local state
+            setDocumentChats(prevChats => ({
+              ...prevChats,
+              [selectedDocument]: newMessages
+            }));
+            return newMessages;
+          });
+
+          // Save to backend immediately after successful response
+          setTimeout(() => {
+            saveChatToBackend(selectedDocument, [...messages, userMessage, assistantMessage]);
+          }, 100);
+
         } else {
           let errorMessage = "The document was uploaded but no meaningful content was extracted. ";
           errorMessage += "This could be because:\n• The PDF is scanned or image-based\n• The backend AI service is not properly configured";
-          const errorResponse = { type: "error", content: errorMessage, isUser: false, timestamp: new Date().toISOString() };
-          setMessages(prev => [...prev, errorResponse]);
+          
+          const errorResponse = {
+            type: "error",
+            content: errorMessage,
+            isUser: false,
+            timestamp: new Date().toISOString()
+          };
+          
+          setMessages(prev => {
+            const newMessages = [...prev, errorResponse];
+            // Update document chats in local state
+            setDocumentChats(prevChats => ({
+              ...prevChats,
+              [selectedDocument]: newMessages
+            }));
+            return newMessages;
+          });
+
+          // Save error message to backend
+          setTimeout(() => {
+            saveChatToBackend(selectedDocument, [...messages, userMessage, errorResponse]);
+          }, 100);
         }
       } else {
         const errorDetail = data.detail || "Query failed";
         let userFriendlyMessage = "Query failed. Please try again.";
-        if (errorDetail.includes("OpenAI")) userFriendlyMessage = "Backend configuration error: AI service is not properly configured on the server.";
-        else if (errorDetail.includes("no context")) userFriendlyMessage = "No searchable content found in the document. The PDF might be scanned or contain only images.";
-        else if (errorDetail.includes("Authentication required")) userFriendlyMessage = "Authentication error: Please sign out and sign in again.";
         
-        const errorMessage = { type: "error", content: userFriendlyMessage, isUser: false, timestamp: new Date().toISOString() };
-        setMessages(prev => [...prev, errorMessage]);
+        if (errorDetail.includes("OpenAI")) {
+          userFriendlyMessage = "Backend configuration error: AI service is not properly configured on the server.";
+        } else if (errorDetail.includes("no context")) {
+          userFriendlyMessage = "No searchable content found in the document. The PDF might be scanned or contain only images.";
+        } else if (errorDetail.includes("Authentication required")) {
+          userFriendlyMessage = "Authentication error: Please sign out and sign in again.";
+        }
+        
+        const errorMessage = {
+          type: "error",
+          content: userFriendlyMessage,
+          isUser: false,
+          timestamp: new Date().toISOString()
+        };
+        
+        setMessages(prev => {
+          const newMessages = [...prev, errorMessage];
+          // Update document chats in local state
+          setDocumentChats(prevChats => ({
+            ...prevChats,
+            [selectedDocument]: newMessages
+          }));
+          return newMessages;
+        });
+
+        // Save error to backend
+        setTimeout(() => {
+          saveChatToBackend(selectedDocument, [...messages, userMessage, errorMessage]);
+        }, 100);
       }
     } catch (err) {
       const errorMessage = {
@@ -301,11 +457,24 @@ export default function App() {
         isUser: false,
         timestamp: new Date().toISOString()
       };
-      setMessages(prev => [...prev, errorMessage]);
+      
+      setMessages(prev => {
+        const newMessages = [...prev, errorMessage];
+        // Update document chats in local state
+        setDocumentChats(prevChats => ({
+          ...prevChats,
+          [selectedDocument]: newMessages
+        }));
+        return newMessages;
+      });
+
+      // Save network error to backend
+      setTimeout(() => {
+        saveChatToBackend(selectedDocument, [...messages, userMessage, errorMessage]);
+      }, 100);
     } finally {
       setQuerying(false);
     }
-    // ... [End of handleQuery logic] ...
   };
   
   const handleKeyPress = (e) => {
@@ -314,13 +483,179 @@ export default function App() {
       handleQuery();
     }
   };
+  // API functions for chat persistence
+  const saveChatToBackend = async (documentName, messages) => {
+    if (!isSignedIn || !userId || !documentName) {
+      console.log("Skipping save - not signed in or no document selected");
+      return;
+    }
+    
+    try {
+      const headers = {
+        "Content-Type": "application/json",
+        "X-API-Key": API_KEY,
+        "X-User-Id": userId,
+      };
 
-  // --- Effects ---
-  useEffect(() => { // Auto-save chat history
+      console.log(`💾 Saving ${messages.length} messages for: ${documentName}`);
+      
+      const response = await fetch(`${apiUrl}/api/query/chats/save`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify({
+          document_name: documentName,
+          messages: messages
+        }),
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        console.log("✅ Chat saved successfully");
+      } else {
+        console.error("❌ Failed to save chat:", data.message);
+      }
+    } catch (error) {
+      console.error("❌ Error saving chat to backend:", error);
+    }
+  };
+
+  const loadChatFromBackend = async (documentName) => {
+    if (!isSignedIn || !userId || !documentName) {
+      console.log("Skipping load - not signed in or no document name");
+      return [];
+    }
+    
+    try {
+      const headers = {
+        "X-API-Key": API_KEY,
+        "X-User-Id": userId,
+      };
+
+      console.log(`📂 Loading chat for: ${documentName}`);
+      
+      const response = await fetch(`${apiUrl}/api/query/chats/load/${encodeURIComponent(documentName)}`, {
+        method: "GET",
+        headers,
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        console.log(`✅ Loaded ${data.messages.length} messages for ${documentName}`);
+        return data.messages;
+      } else {
+        console.error("❌ Failed to load chat:", data.message);
+        return [];
+      }
+    } catch (error) {
+      console.error("❌ Error loading chat from backend:", error);
+      return [];
+    }
+  };
+
+  const loadAllChatsFromBackend = async () => {
+    console.log("loadAllChatsFromBackend was called")
+    // if (!isSignedIn || !userId) {
+    //   console.log("Skipping load all - not signed in");
+    //   return {};
+    // }
+    
+    // try {
+    //   const headers = {
+    //     "X-API-Key": API_KEY,
+    //     "X-User-Id": userId,
+    //   };
+
+    //   console.log("📚 Loading all chats for user");
+      
+    //   const response = await fetch(`${apiUrl}/api/query/chats/all`, {
+    //     method: "GET",
+    //     headers,
+    //   });
+
+    //   const data = await response.json();
+    //   if (data.success) {
+    //     console.log(`✅ Loaded ${Object.keys(data.chats).length} document chats`);
+    //     return data.chats;
+    //   } else {
+    //     console.error("❌ Failed to load all chats:", data.message);
+    //     return {};
+    //   }
+    // } catch (error) {
+    //   console.error("❌ Error loading all chats from backend:", error);
+    //   return {};
+    // }
+  };
+
+
+  // Auto-save when messages change (with debounce)
+  useEffect(() => {
     if (selectedDocument && messages.length > 0) {
-      setDocumentChats(prev => ({ ...prev, [selectedDocument]: messages }));
+      // Update local state immediately
+      setDocumentChats(prev => ({
+        ...prev,
+        [selectedDocument]: messages
+      }));
+      
+      // Debounced save to backend
+      const saveTimeout = setTimeout(() => {
+        saveChatToBackend(selectedDocument, messages);
+      }, 5000); // Save after 5 seconds of inactivity
+      
+      return () => clearTimeout(saveTimeout);
     }
   }, [messages, selectedDocument]);
+
+
+  // Add this useEffect to load chat history when page loads or document changes
+// Load chat history when page loads or document changes
+// Load chat history when page loads or document changes
+useEffect(() => {
+  const loadChatHistory = async () => {
+    if (selectedDocument && userId) {
+      setLoadingChatHistory(true); // 🔥 START LOADING
+      try {
+        const headers = {
+          "X-API-Key": API_KEY,
+          "X-User-Id": userId,
+        };
+
+        console.log(`📂 Loading chat for: ${selectedDocument}`);
+        
+        const response = await fetch(`${apiUrl}/api/query/chats/load/${encodeURIComponent(selectedDocument)}`, {
+          method: "GET",
+          headers,
+        });
+
+        const data = await response.json();
+        if (data.success) {
+          console.log(`✅ Loaded ${data.messages.length} messages for ${selectedDocument}`);
+          setMessages(data.messages);
+          
+          // Also update local documentChats state
+          setDocumentChats(prev => ({
+            ...prev,
+            [selectedDocument]: data.messages
+          }));
+        } else {
+          console.log("No previous chat history found");
+          setMessages([]); // Start fresh if no history
+        }
+      } catch (error) {
+        console.log("No previous chat history found or error loading:", error);
+        setMessages([]); // Start fresh on error
+      } finally {
+        setLoadingChatHistory(false); // 🔥 STOP LOADING (always runs)
+      }
+    } else {
+      setMessages([]); // Clear messages if no document selected
+      setLoadingChatHistory(false); // 🔥 STOP LOADING
+    }
+  };
+
+  loadChatHistory();
+}, [selectedDocument, userId, API_KEY, apiUrl]);
+
+
 
   useEffect(() => { // Auto-scroll to bottom
     const chatMessages = document.querySelector('.chat-messages');
@@ -415,6 +750,8 @@ export default function App() {
           uploadStatus={uploadStatus}
           rateLimited={rateLimited}
           numQueriesAllowed={NUM_QUERIES_ALLOWED}
+          loadingChats={loadingChats}
+          loadingChatHistory={loadingChatHistory} // Add this line
         />
       </div>
     </div>

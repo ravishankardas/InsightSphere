@@ -28,3 +28,7 @@ httpx
 resend
 sendgrid
 tavily-python
+psycopg2-binary
+asyncpg
+sqlalchemy
+alembic

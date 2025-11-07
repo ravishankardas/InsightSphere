@@ -15,13 +15,17 @@ export default function ChatPanel({
   uploading,
   uploadStatus,
   rateLimited,
-  numQueriesAllowed
+  numQueriesAllowed,
+  loadingChats,
+  loadingChatHistory 
 }) {
   return (
     <div className="chat-panel">
       <div className="chat-header">
         <h2 className="chat-title">
           {selectedDocument ? `Chat with ${selectedDocument}` : "Select a document to start chatting"}
+          {loadingChats && <span className="loading-indicator"> (Loading...)</span>}
+          {loadingChatHistory && <span className="loading-indicator"> (Loading history...)</span>}
         </h2>
         {!selectedDocument && (
           <p className="documents-subtitle" style={{marginTop: '0.5rem', fontSize: '0.875rem'}}>
