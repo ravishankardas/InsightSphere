@@ -4,6 +4,8 @@ import os
 from fastapi import Request
 from slowapi import Limiter # type: ignore
 from slowapi.util import get_ipaddr # type: ignore
+from dotenv import load_dotenv
+load_dotenv()
 
 # Function to extract the user identifier for rate limiting
 def get_user_identifier(request: Request) -> str:
