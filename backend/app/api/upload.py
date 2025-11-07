@@ -9,6 +9,8 @@ from app.services.pdf_complexity_analyzer import (
 )
 from app.core.auth import validate_api_key
 from app.logger import setup_logger
+from app.database_service.db_service import save_chat_to_db
+
 logger = setup_logger()
 
 router = APIRouter(dependencies=[Depends(validate_api_key)])
@@ -37,6 +39,7 @@ async def upload_pdf_auto(
     if not filename.endswith(".pdf"):
         raise HTTPException(status_code=400, detail="Only PDFs allowed")
     
+    filename = filename.lower()
     # Read file contents
     contents = await file.read()
     
@@ -76,6 +79,12 @@ async def upload_pdf_auto(
                 max_images=max_images,
                 fast_mode=False
             )
+
+        await save_chat_to_db(
+            user_id=user_id, 
+            document_name=filename, 
+            messages=[]
+        )
         
         return {
             "status": "indexed",
