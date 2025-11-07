@@ -132,6 +132,7 @@ export default function App() {
 
   // ---- Load All Chat History on Login ----
   // ---- Load Documents AND Chat History on Login ----
+// ---- Load Documents AND Chat History on Login ----
 useEffect(() => {
   const loadDocumentsAndChats = async () => {
     if (isSignedIn && userId) {
@@ -147,25 +148,28 @@ useEffect(() => {
 
         if (res.ok) {
           const documentsData = await res.json();
-          setDocuments(documentsData || []);
-          console.log(`✅ Loaded ${documentsData.length} documents`);
+          const normalizedDocuments = documentsData || [];
+          setDocuments(normalizedDocuments);
+          console.log(`✅ Loaded ${normalizedDocuments.length} documents`);
 
           // 2. Load chat history for ALL documents
-          if (documentsData && documentsData.length > 0) {
+          if (normalizedDocuments.length > 0) {
             const allChats = {};
             let loadedCount = 0;
             
-            for (const doc of documentsData) {
+            for (const doc of normalizedDocuments) {
               const docName = typeof doc === "string" ? doc : (doc.source || doc.name || doc.file || "");
               if (docName) {
                 try {
-                  const messages = await loadChatFromBackend(docName);
-                  allChats[docName] = messages;
+                  // Use normalized document name for loading
+                  const normalizedDocName = docName.toLowerCase();
+                  const messages = await loadChatFromBackend(normalizedDocName);
+                  allChats[normalizedDocName] = messages;
                   loadedCount++;
-                  console.log(`✅ Cached ${messages.length} messages for ${docName}`);
+                  console.log(`✅ Cached ${messages.length} messages for ${normalizedDocName}`);
                 } catch (error) {
                   console.error(`❌ Failed to load chat for ${docName}:`, error);
-                  allChats[docName] = [];
+                  allChats[docName.toLowerCase()] = [];
                 }
               }
             }
@@ -175,20 +179,25 @@ useEffect(() => {
             setDocumentChats(allChats);
             
             // 3. Auto-select first document and load its messages
-            const firstDoc = documentsData[0];
+            const firstDoc = normalizedDocuments[0];
             const firstName = typeof firstDoc === "string" ? firstDoc : (firstDoc.source || firstDoc.name || firstDoc.file || "");
             if (firstName) {
-              setSelectedDocument(firstName);
-              setMessages(allChats[firstName] || []);
+              const normalizedFirstName = firstName.toLowerCase();
+              setSelectedDocument(normalizedFirstName);
+              setMessages(allChats[normalizedFirstName] || []);
             }
             
             console.log(`🎉 Loaded ${loadedCount} document chats to cache`);
+          } else {
+            console.log("No documents found for user");
           }
         } else {
-          console.error("Failed to load documents");
+          console.error("Failed to load documents:", res.status);
+          setUploadStatus({ type: "error", message: `Failed to load documents: ${res.status}` });
         }
       } catch (error) {
         console.error("Error loading documents and chats:", error);
+        setUploadStatus({ type: "error", message: `Error loading data: ${error.message}` });
       } finally {
         setLoadingDocuments(false);
         setLoadingChatHistory(false);
@@ -282,43 +291,45 @@ useEffect(() => {
 
 
   const handleDocumentClick = async (filename) => {
-    if (selectedDocument === filename) return;
-    
-    console.log(`🔄 Switching from ${selectedDocument} to ${filename}`);
-    
-    // Save current document before switching
-    if (selectedDocument && messages.length > 0) {
-      await saveChatToBackend(selectedDocument, messages);
-    }
-    
-    setLoadingChatHistory(true);
-    
-    // Try to load from cache FIRST (instant)
-    const cachedChats = getCachedChats();
-    
-    if (cachedChats[filename]) {
-      setMessages(cachedChats[filename]);
+  const normalizedFilename = filename.toLowerCase();
+  
+  if (selectedDocument === normalizedFilename) return;
+  
+  console.log(`🔄 Switching from ${selectedDocument} to ${normalizedFilename}`);
+  
+  // Save current document before switching
+  if (selectedDocument && messages.length > 0) {
+    await saveChatToBackend(selectedDocument, messages);
+  }
+  
+  setLoadingChatHistory(true);
+  
+  // Try to load from cache FIRST (instant)
+  const cachedChats = getCachedChats();
+  
+  if (cachedChats[normalizedFilename]) {
+    setMessages(cachedChats[normalizedFilename]);
+    setLoadingChatHistory(false);
+    console.log(`⚡ Loaded ${cachedChats[normalizedFilename].length} messages from cache`);
+  } else {
+    // Fallback to API (should rarely happen after initial cache)
+    try {
+      const loadedMessages = await loadChatFromBackend(normalizedFilename);
+      setMessages(loadedMessages);
+      
+      // Update cache for next time
+      updateCache(normalizedFilename, loadedMessages);
+      console.log(`✅ Loaded ${loadedMessages.length} messages from backend and cached`);
+    } catch (error) {
+      console.error("Error loading chat:", error);
+      setMessages([]);
+    } finally {
       setLoadingChatHistory(false);
-      console.log(`⚡ Loaded ${cachedChats[filename].length} messages from cache`);
-    } else {
-      // Fallback to API (should rarely happen after initial cache)
-      try {
-        const loadedMessages = await loadChatFromBackend(filename);
-        setMessages(loadedMessages);
-        
-        // Update cache for next time
-        updateCache(filename, loadedMessages);
-        console.log(`✅ Loaded ${loadedMessages.length} messages from backend and cached`);
-      } catch (error) {
-        console.error("Error loading chat:", error);
-        setMessages([]);
-      } finally {
-        setLoadingChatHistory(false);
-      }
     }
-    
-    setSelectedDocument(filename);
-  };
+  }
+  
+  setSelectedDocument(normalizedFilename);
+};
 
   // ---- Upload & Query Handlers ---
   const handleUpload = async (selectedFile) => {
