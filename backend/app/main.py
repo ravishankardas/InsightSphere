@@ -9,13 +9,15 @@ from starlette.status import HTTP_429_TOO_MANY_REQUESTS
 from app.core.rate_limiter_config import limiter
 from app.database_service.database import create_tables
 
+from app.logger import setup_logger
 from slowapi.errors import RateLimitExceeded # type: ignore
 # ----------------------------------------------------
-
 from app.api import upload, query, documents, analytics, send_email_action # These imports are now safe
 from dotenv import load_dotenv
 import os
 load_dotenv()
+
+logger = setup_logger()
 
 app = FastAPI(
     title="InsightSphere API", 
@@ -27,7 +29,7 @@ app = FastAPI(
 @app.on_event("startup")
 async def startup_event():
     await create_tables()
-    print("🚀 Application started and database tables verified")
+    logger.info("🚀 Application started and database tables verified")
     
 # Attach the limiter instance to the app state
 app.state.limiter = limiter
@@ -90,4 +92,5 @@ async def root():
 
 @app.get("/health", tags=["Health"])
 async def health_check():
+    logger.debug("Health check endpoint called")
     return {"status": "InsightSphere API is running"}

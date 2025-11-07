@@ -7,6 +7,10 @@ import pdfplumber
 from .embeddings import get_embeddings
 import chromadb
 from typing import Optional
+from dotenv import load_dotenv
+load_dotenv()
+from app.logger import setup_logger
+logger = setup_logger()
 
 CHROMA_DIR = os.environ.get("CHROMA_DIR", "./chroma_db")
 
@@ -19,7 +23,7 @@ def get_chroma_client():
     if _client is None:
         try:
             _client = chromadb.PersistentClient(path=CHROMA_DIR)
-            print(f"✓ Ingest: ChromaDB PersistentClient initialized at {CHROMA_DIR}")
+            logger.info(f"✓ Ingest: ChromaDB PersistentClient initialized at {CHROMA_DIR}")
         except Exception as e:
             raise RuntimeError(f"Failed to initialize ChromaDB PersistentClient: {e}")
     return _client
@@ -52,7 +56,7 @@ def get_user_collection(user_id: str):
     try:
         collection = client.get_or_create_collection(name=collection_name)
         count = collection.count()
-        print(f"✓ Ingest: Collection '{collection_name}' loaded with {count} items")
+        logger.info(f"✓ Ingest: Collection '{collection_name}' loaded with {count} items")
         _collections[user_id] = collection
         return collection
     except Exception as e:
@@ -88,19 +92,19 @@ def chunk_text(text: str, chunk_size: int = 500, chunk_overlap: int = 50):
 
 def ingest_pdf(pdf_bytes: bytes, user_id: str, filename: Optional[str] = None):
     """Ingest a PDF for a specific user"""
-    print(f"\n{'='*60}")
-    print(f"INGESTING PDF for user: {user_id}")
-    print(f"Filename: {filename or 'uploaded'}")
-    print(f"{'='*60}")
+    logger.info(f"\n{'='*60}")
+    logger.info(f"INGESTING PDF for user: {user_id}")
+    logger.info(f"Filename: {filename or 'uploaded'}")
+    logger.info(f"{'='*60}")
     
     text = extract_text_from_pdf_bytes(pdf_bytes)
-    print(f"Extracted {len(text)} characters from PDF")
+    logger.info(f"Extracted {len(text)} characters from PDF")
     
     if not text.strip():
         raise ValueError("No text could be extracted from the PDF")
     
     chunks = chunk_text(text)
-    print(f"Created {len(chunks)} chunks")
+    logger.debug(f"Created {len(chunks)} chunks")
     
     ids = []
     metadatas = []
@@ -115,13 +119,13 @@ def ingest_pdf(pdf_bytes: bytes, user_id: str, filename: Optional[str] = None):
         })
         docs.append(c)
     
-    print(f"Generating embeddings for {len(docs)} chunks...")
+    logger.info(f"Generating embeddings for {len(docs)} chunks...")
     embeddings = get_embeddings(docs)
-    print(f"✓ Embeddings generated: {len(embeddings)} vectors")
+    logger.info(f"✓ Embeddings generated: {len(embeddings)} vectors")
 
     collection = get_user_collection(user_id)
     
-    print(f"Adding {len(chunks)} chunks to user's collection...")
+    logger.info(f"Adding {len(chunks)} chunks to user's collection...")
     collection.add(
         ids=ids,
         metadatas=metadatas,
@@ -130,7 +134,7 @@ def ingest_pdf(pdf_bytes: bytes, user_id: str, filename: Optional[str] = None):
     )
     
     new_count = collection.count()
-    print(f"✓ Successfully added chunks. User's collection now has {new_count} total items")
-    print(f"{'='*60}\n")
+    logger.info(f"✓ Successfully added chunks. User's collection now has {new_count} total items")
+    logger.info(f"{'='*60}\n")
     
     return {"n_chunks": len(chunks), "total_items": new_count, "user_id": user_id}

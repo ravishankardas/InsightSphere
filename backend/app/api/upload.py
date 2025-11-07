@@ -8,6 +8,8 @@ from app.services.pdf_complexity_analyzer import (
     get_recommended_settings
 )
 from app.core.auth import validate_api_key
+from app.logger import setup_logger
+logger = setup_logger()
 
 router = APIRouter(dependencies=[Depends(validate_api_key)])
 
@@ -53,11 +55,11 @@ async def upload_pdf_auto(
         mode = recommendations["mode"]
         max_images = recommendations["max_images"]
         
-        print(f"\n🔍 PDF Analysis for {filename}:")
-        print(f"   Complexity: {recommendations['complexity_score']}/100")
-        print(f"   Analysis: {recommendations['analysis']}")
-        print(f"   Recommended: {mode} mode with max_images={max_images}")
-        print(f"   Estimated time: {recommendations['estimated_time']}")
+        logger.info(f"\n🔍 PDF Analysis for {filename}:")
+        logger.info(f"   Complexity: {recommendations['complexity_score']}/100")
+        logger.info(f"   Analysis: {recommendations['analysis']}")
+        logger.info(f"   Recommended: {mode} mode with max_images={max_images}")
+        logger.info(f"   Estimated time: {recommendations['estimated_time']}")
         
         # Process based on recommended mode
         if mode == "text":
@@ -191,7 +193,7 @@ async def upload_pdf(
                 "complexity_score": recommendations["complexity_score"],
                 "analysis": recommendations["analysis"]
             }
-            print(f"🔍 Auto-detected: {mode} mode (complexity: {recommendations['complexity_score']}/100)")
+            logger.info(f"🔍 Auto-detected: {mode} mode (complexity: {recommendations['complexity_score']}/100)")
         else:
             complexity_info = {}
         

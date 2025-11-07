@@ -3,6 +3,9 @@
 from openai import OpenAI
 from typing import List, Optional
 import os
+from app.logger import setup_logger
+logger = setup_logger()
+
 query_cache = {}
 
 class QueryRewriter:
@@ -28,7 +31,7 @@ class QueryRewriter:
         """
 
         if original_query in query_cache:
-            print("Using cached rewritten query.")
+            logger.info("Using cached rewritten query.")
             return query_cache[original_query]
         
         system_prompt = """You are a query optimization expert. Your job is to rewrite user queries to be more specific, clear, and effective for document retrieval.
@@ -70,7 +73,7 @@ class QueryRewriter:
             return rewritten
             
         except Exception as e:
-            print(f"Query rewriting failed: {e}")
+            logger.error(f"Query rewriting failed: {e}")
             # Fallback to original query if rewriting fails
             return original_query
     
@@ -127,7 +130,7 @@ class QueryRewriter:
             return [original_query] + queries[:num_queries-1]
             
         except Exception as e:
-            print(f"Multi-query generation failed: {e}")
+            logger.error(f"Multi-query generation failed: {e}")
             # Fallback to just the original query
             return [original_query]
     

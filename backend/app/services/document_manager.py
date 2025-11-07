@@ -3,6 +3,8 @@
 from typing import List
 # Assuming get_user_collection is a known utility for ChromaDB
 from app.services.ingest import get_user_collection 
+from app.logger import setup_logger
+logger = setup_logger()
 
 def get_user_documents(user_id: str) -> List[str]:
     """
@@ -49,5 +51,5 @@ def delete_document(user_id: str, filename: str) -> bool:
         )
         return True
     except Exception as e:
-        print(f"Error deleting document {filename} for user {user_id}: {e}")
+        logger.error(f"Error deleting document {filename} for user {user_id}: {e}")
         return False

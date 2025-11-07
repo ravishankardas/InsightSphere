@@ -23,7 +23,8 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from app.services.embeddings import get_embeddings
 from app.services.ingest import get_user_collection
-
+from app.logger import setup_logger
+logger = setup_logger()
 
 def describe_images(images_base64: List[str], max_images: int = 2) -> List[str]:
     """Describe images using a concise GPT chain. Keeps default=2 for speed."""
@@ -32,7 +33,7 @@ def describe_images(images_base64: List[str], max_images: int = 2) -> List[str]:
 
     images_to_process = images_base64[:max_images]
     if len(images_base64) > max_images:
-        print(f"  ⚠️  Processing only {max_images}/{len(images_base64)} images for speed")
+        logger.info(f"  ⚠️  Processing only {max_images}/{len(images_base64)} images for speed")
 
     prompt_template = ("Describe this image briefly and searchably. "
                        "Focus on: charts, diagrams, key data, main concepts. "
@@ -54,7 +55,7 @@ def describe_images(images_base64: List[str], max_images: int = 2) -> List[str]:
     prompt = ChatPromptTemplate.from_messages(messages)
     chain = prompt | ChatOpenAI(model="gpt-4o-mini", temperature=0) | StrOutputParser() # type: ignore
 
-    print(f"  🤖 Describing {len(images_to_process)} images.")
+    logger.info(f"  🤖 Describing {len(images_to_process)} images.")
     inputs = [{"image": img} for img in images_to_process]
     image_summaries = chain.batch(inputs, {"max_concurrency": 10})
     return image_summaries
@@ -77,10 +78,10 @@ def summarize_tables(tables_html: List[str], min_table_size: int = 100) -> List[
             table_indices.append(i)
 
     if not tables_to_summarize:
-        print(f"  📊 All {len(tables_html)} tables are small, skipping summarization")
+        logger.info(f"  📊 All {len(tables_html)} tables are small, skipping summarization")
         return tables_html
 
-    print(f"  📊 Summarizing {len(tables_to_summarize)}/{len(tables_html)} tables.")
+    logger.info(f"  📊 Summarizing {len(tables_to_summarize)}/{len(tables_html)} tables.")
     prompt_text = """Concise table summary (2-3 sentences max):\n\nTable: {element}\n"""
     prompt = ChatPromptTemplate.from_template(prompt_text)
     model = ChatOpenAI(temperature=0, model="gpt-4o-mini")
@@ -170,7 +171,7 @@ def extract_multimodal(
 
         # Merge args and call partition_pdf
         call_args = {**common_args, **strategy_args, **split_args}
-        print(f"  🔎 Calling partition_pdf with args: strategy={call_args.get('strategy')}, split_page={split_pdf_page}, concurrency={split_pdf_concurrency_level}")
+        logger.info(f"  🔎 Calling partition_pdf with args: strategy={call_args.get('strategy')}, split_page={split_pdf_page}, concurrency={split_pdf_concurrency_level}")
 
         elements = partition_pdf(**call_args)
 
@@ -199,7 +200,7 @@ def extract_multimodal(
                 if text:
                     texts.append(text)
 
-        print(f"  📄 {len(texts)} text blocks, 📊 {len(tables)} tables, 🖼️  {len(images)} images")
+        logger.info(f"  📄 {len(texts)} text blocks, 📊 {len(tables)} tables, 🖼️  {len(images)} images")
 
         return {"texts": texts, "tables": tables, "images": images}
 
@@ -224,10 +225,10 @@ def ingest_multimodal_pdf(
 ) -> Dict:
     """Wrapper ingestion function that uses extract_multimodal with split options."""
     start = time.time()
-    print(f"\n{'='*60}")
-    print(f"FAST MULTIMODAL INGEST: {filename}")
-    print(f"Mode: {'FAST' if fast_mode else 'HIGH-RES'} | split_page={split_pdf_page} | concurrency={split_pdf_concurrency_level}")
-    print(f"{'='*60}")
+    logger.info(f"\n{'='*60}")
+    logger.info(f"FAST MULTIMODAL INGEST: {filename}")
+    logger.info(f"Mode: {'FAST' if fast_mode else 'HIGH-RES'} | split_page={split_pdf_page} | concurrency={split_pdf_concurrency_level}")
+    logger.info(f"{'='*60}")
 
     step1_start = time.time()
     extracted = extract_multimodal(
@@ -239,7 +240,7 @@ def ingest_multimodal_pdf(
         split_pdf_page_range=split_pdf_page_range,
     )
     step1_end = time.time()
-    print(f"  ⏱️  Extraction time: {step1_end - step1_start:.2f} seconds")
+    logger.info(f"  ⏱️  Extraction time: {step1_end - step1_start:.2f} seconds")
 
     # Process images and tables in parallel
     step2_start = time.time()
@@ -262,21 +263,21 @@ def ingest_multimodal_pdf(
             table_summaries = future_tables.result()
 
     step2_end = time.time()
-    print(f"  ⏱️  Image/Table processing time: {step2_end - step2_start:.2f} seconds")
+    logger.info(f"  ⏱️  Image/Table processing time: {step2_end - step2_start:.2f} seconds")
 
     step3_start = time.time()
     text_chunks = chunk_texts_fast(extracted['texts'], chunk_size=800)
     step3_end = time.time()
-    print(f"  ⏱️  Text chunking time: {step3_end - step3_start:.2f} seconds")
+    logger.info(f"  ⏱️  Text chunking time: {step3_end - step3_start:.2f} seconds")
 
-    print(f"\n📄 Text chunks: {len(text_chunks)}")
-    print("#" * 100)
-    print(f"📊 Table summaries: {len(table_summaries)}")
+    logger.info(f"\n📄 Text chunks: {len(text_chunks)}")
+    logger.info("#" * 100)
+    logger.info(f"📊 Table summaries: {len(table_summaries)}")
     # for txt in text_chunks:
-    #     print(txt + "\n")
-    # print("#" * 100)
+    #     logger.info(txt + "\n")
+    # logger.info("#" * 100)
 
-    print(f"🖼️  Image descriptions: {len(image_descriptions)}")
+    logger.info(f"🖼️  Image descriptions: {len(image_descriptions)}")
 
     # Prepare documents for embedding
     all_docs: List[str] = []
@@ -305,21 +306,21 @@ def ingest_multimodal_pdf(
         all_ids.append(str(uuid.uuid4()))
 
     # Embeddings
-    print(f"\n🔢 Generating embeddings for {len(all_docs)} items.")
+    logger.info(f"\n🔢 Generating embeddings for {len(all_docs)} items.")
     with ThreadPoolExecutor(max_workers=num_workers) as executor:
         future = executor.submit(get_embeddings, all_docs)
         embeddings = future.result()
 
     # Store
     collection = get_user_collection(user_id)
-    print(f"📊 Collection count before: {collection.count()}")
+    logger.info(f"📊 Collection count before: {collection.count()}")
     collection.add(ids=all_ids, documents=all_docs, metadatas=all_metas, embeddings=embeddings) # type: ignore
-    print(f"📊 Collection count after: {collection.count()}")
+    logger.info(f"📊 Collection count after: {collection.count()}")
 
 
-    print(f"✅ Stored {len(all_docs)} items in {collection.count()} total")
+    logger.info(f"✅ Stored {len(all_docs)} items in {collection.count()} total")
     end = time.time()
-    print(f"Total ingestion time: {end - start:.2f} seconds")
+    logger.info(f"Total ingestion time: {end - start:.2f} seconds")
 
     return {
         "n_chunks": len(text_chunks),

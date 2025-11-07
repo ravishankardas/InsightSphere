@@ -1,9 +1,10 @@
 # database_service.py
 import json
 from datetime import datetime
-
+from app.logger import setup_logger
 from app.database_service.database import get_db_pool
-
+from app.logger import setup_logger
+logger = setup_logger()
 
 async def save_chat_to_db(user_id: str, document_name: str, messages: list):
     try:
@@ -23,7 +24,7 @@ async def save_chat_to_db(user_id: str, document_name: str, messages: list):
                     WHERE user_id = $3 AND document_name = $4""",
                     json.dumps(messages), datetime.utcnow(), user_id, document_name
                 )
-                print(f"✅ Updated chat for user {user_id}, document {document_name}")
+                logger.info(f"✅ Updated chat for user {user_id}, document {document_name}")
             else:
                 # Insert new chat
                 await conn.execute(
@@ -32,10 +33,10 @@ async def save_chat_to_db(user_id: str, document_name: str, messages: list):
                     VALUES ($1, $2, $3)""",
                     user_id, document_name, json.dumps(messages)
                 )
-                print(f"✅ Created new chat for user {user_id}, document {document_name}")
+                logger.info(f"✅ Created new chat for user {user_id}, document {document_name}")
                 
     except Exception as e:
-        print(f"❌ Error saving chat to DB: {e}")
+        logger.error(f"❌ Error saving chat to DB: {e}")
         raise
 
 async def load_chat_from_db(user_id: str, document_name: str) -> list:
@@ -48,13 +49,13 @@ async def load_chat_from_db(user_id: str, document_name: str) -> list:
             )
             if result:
                 messages = json.loads(result["messages"])
-                print(f"✅ Loaded {len(messages)} messages for {document_name}")
+                logger.info(f"✅ Loaded {len(messages)} messages for {document_name}")
                 return messages
             else:
-                print(f"ℹ️ No existing chat found for {document_name}")
+                logger.info(f"ℹ️ No existing chat found for {document_name}")
                 return []
     except Exception as e:
-        print(f"❌ Error loading chat from DB: {e}")
+        logger.error(f"❌ Error loading chat from DB: {e}")
         return []
 
 async def load_all_chats_from_db(user_id: str) -> dict:
@@ -68,8 +69,8 @@ async def load_all_chats_from_db(user_id: str) -> dict:
             chats = {}
             for row in results:
                 chats[row["document_name"]] = json.loads(row["messages"])
-            print(f"✅ Loaded {len(chats)} chat conversations for user {user_id}")
+            logger.info(f"✅ Loaded {len(chats)} chat conversations for user {user_id}")
             return chats
     except Exception as e:
-        print(f"❌ Error loading all chats from DB: {e}")
+        logger.error(f"❌ Error loading all chats from DB: {e}")
         return {}

@@ -7,7 +7,8 @@ import httpx
 import json
 import traceback
 from dotenv import load_dotenv
-
+from app.logger import setup_logger
+logger = setup_logger()
 # Import existing semantic cache and new tool registry
 from app.services.semantic_rag_cache import SemanticRAGCache
 from app.services.agentic_tools import tool_registry
@@ -82,7 +83,7 @@ def intent_detector(state: AgentState) -> AgentState:
                 state["query_type"] = "ANSWER_FROM_CACHE"
                 return state
         except Exception as e:
-            print("semantic_cache.search error:", e)
+            logger.error("semantic_cache.search error:", e)
 
     context_text = "\n---\n".join(state.get("context", [])) or ""
     
@@ -152,7 +153,7 @@ def intent_detector(state: AgentState) -> AgentState:
             try:
                 semantic_cache.save(state['user_id'], state['source_filter'], state['user_query'], state["answer"]) # type: ignore
             except Exception as e:
-                print("semantic_cache.save error:", e)
+                logger.error("semantic_cache.save error:", e)
             state["tool_call"] = None
             return state
 
@@ -178,7 +179,7 @@ def intent_detector(state: AgentState) -> AgentState:
             return state
 
     except Exception as e:
-        print("intent_detector LLM error:", e)
+        logger.error("intent_detector LLM error:", e)
         # Fallback: assume RAG answer if there's context
         if state.get('context'):
             state["query_type"] = "RAG_ANSWER"
@@ -222,7 +223,7 @@ def rag_process(state: AgentState) -> AgentState:
 
 def general_query_answer(state: AgentState) -> AgentState:
     """ORIGINAL: Generates answer to general, non-document query."""
-    print("🌍 General Query Node: Answering without context...")
+    logger.info("🌍 General Query Node: Answering without context...")
     
     general_prompt = f"You are a helpful and knowledgeable general assistant. Answer the user's question concisely using only your general knowledge. User Query: {state['user_query']}"
     
@@ -329,7 +330,7 @@ def agentic_planning_node(state: AgentState) -> AgentState:
             state['execution_plan'] = []
             
     except Exception as e:
-        print(f"Agentic planning error: {e}")
+        logger.error(f"Agentic planning error: {e}")
         state['execution_plan'] = []
         
     return state
@@ -376,10 +377,10 @@ async def agentic_tool_node(state: AgentState) -> AgentState:
                 'result': result
             })
             
-            print(f"🔧 Agentic tool executed: {tool_to_use} -> {result.get('success', False)}")
+            logger.info(f"🔧 Agentic tool executed: {tool_to_use} -> {result.get('success', False)}")
             
         except Exception as e:
-            print(f"Tool execution error: {e}")
+            logger.error(f"Tool execution error: {e}")
             state['intermediate_results'].append({
                 'step': state['current_step'],
                 'tool': tool_to_use,
@@ -425,7 +426,7 @@ def agentic_synthesis_node(state: AgentState) -> AgentState:
         state['confidence'] = 0.8
         
     except Exception as e:
-        print(f"Agentic synthesis error: {e}")
+        logger.error(f"Agentic synthesis error: {e}")
         
     return state
 

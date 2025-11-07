@@ -1,0 +1,255 @@
+2025-11-07 16:09:10 | rag_app | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 16:10:41 | rag_app | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 16:11:21 | rag_app | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 16:12:01 | rag_app | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 16:12:40 | rag_app | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 16:13:18 | rag_app | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 16:15:15 | rag_app | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ravi_attentive.pdf, messages: 9
+2025-11-07 16:15:19 | rag_app | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ravi_attentive.pdf, messages: 10
+2025-11-07 16:15:24 | rag_app | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ravi_attentive.pdf, messages: 10
+2025-11-07 16:16:44 | rag_app | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 16:17:21 | rag_app | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 16:18:21 | rag_app | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:18:26 | rag_app | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:18:39 | rag_app | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 16:19:03 | rag_app | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:19:07 | rag_app | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:19:18 | rag_app | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 16:19:42 | rag_app | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:19:45 | rag_app | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:19:58 | rag_app | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 16:20:21 | rag_app | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:20:25 | rag_app | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:20:36 | rag_app | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 16:20:59 | rag_app | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:21:02 | rag_app | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:21:29 | rag_app | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:21:32 | rag_app | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:21:45 | rag_app | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 16:22:09 | rag_app | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:22:12 | rag_app | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:22:24 | rag_app | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 16:22:47 | rag_app | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:22:51 | rag_app | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:23:02 | rag_app | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 16:23:25 | rag_app | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:23:29 | rag_app | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:23:40 | rag_app | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 16:24:06 | rag_app | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:24:10 | rag_app | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:24:21 | rag_app | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 16:24:45 | rag_app | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:24:48 | rag_app | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:24:59 | rag_app | INFO | database.py:55 | ✅ Database tables created successfully
+2025-11-07 16:24:59 | rag_app | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 16:25:22 | rag_app | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:25:25 | rag_app | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:25:37 | rag_app | INFO | database.py:55 | ✅ Database tables created successfully
+2025-11-07 16:25:37 | rag_app | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 16:26:00 | rag_app | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:26:04 | rag_app | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:26:14 | rag_app | INFO | database.py:55 | ✅ Database tables created successfully
+2025-11-07 16:26:15 | rag_app | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 16:26:36 | rag_app | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:26:39 | rag_app | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:26:52 | rag_app | INFO | database.py:55 | ✅ Database tables created successfully
+2025-11-07 16:26:52 | rag_app | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 16:27:16 | rag_app | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:27:20 | rag_app | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:27:30 | rag_app | INFO | database.py:55 | ✅ Database tables created successfully
+2025-11-07 16:27:30 | rag_app | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 16:27:54 | rag_app | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:27:57 | rag_app | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:28:08 | rag_app | INFO | database.py:55 | ✅ Database tables created successfully
+2025-11-07 16:28:08 | rag_app | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 16:28:32 | rag_app | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:28:35 | rag_app | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:28:46 | rag_app | INFO | database.py:55 | ✅ Database tables created successfully
+2025-11-07 16:28:46 | rag_app | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 16:29:08 | rag_app | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:29:12 | rag_app | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:29:24 | rag_app | INFO | database.py:55 | ✅ Database tables created successfully
+2025-11-07 16:29:24 | rag_app | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 16:29:47 | rag_app | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:29:51 | rag_app | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:30:01 | rag_app | INFO | database.py:55 | ✅ Database tables created successfully
+2025-11-07 16:30:02 | rag_app | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 16:30:25 | rag_app | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:30:28 | rag_app | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:30:39 | rag_app | INFO | database.py:55 | ✅ Database tables created successfully
+2025-11-07 16:30:39 | rag_app | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 16:31:01 | rag_app | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:31:05 | rag_app | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:31:16 | rag_app | INFO | database.py:55 | ✅ Database tables created successfully
+2025-11-07 16:31:16 | rag_app | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 16:31:39 | rag_app | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:31:42 | rag_app | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:31:55 | rag_app | INFO | database.py:55 | ✅ Database tables created successfully
+2025-11-07 16:31:55 | rag_app | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 16:32:18 | rag_app | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:32:21 | rag_app | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:32:22 | rag_app | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 16:32:25 | rag_app | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 16:32:32 | rag_app | INFO | database.py:55 | ✅ Database tables created successfully
+2025-11-07 16:32:33 | rag_app | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 16:32:57 | rag_app | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:33:01 | rag_app | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:33:01 | rag_app | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 16:33:04 | rag_app | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 16:33:13 | rag_app | INFO | database.py:55 | ✅ Database tables created successfully
+2025-11-07 16:33:13 | rag_app | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 16:33:37 | rag_app | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:33:40 | rag_app | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:33:40 | rag_app | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 16:33:43 | rag_app | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 16:33:50 | rag_app | INFO | database.py:55 | ✅ Database tables created successfully
+2025-11-07 16:33:51 | rag_app | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 16:34:14 | rag_app | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:34:17 | rag_app | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:34:18 | rag_app | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 16:34:21 | rag_app | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 16:34:28 | rag_app | INFO | database.py:55 | ✅ Database tables created successfully
+2025-11-07 16:34:28 | rag_app | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 16:34:52 | rag_app | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:34:55 | rag_app | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:34:56 | rag_app | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 16:34:59 | rag_app | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 16:35:06 | rag_app | INFO | database.py:55 | ✅ Database tables created successfully
+2025-11-07 16:35:07 | rag_app | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 16:35:31 | rag_app | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:35:34 | rag_app | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:35:35 | rag_app | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 16:35:37 | rag_app | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 16:35:46 | rag_app | INFO | database.py:55 | ✅ Database tables created successfully
+2025-11-07 16:35:46 | rag_app | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 16:36:10 | rag_app | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:36:14 | rag_app | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:36:14 | rag_app | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 16:36:17 | rag_app | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 16:36:27 | rag_app | INFO | database.py:55 | ✅ Database tables created successfully
+2025-11-07 16:36:27 | rag_app | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 16:36:52 | rag_app | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:36:55 | rag_app | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:36:56 | rag_app | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 16:36:58 | rag_app | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 16:37:07 | rag_app | INFO | database.py:55 | ✅ Database tables created successfully
+2025-11-07 16:37:07 | rag_app | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 16:37:31 | rag_app | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:37:34 | rag_app | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:37:35 | rag_app | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 16:37:38 | rag_app | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 16:37:47 | rag_app | INFO | database.py:55 | ✅ Database tables created successfully
+2025-11-07 16:37:47 | rag_app | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 16:38:12 | rag_app | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:38:16 | rag_app | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:38:16 | rag_app | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 16:38:19 | rag_app | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 16:38:28 | rag_app | INFO | database.py:55 | ✅ Database tables created successfully
+2025-11-07 16:38:28 | rag_app | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 16:39:17 | InsighSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:39:20 | InsighSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:39:21 | InsighSphere | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 16:39:24 | InsighSphere | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 16:39:31 | InsighSphere | INFO | database.py:55 | ✅ Database tables created successfully
+2025-11-07 16:39:32 | InsighSphere | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 16:40:03 | IS | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:40:08 | IS | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:40:09 | IS | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 16:40:14 | IS | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 16:40:23 | IS | INFO | database.py:55 | ✅ Database tables created successfully
+2025-11-07 16:40:23 | IS | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 16:40:45 | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:40:48 | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:40:49 | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 16:40:51 | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 16:41:01 | INFO | database.py:55 | ✅ Database tables created successfully
+2025-11-07 16:41:01 | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 16:41:35 | INFO | ingest.py:26 | ✓ Ingest: ChromaDB PersistentClient initialized at ./chroma_db
+2025-11-07 16:41:35 | INFO | ingest.py:59 | ✓ Ingest: Collection 'user_ravishankerdas020_at_gmail_com_docs' loaded with 41 items
+2025-11-07 16:41:35 | INFO | query.py:211 | 📂 Loading chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf
+2025-11-07 16:41:38 | INFO | db_service.py:52 | ✅ Loaded 10 messages for ml_llm_interview_cheat_sheet.pdf
+2025-11-07 16:41:38 | INFO | query.py:211 | 📂 Loading chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf
+2025-11-07 16:41:38 | INFO | query.py:211 | 📂 Loading chat for user ravishankerdas020@gmail.com, document: ravi_attentive.pdf
+2025-11-07 16:41:40 | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf, messages: 10
+2025-11-07 16:41:43 | INFO | db_service.py:52 | ✅ Loaded 10 messages for ravi_attentive.pdf
+2025-11-07 16:41:43 | INFO | db_service.py:52 | ✅ Loaded 10 messages for ml_llm_interview_cheat_sheet.pdf
+2025-11-07 16:41:44 | INFO | query.py:211 | 📂 Loading chat for user ravishankerdas020@gmail.com, document: ravi_attentive.pdf
+2025-11-07 16:41:46 | INFO | db_service.py:27 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ml_llm_interview_cheat_sheet.pdf
+2025-11-07 16:41:46 | INFO | db_service.py:52 | ✅ Loaded 10 messages for ravi_attentive.pdf
+2025-11-07 16:41:48 | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf, messages: 10
+2025-11-07 16:41:52 | INFO | db_service.py:27 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ml_llm_interview_cheat_sheet.pdf
+2025-11-07 16:41:52 | INFO | query.py:211 | 📂 Loading chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf
+2025-11-07 16:41:54 | INFO | db_service.py:52 | ✅ Loaded 10 messages for ml_llm_interview_cheat_sheet.pdf
+2025-11-07 16:41:55 | INFO | query.py:211 | 📂 Loading chat for user ravishankerdas020@gmail.com, document: ravi_attentive.pdf
+2025-11-07 16:41:58 | INFO | db_service.py:52 | ✅ Loaded 10 messages for ravi_attentive.pdf
+2025-11-07 16:41:58 | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ravi_attentive.pdf, messages: 10
+2025-11-07 16:42:02 | INFO | db_service.py:27 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ravi_attentive.pdf
+2025-11-07 16:42:49 | InsighSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:42:52 | InsighSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:42:53 | InsighSphere | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 16:42:57 | InsighSphere | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 16:43:04 | InsighSphere | INFO | database.py:55 | ✅ Database tables created successfully
+2025-11-07 16:43:04 | InsighSphere | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 16:43:31 | InsighSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:43:34 | InsighSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:43:35 | InsighSphere | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 16:43:38 | InsighSphere | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 16:43:45 | InsighSphere | INFO | database.py:55 | ✅ Database tables created successfully
+2025-11-07 16:43:45 | InsighSphere | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 16:45:00 | rag_app | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:45:03 | rag_app | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:45:04 | rag_app | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 16:45:07 | rag_app | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 16:45:16 | rag_app | INFO | database.py:55 | ✅ Database tables created successfully
+2025-11-07 16:45:16 | rag_app | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 16:46:05 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:46:09 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:46:10 | InsightSphere | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 16:46:12 | InsightSphere | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 16:46:20 | InsightSphere | INFO | database.py:55 | ✅ Database tables created successfully
+2025-11-07 16:46:20 | InsightSphere | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 16:48:03 | InsightSphere | INFO | ingest.py:26 | ✓ Ingest: ChromaDB PersistentClient initialized at ./chroma_db
+2025-11-07 16:48:03 | InsightSphere | INFO | ingest.py:59 | ✓ Ingest: Collection 'user_ravishankerdas020_at_gmail_com_docs' loaded with 41 items
+2025-11-07 16:48:06 | InsightSphere | INFO | multimodal_retriever.py:245 | Invoking RAG Agent...
+2025-11-07 16:48:08 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ravi_attentive.pdf, messages: 11
+2025-11-07 16:48:11 | InsightSphere | INFO | semantic_rag_cache.py:88 | ✅ Semantic cache HIT (similarity: 97.8%)
+2025-11-07 16:48:12 | InsightSphere | INFO | db_service.py:27 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ravi_attentive.pdf
+2025-11-07 16:48:12 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ravi_attentive.pdf, messages: 12
+2025-11-07 16:48:15 | InsightSphere | INFO | db_service.py:27 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ravi_attentive.pdf
+2025-11-07 16:48:17 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ravi_attentive.pdf, messages: 12
+2025-11-07 16:48:21 | InsightSphere | INFO | db_service.py:27 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ravi_attentive.pdf
+2025-11-07 16:48:54 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:48:58 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:48:58 | InsightSphere | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 16:49:01 | InsightSphere | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 16:49:10 | InsightSphere | INFO | database.py:55 | ✅ Database tables created successfully
+2025-11-07 16:49:11 | InsightSphere | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 16:49:11 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ravi_attentive.pdf, messages: 13
+2025-11-07 16:49:11 | InsightSphere | INFO | query.py:110 | 🧠 Memory context detected - using enhanced query
+2025-11-07 16:49:11 | InsightSphere | INFO | query.py:111 | Enhanced query length: 368
+2025-11-07 16:49:11 | InsightSphere | INFO | ingest.py:26 | ✓ Ingest: ChromaDB PersistentClient initialized at ./chroma_db
+2025-11-07 16:49:11 | InsightSphere | INFO | ingest.py:59 | ✓ Ingest: Collection 'user_ravishankerdas020_at_gmail_com_docs' loaded with 41 items
+2025-11-07 16:49:14 | InsightSphere | INFO | multimodal_retriever.py:245 | Invoking RAG Agent...
+2025-11-07 16:49:14 | InsightSphere | INFO | semantic_rag_cache.py:62 | source_filter in cache search: ravi_attentive.pdf
+2025-11-07 16:49:18 | InsightSphere | INFO | db_service.py:27 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ravi_attentive.pdf
+2025-11-07 16:49:21 | InsightSphere | INFO | semantic_rag_cache.py:91 | 🔍 Semantic cache MISS (best similarity: 0.0%)
+2025-11-07 16:49:23 | InsightSphere | INFO | semantic_rag_cache.py:122 | 💾 Saved to semantic cache (TTL: 7 days), cache_key: rag:semantic:93ce87498f71:ravi_attentive.pdf:10ed333f
+2025-11-07 16:49:46 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:49:49 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:49:50 | InsightSphere | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 16:49:52 | InsightSphere | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 16:50:01 | InsightSphere | INFO | database.py:55 | ✅ Database tables created successfully
+2025-11-07 16:50:02 | InsightSphere | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 16:50:02 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ravi_attentive.pdf, messages: 14
+2025-11-07 16:50:02 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ravi_attentive.pdf, messages: 14
+2025-11-07 16:50:24 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:50:28 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:50:28 | InsightSphere | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 16:50:31 | InsightSphere | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 16:50:40 | InsightSphere | INFO | database.py:55 | ✅ Database tables created successfully
+2025-11-07 16:50:40 | InsightSphere | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 16:50:40 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ravi_attentive.pdf, messages: 14
+2025-11-07 16:51:04 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:51:08 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
+2025-11-07 16:51:08 | InsightSphere | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
+2025-11-07 16:51:11 | InsightSphere | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.

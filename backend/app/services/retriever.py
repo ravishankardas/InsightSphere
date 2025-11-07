@@ -6,6 +6,8 @@ import chromadb
 from openai import OpenAI
 from .embeddings import get_embeddings
 
+from app.logger import setup_logger
+
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -15,6 +17,7 @@ OPENAI_KEY = os.environ.get("OPENAI_API_KEY", None)
 _client = None
 _collections = {}  # Cache collections by user_id
 _openai_client = None
+logger = setup_logger()
 
 def get_openai_client():
     """Initialize and return OpenAI client"""
@@ -29,7 +32,7 @@ def get_chroma_client():
     if _client is None:
         try:
             _client = chromadb.PersistentClient(path=CHROMA_DIR)
-            print(f"✓ ChromaDB PersistentClient initialized at {CHROMA_DIR}")
+            logger.info(f"✓ ChromaDB PersistentClient initialized at {CHROMA_DIR}")
         except Exception as e:
             raise RuntimeError(f"Failed to initialize ChromaDB PersistentClient: {e}")
     return _client
@@ -62,7 +65,7 @@ def get_user_collection(user_id: str):
     try:
         collection = client.get_or_create_collection(name=collection_name)
         count = collection.count()
-        print(f"✓ Collection '{collection_name}' loaded with {count} items")
+        logger.info(f"✓ Collection '{collection_name}' loaded with {count} items")
         _collections[user_id] = collection
         return collection
     except Exception as e:
@@ -70,23 +73,23 @@ def get_user_collection(user_id: str):
 
 def retrieve(query: str, user_id: str, top_k: int = 4):
     """Retrieve documents for a specific user"""
-    print(f"\n{'='*60}")
-    print(f"RETRIEVE for user: {user_id}")
-    print(f"Query: '{query}'")
-    print(f"{'='*60}")
+    logger.info(f"\n{'='*60}")
+    logger.info(f"RETRIEVE for user: {user_id}")
+    logger.info(f"Query: '{query}'")
+    logger.info(f"{'='*60}")
     
     collection = get_user_collection(user_id)
     
     count = collection.count()
-    print(f"User's collection has {count} documents")
+    logger.info(f"User's collection has {count} documents")
     
     if count == 0:
-        print(f"⚠ User {user_id} has no documents uploaded")
+        logger.debug(f"⚠ User {user_id} has no documents uploaded")
         return []
     
     # Generate query embedding
     query_embedding = get_embeddings([query])[0]
-    print(f"✓ Query embedding generated: dimension={len(query_embedding)}")
+    logger.info(f"✓ Query embedding generated: dimension={len(query_embedding)}")
     
     # Query the collection
     results = collection.query(
@@ -113,9 +116,9 @@ def retrieve(query: str, user_id: str, top_k: int = 4):
                 "distance": distances[0][i] if distances else None
             }
             docs.append(doc)
-            print(f"  [{i}] Distance: {doc['distance']:.4f} | {doc['document'][:80]}...")
+            logger.info(f"  [{i}] Distance: {doc['distance']:.4f} | {doc['document'][:80]}...")
     
-    print(f"✓ Returning {len(docs)} documents")
+    logger.info(f"✓ Returning {len(docs)} documents")
     return docs
 
 def call_openai_system_prompt(context_snippets: List[str], question: str):
@@ -154,7 +157,7 @@ def call_openai_system_prompt(context_snippets: List[str], question: str):
             "sources": [{"snippet": s, "index": i} for i, s in enumerate(context_snippets, start=1)]
         }
     except Exception as e:
-        print(f"OpenAI API error: {e}")
+        logger.error(f"OpenAI API error: {e}")
         return {
             "answer": f"Error calling OpenAI API: {str(e)}",
             "sources": [{"snippet": s, "index": i} for i, s in enumerate(context_snippets, start=1)]

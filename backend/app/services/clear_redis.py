@@ -1,9 +1,12 @@
 import redis # type: ignore
 import os
 from dotenv import load_dotenv
+from app.logger import setup_logger
 
 # Load environment variables (assuming your Redis config is in your .env file)
 load_dotenv()
+
+logger = setup_logger()
 
 # --- Configuration ---
 # Use environment variables for connection details for security
@@ -18,7 +21,7 @@ def clear_all_redis_keys():
     Connects to Redis and removes ALL keys from ALL databases.
     WARNING: This is a destructive operation!
     """
-    print(f"Connecting to Redis at {REDIS_HOST}:{REDIS_PORT}...")
+    logger.info(f"Connecting to Redis at {REDIS_HOST}:{REDIS_PORT}...")
     
     try:
         # Initialize the Redis client
@@ -32,7 +35,7 @@ def clear_all_redis_keys():
 
         # Ping the server to check the connection
         r.ping()
-        print("Connection successful.")
+        logger.info("Connection successful.")
 
         # --- DANGER ZONE: EXECUTE FLUSHALL ---
         confirmation = input(
@@ -43,17 +46,17 @@ def clear_all_redis_keys():
         if confirmation.strip().upper() == "YES":
             # Execute the FLUSHALL command
             r.flushall()
-            print("\n✅ Success: All keys have been removed from all Redis databases.")
+            logger.info("\n✅ Success: All keys have been removed from all Redis databases.")
         else:
-            print("\nOperation cancelled. No keys were deleted.")
+            logger.info("\nOperation cancelled. No keys were deleted.")
 
     except redis.exceptions.ConnectionError as e:
-        print(f"\n❌ Connection Error: Could not connect to Redis at {REDIS_HOST}:{REDIS_PORT}.")
-        print(f"Details: {e}")
+        logger.error(f"\n❌ Connection Error: Could not connect to Redis at {REDIS_HOST}:{REDIS_PORT}.")
+        logger.error(f"Details: {e}")
     except redis.exceptions.AuthenticationError:
-        print("\n❌ Authentication Error: Invalid Redis password.")
+        logger.error("\n❌ Authentication Error: Invalid Redis password.")
     except Exception as e:
-        print(f"\n❌ An unexpected error occurred: {e}")
+        logger.error(f"\n❌ An unexpected error occurred: {e}")
 
 
 if __name__ == "__main__":

@@ -6,7 +6,9 @@ import redis # type: ignore
 import hashlib
 import os 
 import numpy as np
+from app.logger import setup_logger
 
+logger = setup_logger()
 
 class SemanticRAGCache:
     """Semantic cache for RAG queries with user isolation."""
@@ -23,7 +25,7 @@ class SemanticRAGCache:
         self.redis = redis.from_url(redis_url, decode_responses=True)
         self.threshold = similarity_threshold
         self.encoder = SentenceTransformer(embedding_model)
-        print(f"✅ Semantic cache initialized (threshold: {similarity_threshold})")
+        logger.info(f"✅ Semantic cache initialized (threshold: {similarity_threshold})")
     
     def _create_cache_key(
         self, 
@@ -57,7 +59,7 @@ class SemanticRAGCache:
         Search for semantically similar cached answer.
         """
         try:
-            print("source_filter in cache search:", source_filter)
+            logger.info(f"source_filter in cache search: {source_filter}")
             query_embedding = self.encoder.encode(query)
             pattern = self._get_user_prefix(user_id, source_filter)
             
@@ -83,14 +85,14 @@ class SemanticRAGCache:
                     continue
             
             if best_match:
-                print(f"✅ Semantic cache HIT (similarity: {best_similarity:.1%})")
+                logger.info(f"✅ Semantic cache HIT (similarity: {best_similarity:.1%})")
                 return best_match
             
-            print(f"🔍 Semantic cache MISS (best similarity: {best_similarity:.1%})")
+            logger.info(f"🔍 Semantic cache MISS (best similarity: {best_similarity:.1%})")
             return None
             
         except Exception as e:
-            print(f"⚠️ Cache search error: {e}")
+            logger.error(f"⚠️ Cache search error: {e}")
             return None
     
     def save(
@@ -117,10 +119,10 @@ class SemanticRAGCache:
                 ttl,
                 json.dumps(cache_data)
             )
-            print(f"💾 Saved to semantic cache (TTL: {ttl//86400} days), cache_key: {cache_key}")
+            logger.info(f"💾 Saved to semantic cache (TTL: {ttl//86400} days), cache_key: {cache_key}")
             
         except Exception as e:
-            print(f"⚠️ Cache save error: {e}")
+            logger.error(f"⚠️ Cache save error: {e}")
     
     def _cosine_similarity(self, a, b) -> float:
         """Calculate cosine similarity between two vectors."""
@@ -136,7 +138,7 @@ class SemanticRAGCache:
             self.redis.delete(key)
             deleted += 1
         
-        print(f"🗑️ Cleared {deleted} cache entries for user")
+        logger.info(f"🗑️ Cleared {deleted} cache entries for user")
     
     def get_stats(self, user_id: str) -> dict:
         """Get cache statistics for a user."""

@@ -17,7 +17,8 @@ import hashlib
 from sentence_transformers import CrossEncoder # Needs 'pip install sentence-transformers'
 from sentence_transformers import SentenceTransformer
 import numpy as np
-
+from app.logger import setup_logger
+logger = setup_logger()
 # --- Agent Imports ---
 from app.services.rag_agent import RAG_AGENT_APP, AgentState  # type: ignore
 # ---------------------
@@ -29,12 +30,12 @@ OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
 
 # --- Initialize Cross-Encoder Model (Load once at startup) ---
 try:
-    print("Loading Cross-Encoder Reranker Model...")
+    logger.info("Loading Cross-Encoder Reranker Model...")
     RERANKER_MODEL = CrossEncoder('cross-encoder/ms-marco-TinyBERT-L-2-v2')
     RERANKER_ENABLED = True
-    print("Cross-Encoder Loaded.")
+    logger.info("Cross-Encoder Loaded.")
 except Exception as e:
-    print(f"Failed to load Cross-Encoder model: {e}")
+    logger.error(f"Failed to load Cross-Encoder model: {e}")
     RERANKER_MODEL = None
     RERANKER_ENABLED = False
 # -----------------------------------------------------------
@@ -105,7 +106,7 @@ async def query_multimodal(query: str, user_id: str, top_k: int = 6, source_filt
     and delegates final answer generation to the RAG Agent (via ainvoke).
     """
     
-    # print(f"\n🔍 Query: {query}, file_name: {source_filter}, user_id: {user_id}, top_k: {top_k}\n")
+    # logger.info(f"\n🔍 Query: {query}, file_name: {source_filter}, user_id: {user_id}, top_k: {top_k}\n")
     
     collection = get_user_collection(user_id)
     if not collection or collection.count() == 0:
@@ -241,7 +242,7 @@ async def query_multimodal(query: str, user_id: str, top_k: int = 6, source_filt
         }
     
 
-    print("Invoking RAG Agent...")
+    logger.info("Invoking RAG Agent...")
 
     # Prepare the initial state for the LangGraph agent
     initial_state: AgentState = {
@@ -262,7 +263,7 @@ async def query_multimodal(query: str, user_id: str, top_k: int = 6, source_filt
         "max_steps": 3
     }
 
-    # print("context passed to RAG Agent:", context)
+    # logger.info("context passed to RAG Agent:", context)
     
     try:
         # Use ainvoke for async graph execution

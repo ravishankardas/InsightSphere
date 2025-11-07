@@ -4,6 +4,10 @@ from collections import Counter
 from datetime import datetime
 from typing import Dict, Any, List
 from fastapi import APIRouter, Header
+from app.logger import setup_logger
+
+logger = setup_logger()
+
 
 # Define the log file path
 LOG_FILE = r"C:\Users\ravis\OneDrive\Desktop\PROJECTS\InsightSphere\backend\app\api\analytics_log.jsonl" 
@@ -26,7 +30,7 @@ def read_logs() -> List[Dict[str, Any]]:
                     # Skip malformed lines to prevent crashing the dashboard
                     continue 
     except Exception as e:
-        print(f"Error reading analytics log: {e}")
+        logger.error(f"Error reading analytics log: {e}")
     return logs
 
 def log_query(log_data: Dict[str, Any]):

@@ -5,7 +5,8 @@ from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import text
 from dotenv import load_dotenv
-
+from app.logger import setup_logger
+logger = setup_logger()
 from app.database_service.models import Base
 load_dotenv()
 
@@ -51,4 +52,4 @@ async def create_tables():
     
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
-        print("✅ Database tables created successfully")
+        logger.info("✅ Database tables created successfully")

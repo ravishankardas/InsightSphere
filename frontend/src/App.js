@@ -397,7 +397,7 @@ export default function App() {
       }
 
       const bodyPayload = {
-        query: userMessage.content,
+        query: getConversationContext(userMessage.content),
         top_k: 6,
         source: selectedDocument,
         use_query_rewriting: false,
@@ -567,6 +567,49 @@ export default function App() {
     } catch (error) {
       console.error("❌ Error saving chat to backend:", error);
     }
+  };
+
+
+  // Conversation memory helper
+  const getConversationContext = (currentQuery) => {
+    if (!selectedDocument || !userId) return currentQuery;
+    
+    // Check if this query needs conversation context
+    const needsMemory = 
+      currentQuery.toLowerCase().includes('what was') ||
+      currentQuery.toLowerCase().includes('previous') ||
+      currentQuery.toLowerCase().includes('again') ||
+      currentQuery.toLowerCase().includes('earlier') ||
+      currentQuery.toLowerCase().includes('before');
+    
+    if (!needsMemory) return currentQuery;
+    
+    // Get recent messages from localStorage cache
+    const cachedChats = JSON.parse(localStorage.getItem(`chatHistory_${userId}`) || '{}');
+    const currentChat = cachedChats[selectedDocument] || [];
+    
+    if (currentChat.length < 2) return currentQuery;
+    
+    // Get last 2 Q&A pairs for context
+    const recentPairs = [];
+    for (let i = Math.max(0, currentChat.length - 4); i < currentChat.length; i += 2) {
+      if (currentChat[i] && currentChat[i + 1]) {
+        recentPairs.push({
+          question: currentChat[i].content,
+          answer: currentChat[i + 1].content
+        });
+      }
+    }
+    
+    if (recentPairs.length === 0) return currentQuery;
+    
+    // Build enhanced query with context
+    let context = "Previous conversation:\n";
+    recentPairs.forEach((pair, index) => {
+      context += `Q: ${pair.question}\nA: ${pair.answer}\n\n`;
+    });
+    
+    return `${context}Current question: ${currentQuery}`;
   };
 
   const loadChatFromBackend = async (documentName) => {

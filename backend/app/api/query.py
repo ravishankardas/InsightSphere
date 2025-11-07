@@ -16,10 +16,13 @@ from app.services.intent_classifier import detect_email_intent
 # ------------------
 from dotenv import load_dotenv
 import os
-
+from app.logger import setup_logger
 from app.database_service.db_service import load_chat_from_db, save_chat_to_db
 
 load_dotenv()
+
+
+logger = setup_logger()
 
 TO_ = os.getenv("TO") 
 
@@ -57,7 +60,7 @@ class LoadChatResponse(BaseModel):
     document_name: Optional[str] = None
 
 @router.post("")
-# @limiter.limit(f"{TO_}/24hour")
+@limiter.limit(f"{TO_}/24hour")
 async def query_documents(
     request: Request,
     body: QueryRequest,
@@ -103,21 +106,19 @@ async def query_documents(
         processed_query = body.query
         search_query = body.query.lower()
 
-        if not any(keyword in search_query for keyword in ["email", "mail"]):
-            if body.use_query_rewriting:
-                # Check if query needs rewriting
-                if query_rewriter.should_rewrite(body.query):
-                    processed_query = query_rewriter.rewrite_query(
-                        original_query=body.query,
-                    )
-                    print(f"✏️ Query rewritten: '{body.query}' → '{processed_query}'")
-            pass
-        else:
-            print("Not rewriting query as it seems to be email related.")
+        if "Previous conversation:" in processed_query and "Current question:" in processed_query:
+            logger.info("🧠 Memory context detected - using enhanced query")
+            logger.info(f"Enhanced query length: {len(processed_query)}")
+        elif any(keyword in search_query for keyword in ["email", "mail"]):
+            logger.info("Not rewriting query as it seems to be email related.")
             email_present = True
+        else:
+            if body.use_query_rewriting and query_rewriter.should_rewrite(body.query):
+                processed_query = query_rewriter.rewrite_query(
+                    original_query=body.query,
+                )
+                logger.info(f"✏️ Query rewritten: '{body.query}' → '{processed_query}'")
 
-        # print(f"body: {body}")
-        # Pass source filter to query function
         result = await query_multimodal(
             processed_query, 
             user_id, 
@@ -137,7 +138,7 @@ async def query_documents(
         return result
 
     except Exception as e:
-        print(f"Query exception: {e}")
+        logger.error(f"Query exception: {e}")
         return {"answer": f"A system error occurred during the query: {e}", "sources": [], "citations": []}
 
     finally:
@@ -148,7 +149,6 @@ async def query_documents(
         
         # Final log write
         log_query(log_data)
-
 
 # Add this to your existing router in query.py
 @router.post("/chats/save")
@@ -172,7 +172,7 @@ async def save_chat_conversation(
             detail="Document name is required."
         )
     
-    print(f"💾 Saving chat for user {user_id}, document: {body.document_name}, messages: {len(body.messages)}")
+    logger.info(f"💾 Saving chat for user {user_id}, document: {body.document_name}, messages: {len(body.messages)}")
     
     try:
         # Convert Pydantic models to dict for JSON storage
@@ -188,7 +188,7 @@ async def save_chat_conversation(
         )
         
     except Exception as e:
-        print(f"❌ Error saving chat: {e}")
+        logger.error(f"❌ Error saving chat: {e}")
         return SaveChatResponse(
             success=False,
             message=f"Failed to save chat: {str(e)}"
@@ -208,7 +208,7 @@ async def load_chat_conversation(
             detail="Authentication required. Please provide X-User-Id header."
         )
     
-    print(f"📂 Loading chat for user {user_id}, document: {document_name}")
+    logger.info(f"📂 Loading chat for user {user_id}, document: {document_name}")
     
     try:
         messages = await load_chat_from_db(user_id, document_name)
@@ -220,7 +220,7 @@ async def load_chat_conversation(
         )
         
     except Exception as e:
-        print(f"❌ Error loading chat: {e}")
+        logger.error(f"❌ Error loading chat: {e}")
         return LoadChatResponse(
             success=False,
             messages=[],
@@ -242,7 +242,7 @@ async def evaluate_rag(
             detail="Authentication required. Please provide X-User-Id header."
         )
     
-    print(f"\n⚡ RAGAs Evaluation triggered for user: {user_id}")
+    logger.info(f"\n⚡ RAGAs Evaluation triggered for user: {user_id}")
     
     # Call the new evaluation service
     result = evaluate_rag_pipeline(user_id, file_name) 

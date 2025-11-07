@@ -6,7 +6,8 @@ import PyPDF2 # type: ignore
 from io import BytesIO
 from typing import Dict, Tuple
 import re
-
+from app.logger import setup_logger
+logger = setup_logger()
 
 def analyze_pdf_complexity(pdf_bytes: bytes) -> Dict:
     """
@@ -50,7 +51,7 @@ def analyze_pdf_complexity(pdf_bytes: bytes) -> Dict:
                     has_tables_likely = _check_for_tables(text)
                     
             except Exception as e:
-                print(f"Warning: Could not analyze page {i+1}: {e}")
+                logger.error(f"Warning: Could not analyze page {i+1}: {e}")
                 continue
         
         # Calculate metrics
@@ -83,7 +84,7 @@ def analyze_pdf_complexity(pdf_bytes: bytes) -> Dict:
         }
         
     except Exception as e:
-        print(f"Error analyzing PDF: {e}")
+        logger.error(f"Error analyzing PDF: {e}")
         # Return safe defaults if analysis fails
         return {
             "complexity_score": 30,

@@ -9,6 +9,10 @@ import PyPDF2 # type: ignore
 from io import BytesIO
 from app.services.embeddings import get_embeddings
 from app.services.ingest import get_user_collection
+from app.logger import setup_logger
+
+logger = setup_logger()
+
 
 
 def extract_text_only(pdf_bytes: bytes) -> str:
@@ -53,19 +57,19 @@ def ingest_text_only_pdf(pdf_bytes: bytes, user_id: str, filename: str) -> Dict:
         filename: Name of the file
     """
     
-    print(f"\n{'='*60}")
-    print(f"FAST TEXT-ONLY INGEST: {filename}")
-    print(f"{'='*60}")
+    logger.info(f"\n{'='*60}")
+    logger.info(f"FAST TEXT-ONLY INGEST: {filename}")
+    logger.info(f"{'='*60}")
     
     # Step 1: Extract text (very fast)
-    print("📄 Extracting text...")
+    logger.info("📄 Extracting text...")
     text = extract_text_only(pdf_bytes)
     
     # Step 2: Chunk text
-    print("✂️  Chunking text...")
+    logger.info("✂️  Chunking text...")
     chunks = chunk_text_simple(text, chunk_size=1000, overlap=200)
     
-    print(f"✅ Created {len(chunks)} chunks")
+    logger.info(f"✅ Created {len(chunks)} chunks")
     
     # Step 3: Prepare for ChromaDB
     all_docs = chunks
@@ -81,11 +85,11 @@ def ingest_text_only_pdf(pdf_bytes: bytes, user_id: str, filename: str) -> Dict:
     all_ids = [str(uuid.uuid4()) for _ in chunks]
     
     # Step 4: Generate embeddings
-    print(f"🔢 Generating embeddings...")
+    logger.info(f"🔢 Generating embeddings...")
     embeddings = get_embeddings(all_docs)
     
     # Step 5: Store in ChromaDB
-    print(f"💾 Storing in database...")
+    logger.info(f"💾 Storing in database...")
     collection = get_user_collection(user_id)
     collection.add(
         ids=all_ids,
@@ -94,8 +98,8 @@ def ingest_text_only_pdf(pdf_bytes: bytes, user_id: str, filename: str) -> Dict:
         embeddings=embeddings
     )
     
-    print(f"✅ Done! Stored {len(all_docs)} chunks")
-    print(f"{'='*60}\n")
+    logger.info(f"✅ Done! Stored {len(all_docs)} chunks")
+    logger.info(f"{'='*60}\n")
     
     return {
         "n_chunks": len(chunks),

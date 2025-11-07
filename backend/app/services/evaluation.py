@@ -22,6 +22,10 @@ from app.services.embeddings import _get_model, MODEL_NAME  # Import your Senten
 from dotenv import load_dotenv
 load_dotenv()
 
+
+from app.logger import setup_logger
+logger = setup_logger()
+
 OPEN_API_KEY = os.getenv("OPENAI_API_KEY")
 # Define the path to your evaluation data file
 EVALUATION_CSV_PATH = r"C:\Users\ravis\OneDrive\Desktop\PROJECTS\InsightSphere\backend\app\services\evaluation.csv"
@@ -76,16 +80,16 @@ def get_ragas_llm_and_embeddings():
             MODEL_NAME
         )
         embeddings = LangchainEmbeddingsWrapper(langchain_compatible_embeddings)
-        print(f"✅ Using ingestion embedding model: {MODEL_NAME}")
+        logger.info(f"✅ Using ingestion embedding model: {MODEL_NAME}")
     except Exception as e:
-        print(f"⚠️ Warning: Could not load ingestion embedding model: {e}")
+        logger.error(f"⚠️ Warning: Could not load ingestion embedding model: {e}")
         return None, None
     
     if OPEN_API_KEY:
         evaluator_llm = LangchainLLMWrapper(
             ChatOpenAI(model="gpt-4o-mini", api_key=OPEN_API_KEY, temperature=0) # type: ignore
         )
-        print("✅ Using OpenAI for RAGAs evaluation")
+        logger.info("✅ Using OpenAI for RAGAs evaluation")
         return evaluator_llm, embeddings
     
     else:
@@ -144,7 +148,7 @@ def evaluate_rag_pipeline(user_id: str, file_name: str = "") -> Dict[str, Any]:
     }
     
     # 2. Run the RAG pipeline on the test questions
-    print(f"\n🔬 Running RAG pipeline on {len(test_df)} test questions for evaluation...")
+    logger.info(f"\n🔬 Running RAG pipeline on {len(test_df)} test questions for evaluation...")
     for i, question in enumerate(dataset_dict['question']):
         try:
             # Use your improved hybrid+reranker query function
@@ -157,14 +161,14 @@ def evaluate_rag_pipeline(user_id: str, file_name: str = "") -> Dict[str, Any]:
             
             # Extract the required components for RAGAs
             # Contexts must be a list of strings (the chunks)
-            retrieved_contexts = [src['content'] for src in rag_result.get('sources', [])] 
+            retrieved_contexts = [src['content'] for src in rag_result.get('sources', [])]  # type: ignore
             
-            dataset_dict['answer'][i] = rag_result['answer']
+            dataset_dict['answer'][i] = rag_result['answer'] # type: ignore
             dataset_dict['contexts'][i] = retrieved_contexts
             
-            print(f"  ✓ Question {i+1}/{len(test_df)} processed")
+            logger.info(f"  ✓ Question {i+1}/{len(test_df)} processed")
         except Exception as e:
-            print(f"  ✗ Question {i+1}/{len(test_df)} failed: {e}")
+            logger.error(f"  ✗ Question {i+1}/{len(test_df)} failed: {e}")
             dataset_dict['answer'][i] = f"Error: {str(e)}"
             dataset_dict['contexts'][i] = []
         
@@ -172,10 +176,10 @@ def evaluate_rag_pipeline(user_id: str, file_name: str = "") -> Dict[str, Any]:
     ragas_dataset = Dataset.from_dict(dataset_dict)
 
     # 3. Define and run RAGAs metrics with custom LLM and matching embeddings
-    print("\n✨ Running RAGAs metrics (this may take a minute as an LLM is used)...")
-    print(f"   📊 Embedding Model: Same as ingestion (SentenceTransformer)")
+    logger.info("\n✨ Running RAGAs metrics (this may take a minute as an LLM is used)...")
+    logger.info(f"   📊 Embedding Model: Same as ingestion (SentenceTransformer)")
     llm_name = "OpenAI GPT-4o-mini" if OPEN_API_KEY else "Unknown LLM"
-    print(f"   🤖 Evaluation LLM: {llm_name}")
+    logger.info(f"   🤖 Evaluation LLM: {llm_name}")
     
     # Configure metrics with custom LLM and embeddings
     for metric in [faithfulness, answer_relevancy, context_recall, context_precision]:
@@ -202,7 +206,7 @@ def evaluate_rag_pipeline(user_id: str, file_name: str = "") -> Dict[str, Any]:
     result_df = result.to_pandas()
     
     # Debug: Print available columns
-    print(f"\n📋 Available columns in result: {list(result_df.columns)}")
+    logger.info(f"\n📋 Available columns in result: {list(result_df.columns)}")
     
     # Extract average scores from the result DataFrame
     average_scores = {}
