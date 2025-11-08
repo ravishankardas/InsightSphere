@@ -1,5 +1,6 @@
 # UPDATED rag_agent.py - PRESERVES ALL EXISTING FUNCTIONALITY
 import os
+import time
 from typing import TypedDict, Optional, List, Dict, Any
 from langgraph.graph import StateGraph, END
 from openai import OpenAI
@@ -43,7 +44,7 @@ class AgentState(TypedDict):
     current_step: int
     max_steps: int
 
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY")) # type: ignore
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
 API_BASE_URL = os.getenv("RAILWAY_PUBLIC_DOMAIN")
 if not API_BASE_URL:

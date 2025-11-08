@@ -21,6 +21,11 @@ export default function App() {
   const saveTimeoutRef = useRef(null);
   const rateLimitIntervalRef = useRef(null);
 
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
+  const toggleSidebar = () => {
+    setSidebarCollapsed(!sidebarCollapsed);
+  };
   
   // --- State Variables ---
   // API Config
@@ -655,6 +660,9 @@ export default function App() {
   };
 
   const handleQuery = async () => {
+
+    const queryStartTime = performance.now();
+
     // Validation checks
     if (rateLimited) {
       addErrorMessage(`Rate limited. Only allowed ${NUM_QUERIES_ALLOWED} queries per day.`);
@@ -719,6 +727,8 @@ export default function App() {
       }
 
       const data = await res.json();
+      const queryEndTime = performance.now();
+      const queryLatency = queryEndTime - queryStartTime;
 
       if (res.ok) {
         if (data.answer && !data.answer.includes("OpenAI is not configured") && !data.answer.includes("no context found")) {
@@ -728,6 +738,8 @@ export default function App() {
             false, 
             data.sources || data.retrieved || []
           );
+
+          console.log(`✅ Query completed in ${queryLatency/1000}s`);
           
           updateMessagesAndCache(assistantMessage);
           scheduleBackendSave([...messages, userMessage, assistantMessage]);
@@ -928,7 +940,7 @@ export default function App() {
         />
       )} */}
 
-      <div className="main-content two-column">
+      <div className={`main-content two-column ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
         <DocumentsPanel
           documents={documents}
           loadingDocuments={loadingDocuments}
@@ -936,6 +948,8 @@ export default function App() {
           deletingDoc={deletingDoc}
           handleDocumentClick={handleDocumentClick}
           handleDeleteClick={handleDeleteClick}
+          sidebarCollapsed={sidebarCollapsed}
+          toggleSidebar={toggleSidebar}
         />
 
         <ChatPanel

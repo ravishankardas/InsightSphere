@@ -56,7 +56,7 @@ def get_user_collection(user_id: str):
     try:
         collection = client.get_or_create_collection(name=collection_name)
         count = collection.count()
-        logger.info(f"✓ Ingest: Collection '{collection_name}' loaded with {count} items")
+        # logger.info(f"✓ Ingest: Collection '{collection_name}' loaded with {count} items")
         _collections[user_id] = collection
         return collection
     except Exception as e:

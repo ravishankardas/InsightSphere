@@ -25,7 +25,7 @@ class SemanticRAGCache:
         self.redis = redis.from_url(redis_url, decode_responses=True)
         self.threshold = similarity_threshold
         self.encoder = SentenceTransformer(embedding_model)
-        logger.info(f"✅ Semantic cache initialized (threshold: {similarity_threshold})")
+        # logger.info(f"✅ Semantic cache initialized (threshold: {similarity_threshold})")
     
     def _create_cache_key(
         self, 
@@ -59,7 +59,7 @@ class SemanticRAGCache:
         Search for semantically similar cached answer.
         """
         try:
-            logger.info(f"source_filter in cache search: {source_filter}")
+            # logger.info(f"source_filter in cache search: {source_filter}")
             query_embedding = self.encoder.encode(query)
             pattern = self._get_user_prefix(user_id, source_filter)
             
@@ -119,7 +119,7 @@ class SemanticRAGCache:
                 ttl,
                 json.dumps(cache_data)
             )
-            logger.info(f"💾 Saved to semantic cache (TTL: {ttl//86400} days), cache_key: {cache_key}")
+            # logger.info(f"💾 Saved to semantic cache (TTL: {ttl//86400} days), cache_key: {cache_key}")
             
         except Exception as e:
             logger.error(f"⚠️ Cache save error: {e}")

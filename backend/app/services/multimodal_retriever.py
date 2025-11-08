@@ -11,17 +11,19 @@ from app.services.embeddings import get_embeddings
 from app.services.ingest import get_user_collection
 from rank_bm25 import BM25Okapi 
 from dotenv import load_dotenv
+from app.logger import setup_logger
 import redis # type: ignore
 import json
 import hashlib
 from sentence_transformers import CrossEncoder # Needs 'pip install sentence-transformers'
 from sentence_transformers import SentenceTransformer
 import numpy as np
-from app.logger import setup_logger
+import inspect
 logger = setup_logger()
 # --- Agent Imports ---
 from app.services.rag_agent import RAG_AGENT_APP, AgentState  # type: ignore
 # ---------------------
+
 
 load_dotenv()
 
@@ -30,10 +32,10 @@ OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
 
 # --- Initialize Cross-Encoder Model (Load once at startup) ---
 try:
-    logger.info("Loading Cross-Encoder Reranker Model...")
+    # logger.info("Loading Cross-Encoder Reranker Model...")
     RERANKER_MODEL = CrossEncoder('cross-encoder/ms-marco-TinyBERT-L-2-v2')
     RERANKER_ENABLED = True
-    logger.info("Cross-Encoder Loaded.")
+    # logger.info("Cross-Encoder Loaded.")
 except Exception as e:
     logger.error(f"Failed to load Cross-Encoder model: {e}")
     RERANKER_MODEL = None
@@ -42,8 +44,8 @@ except Exception as e:
 
 
 
-
 # --- 1. RRF Score Fusion Logic ---
+# @findTime
 def reciprocal_rank_fusion(
     dense_results: List[Dict[str, Any]], 
     sparse_results: List[Dict[str, Any]], 
@@ -53,6 +55,7 @@ def reciprocal_rank_fusion(
     Merges dense (vector) and sparse (BM25) results using Reciprocal Rank Fusion (RRF).
     (Logic remains unchanged)
     """
+    start = time.time()
     fused_scores = {}
     content_map = {}
     
@@ -94,12 +97,16 @@ def reciprocal_rank_fusion(
             })
 
     fused_results.sort(key=lambda x: x['fused_score'], reverse=True)
-    
+    end = time.time()
+    current_frame = inspect.stack()[0]
+    function_name = current_frame.function
+    logger.info(f" ⏱️ {function_name} took {round(end - start, 2)} seconds")
     return fused_results
 # --- End RRF Score Fusion Logic ---
 
 
 # --- MODIFIED: query_multimodal is now async and uses ainvoke ---
+
 async def query_multimodal(query: str, user_id: str, top_k: int = 6, source_filter: str = "file.pdf", email_present: bool=False) -> Dict:
     """
     Query across all modalities using Hybrid Search (Dense + Sparse) + RRF + Cross-Encoder Reranking
@@ -108,6 +115,10 @@ async def query_multimodal(query: str, user_id: str, top_k: int = 6, source_filt
     
     # logger.info(f"\n🔍 Query: {query}, file_name: {source_filter}, user_id: {user_id}, top_k: {top_k}\n")
     
+    start = time.time()
+    
+    # --- TIMER: Collection Setup ---
+    collection_start = time.time()
     collection = get_user_collection(user_id)
     if not collection or collection.count() == 0:
         return {
@@ -116,16 +127,20 @@ async def query_multimodal(query: str, user_id: str, top_k: int = 6, source_filt
             "cached": False,
             "action_performed": False
         }
+    collection_time = time.time() - collection_start
     
     # --- 1. Define Filter Clause (unchanged) ---
+    filter_start = time.time()
     conditions = [{"user_id": user_id}]
     if source_filter and isinstance(source_filter, str) and source_filter.strip():
         conditions.append({"source": source_filter})
     
     where_clause = {"$and": conditions} if len(conditions) > 1 else conditions[0]
-    retrieval_k = top_k * 5
+    retrieval_k = min(top_k * 2, 15)
+    filter_time = time.time() - filter_start
     
     # --- 2. Dense Retrieval (Vector Search) (unchanged) ---
+    dense_start = time.time()
     query_emb = get_embeddings([query])[0]
     
     dense_chroma_results = collection.query(
@@ -143,8 +158,10 @@ async def query_multimodal(query: str, user_id: str, top_k: int = 6, source_filt
                 'metadata': dense_chroma_results['metadatas'][0][i], # type: ignore
                 'distance': dense_chroma_results['distances'][0][i], # type: ignore
             })
+    dense_time = time.time() - dense_start
     
     # --- 3. Sparse Retrieval (BM25 Keyword Search) (unchanged) ---
+    sparse_start = time.time()
     all_filtered_content = collection.get(
         where=where_clause, # type: ignore
         include=['documents', 'metadatas'] # type: ignore
@@ -168,11 +185,15 @@ async def query_multimodal(query: str, user_id: str, top_k: int = 6, source_filt
                 'metadata': metadatas[i], # type: ignore
                 'score': doc_scores[i] 
             })
-
+    sparse_time = time.time() - sparse_start
+    
     # --- 4. Reciprocal Rank Fusion (RRF) (unchanged) ---
+    rrf_start = time.time()
     fused_results = reciprocal_rank_fusion(dense_results, sparse_results)
+    rrf_time = time.time() - rrf_start
     
     # --- 5. Reranking with Cross-Encoder (unchanged) ---
+    rerank_start = time.time()
     if RERANKER_ENABLED and fused_results:
         rerank_n = max(top_k + 4, top_k * 2) 
         to_rerank = fused_results[:rerank_n]
@@ -191,8 +212,10 @@ async def query_multimodal(query: str, user_id: str, top_k: int = 6, source_filt
     
     # Truncate the final list to the user's requested top_k
     final_chunks = final_chunks_all[:top_k]
+    rerank_time = time.time() - rerank_start
     
     # --- 6. Final Answer Generation and Output Construction (MODIFIED) ---
+    sources_start = time.time()
     context: List[str] = []
     sources: List[Dict[str, Any]] = [] 
 
@@ -225,9 +248,10 @@ async def query_multimodal(query: str, user_id: str, top_k: int = 6, source_filt
         
         # Build context for the agent
         context.append(doc) # Agent's prompt will handle source numbers
+    sources_time = time.time() - sources_start
     
     # 6b. Agent Execution (NEW LOGIC)
-    
+    agent_start = time.time()
     answer = "Error: Could not process request."
     action_performed = False
     cached = False 
@@ -270,10 +294,25 @@ async def query_multimodal(query: str, user_id: str, top_k: int = 6, source_filt
         final_state = await RAG_AGENT_APP.ainvoke(initial_state)
         answer = final_state['answer']
         
-        
     except Exception as e:
         answer = f"Error invoking RAG Agent: {str(e)}"
         action_performed = False
+
+    agent_time = time.time() - agent_start
+    
+    # --- FINAL TIMING REPORT ---
+    total_time = time.time() - start
+    
+    # logger.info(f" {inspect.stack()[0].function} - COMPLETE BREAKDOWN:")
+    # logger.info(f"  Collection Setup: {collection_time:.3f}s")
+    # logger.info(f"  Filter Setup: {filter_time:.3f}s")
+    # logger.info(f"  Dense Search: {dense_time:.3f}s")
+    # logger.info(f"  Sparse Search: {sparse_time:.3f}s")
+    # logger.info(f"  RRF Fusion: {rrf_time:.3f}s")
+    # logger.info(f"  Reranking: {rerank_time:.3f}s")
+    # logger.info(f"  Sources Processing: {sources_time:.3f}s")
+    # logger.info(f"  Agent Execution: {agent_time:.3f}s")
+    logger.info(f"  TOTAL time for {inspect.stack()[0].function}: {total_time:.3f}s")
 
     return {
         "answer": answer,

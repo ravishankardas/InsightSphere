@@ -86,19 +86,6 @@ async def query_documents(
         "error": True, 
         "response_time_ms": None,
     }
-    # intent = detect_email_intent(body.query)
-    # from icecream import ic
-    # ic(intent)
-    # ic(user_id)
-
-    # if intent.send_email:
-    #     return {
-    #         "answer": "Email Sent Successfully",
-    #         "sources": [body.source],
-    #         "query": body.query
-    #     }
-    # else:
-    #     pass
 
     email_present = False
     query_rewriter = get_query_rewriter()
@@ -107,7 +94,7 @@ async def query_documents(
         search_query = body.query.lower()
 
         if "Previous conversation:" in processed_query and "Current question:" in processed_query:
-            logger.info("🧠 Memory context detected - using enhanced query")
+            # logger.info("🧠 Memory context detected - using enhanced query")
             logger.info(f"Enhanced query length: {len(processed_query)}")
         elif any(keyword in search_query for keyword in ["email", "mail"]):
             logger.info("Not rewriting query as it seems to be email related.")
@@ -117,7 +104,7 @@ async def query_documents(
                 processed_query = query_rewriter.rewrite_query(
                     original_query=body.query,
                 )
-                logger.info(f"✏️ Query rewritten: '{body.query}' → '{processed_query}'")
+                # logger.info(f"✏️ Query rewritten: '{body.query}' → '{processed_query}'")
 
         result = await query_multimodal(
             processed_query, 
@@ -172,7 +159,7 @@ async def save_chat_conversation(
             detail="Document name is required."
         )
     
-    logger.info(f"💾 Saving chat for user {user_id}, document: {body.document_name}, messages: {len(body.messages)}")
+    # logger.info(f"💾 Saving chat for user {user_id}, document: {body.document_name}, messages: {len(body.messages)}")
     
     try:
         # Convert Pydantic models to dict for JSON storage

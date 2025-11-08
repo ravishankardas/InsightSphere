@@ -29,7 +29,7 @@ app = FastAPI(
 @app.on_event("startup")
 async def startup_event():
     await create_tables()
-    logger.info("🚀 Application started and database tables verified")
+    # logger.info("Application started and database tables verified")
     
 # Attach the limiter instance to the app state
 app.state.limiter = limiter

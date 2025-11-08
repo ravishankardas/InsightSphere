@@ -9,37 +9,49 @@ export default function DocumentsPanel({
   selectedDocument, 
   deletingDoc, 
   handleDocumentClick, 
-  handleDeleteClick 
+  handleDeleteClick,
+  toggleSidebar,
+  sidebarCollapsed
 }) {
   return (
-    <div className="documents-panel">
+    <div className={`documents-panel ${sidebarCollapsed ? 'collapsed' : ''}`}>
       <div className="documents-header">
         <h2 className="documents-title">My Documents</h2>
         <p className="documents-subtitle">Upload and manage your files</p>
+        
+        <button 
+          className="collapse-sidebar-btn"
+          onClick={toggleSidebar}
+          title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+        >
+          {sidebarCollapsed ? "→" : "←"}
+        </button>
       </div>
 
-      <div className="documents-list">
-        {loadingDocuments ? (
-          <EmptyState icon="📚" text="Loading documents..." />
-        ) : documents.length === 0 ? (
-          <EmptyState icon="📚" text="No documents yet" />
-        ) : (
-          documents.map((doc, index) => {
-            const docName = typeof doc === "string" ? doc : (doc.source || doc.name || doc.file || "");
-            
-            return (
-              <DocumentItem
-                key={index}
-                doc={doc}
-                isSelected={selectedDocument === docName}
-                isDeleting={deletingDoc}
-                handleDocumentClick={handleDocumentClick}
-                handleDeleteClick={handleDeleteClick}
-              />
-            );
-          })
-        )}
-      </div>
+      {!sidebarCollapsed && (
+        <div className="documents-list">
+          {loadingDocuments ? (
+            <EmptyState icon="📚" text="Loading documents..." />
+          ) : documents.length === 0 ? (
+            <EmptyState icon="📚" text="No documents yet" />
+          ) : (
+            documents.map((doc, index) => {
+              const docName = typeof doc === "string" ? doc : (doc.source || doc.name || doc.file || "");
+              
+              return (
+                <DocumentItem
+                  key={index}
+                  doc={doc}
+                  isSelected={selectedDocument === docName}
+                  isDeleting={deletingDoc}
+                  handleDocumentClick={handleDocumentClick}
+                  handleDeleteClick={handleDeleteClick}
+                />
+              );
+            })
+          )}
+        </div>
+      )}
     </div>
   );
 }

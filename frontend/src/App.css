@@ -969,3 +969,53 @@ body {
   border-color: var(--chat-border);
   color: var(--text);
 }
+
+
+/*document panel*/
+/* Documents panel collapse behavior */
+.documents-panel {
+  transition: all 0.3s ease;
+  overflow: hidden;
+  width: 300px; /* or your current width */
+  min-width: 300px;
+}
+
+.documents-panel.collapsed {
+  width: 60px;
+  min-width: 60px;
+}
+
+/* Hide content when collapsed */
+.documents-panel.collapsed .documents-header .documents-title,
+.documents-panel.collapsed .documents-header .documents-subtitle,
+.documents-panel.collapsed .documents-list {
+  display: none;
+}
+
+/* Style the collapse button */
+.collapse-sidebar-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.collapse-sidebar-btn:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Adjust header for the button */
+.documents-header {
+  position: relative;
+  padding-right: 40px; /* Make space for the button */
+}
+
+  
+
+

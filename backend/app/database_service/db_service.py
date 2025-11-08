@@ -9,10 +9,10 @@ logger = setup_logger()
 import os
 API_BASE_URL = os.getenv("RAILWAY_PUBLIC_DOMAIN")
 if API_BASE_URL:
-    logger.info("using prod")
+    # logger.info("using prod")
     DATABASE_URL = os.getenv("DATABASE_URL_PROD")
 else:
-    logger.info("using dev")
+    # logger.info("using dev")
     DATABASE_URL = os.getenv("DATABASE_URL_DEV")
 
 def normalize_document_name(document_name: str) -> str:
@@ -42,7 +42,7 @@ async def save_chat_to_db(user_id: str, document_name: str, messages: list):
                     WHERE user_id = $3 AND document_name = $4""",
                     json.dumps(messages), datetime.utcnow(), user_id, document_name
                 )
-                logger.info(f"✅ Updated chat for user {user_id}, document {document_name}")
+                # logger.info(f"✅ Updated chat for user {user_id}, document {document_name}")
             else:
                 # Insert new chat
                 await conn.execute(

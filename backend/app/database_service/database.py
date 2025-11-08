@@ -13,10 +13,10 @@ load_dotenv()
 # Get database URL from environment
 API_BASE_URL = os.getenv("RAILWAY_PUBLIC_DOMAIN")
 if API_BASE_URL:
-    logger.info("using prod")
+    # logger.info("using prod")
     DATABASE_URL = os.getenv("DATABASE_URL_PROD")
 else:
-    logger.info("using dev")
+    # logger.info("using dev")
     DATABASE_URL = os.getenv("DATABASE_URL_DEV")
 
 # logger.info(DATABASE_URL)
@@ -61,4 +61,4 @@ async def create_tables():
     
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
-        logger.info("✅ Database tables created successfully")
+        # logger.info("✅ Database tables created successfully")
