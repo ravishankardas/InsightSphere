@@ -60,7 +60,7 @@ class LoadChatResponse(BaseModel):
     document_name: Optional[str] = None
 
 @router.post("")
-# @limiter.limit(f"{TO_}/24hour")
+@limiter.limit(f"{TO_}/24hour")
 async def query_documents(
     request: Request,
     body: QueryRequest,

@@ -51,6 +51,7 @@ def get_user_collection(user_id: str):
         return _collections[user_id]
     
     client = get_chroma_client()
+    client.heartbeat()
     collection_name = sanitize_collection_name(user_id)
     
     try:

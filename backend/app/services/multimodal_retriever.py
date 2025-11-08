@@ -1,5 +1,6 @@
 # app/services/multimodal_retriever.py
 
+import asyncio
 import hashlib
 import os
 import re
@@ -115,209 +116,247 @@ async def query_multimodal(query: str, user_id: str, top_k: int = 6, source_filt
     
     # logger.info(f"\n🔍 Query: {query}, file_name: {source_filter}, user_id: {user_id}, top_k: {top_k}\n")
     
-    start = time.time()
-    
-    # --- TIMER: Collection Setup ---
-    collection_start = time.time()
-    collection = get_user_collection(user_id)
-    if not collection or collection.count() == 0:
-        return {
-            "answer": "Collection is empty or API Key is not configured.",
-            "sources": [],
-            "cached": False,
-            "action_performed": False
-        }
-    collection_time = time.time() - collection_start
-    
-    # --- 1. Define Filter Clause (unchanged) ---
-    filter_start = time.time()
-    conditions = [{"user_id": user_id}]
-    if source_filter and isinstance(source_filter, str) and source_filter.strip():
-        conditions.append({"source": source_filter})
-    
-    where_clause = {"$and": conditions} if len(conditions) > 1 else conditions[0]
-    retrieval_k = min(top_k * 2, 15)
-    filter_time = time.time() - filter_start
-    
-    # --- 2. Dense Retrieval (Vector Search) (unchanged) ---
-    dense_start = time.time()
-    query_emb = get_embeddings([query])[0]
-    
-    dense_chroma_results = collection.query(
-        query_embeddings=[query_emb],
-        n_results=min(retrieval_k, collection.count()),
-        where=where_clause, # type: ignore
-        include=['documents', 'metadatas', 'distances'] # type: ignore
-    )
-    dense_results = []
-    if dense_chroma_results['ids'] and dense_chroma_results['ids'][0]:
-        for i, doc_id in enumerate(dense_chroma_results['ids'][0]):
-            dense_results.append({
-                'id': doc_id,
-                'document': dense_chroma_results['documents'][0][i], # type: ignore
-                'metadata': dense_chroma_results['metadatas'][0][i], # type: ignore
-                'distance': dense_chroma_results['distances'][0][i], # type: ignore
-            })
-    dense_time = time.time() - dense_start
-    
-    # --- 3. Sparse Retrieval (BM25 Keyword Search) (unchanged) ---
-    sparse_start = time.time()
-    all_filtered_content = collection.get(
-        where=where_clause, # type: ignore
-        include=['documents', 'metadatas'] # type: ignore
-    )
-    documents = all_filtered_content.get('documents', [])
-    metadatas = all_filtered_content.get('metadatas', [])
-    ids = all_filtered_content.get('ids', [])
-
-    sparse_results = []
-    if documents:
-        tokenized_documents = [doc.split(" ") for doc in documents]
-        bm25 = BM25Okapi(tokenized_documents)
-        tokenized_query = query.split(" ")
-        doc_scores = bm25.get_scores(tokenized_query)
-        ranked_indices = sorted(range(len(doc_scores)), key=lambda i: doc_scores[i], reverse=True)
+    MAX_RETRIES = 3
+    RETRY_DELAY = 1.0  # seconds
+    for attempt in range(MAX_RETRIES):
+        try:
+            start = time.time()
         
-        for i in ranked_indices[:min(retrieval_k, len(documents))]:
-            sparse_results.append({
-                'id': ids[i],
-                'document': documents[i],
-                'metadata': metadatas[i], # type: ignore
-                'score': doc_scores[i] 
-            })
-    sparse_time = time.time() - sparse_start
-    
-    # --- 4. Reciprocal Rank Fusion (RRF) (unchanged) ---
-    rrf_start = time.time()
-    fused_results = reciprocal_rank_fusion(dense_results, sparse_results)
-    rrf_time = time.time() - rrf_start
-    
-    # --- 5. Reranking with Cross-Encoder (unchanged) ---
-    rerank_start = time.time()
-    if RERANKER_ENABLED and fused_results:
-        rerank_n = max(top_k + 4, top_k * 2) 
-        to_rerank = fused_results[:rerank_n]
-        remaining_results = fused_results[rerank_n:]
+            # --- TIMER: Collection Setup ---
+            collection_start = time.time()
+            collection = get_user_collection(user_id)
 
-        sentence_pairs = [[query, item['document']] for item in to_rerank]
-        rerank_scores = RERANKER_MODEL.predict(sentence_pairs) # type: ignore
+            if not collection:
+                logger.warning(f"🔄 Attempt {attempt + 1}: Collection not ready")
+                if attempt < MAX_RETRIES - 1:
+                    await asyncio.sleep(RETRY_DELAY)
+                    continue
+                else:
+                    return {
+                        "answer": "Backend is initializing. Please try again in a few seconds.",
+                        "sources": [],
+                        "cached": False,
+                        "action_performed": False
+                    }
+            
+            if not collection or collection.count() == 0:
+                return {
+                    "answer": "Collection is empty or API Key is not configured.",
+                    "sources": [],
+                    "cached": False,
+                    "action_performed": False
+                }
+            collection_time = time.time() - collection_start
+            
+            # --- 1. Define Filter Clause (unchanged) ---
+            filter_start = time.time()
+            conditions = [{"user_id": user_id}]
+            if source_filter and isinstance(source_filter, str) and source_filter.strip():
+                conditions.append({"source": source_filter})
+            
+            where_clause = {"$and": conditions} if len(conditions) > 1 else conditions[0]
+            retrieval_k = min(top_k * 2, 15)
+            filter_time = time.time() - filter_start
+            
+            # --- 2. Dense Retrieval (Vector Search) (unchanged) ---
+            dense_start = time.time()
+            query_emb = get_embeddings([query])[0]
+            
+            dense_chroma_results = collection.query(
+                query_embeddings=[query_emb],
+                n_results=min(retrieval_k, collection.count()),
+                where=where_clause, # type: ignore
+                include=['documents', 'metadatas', 'distances'] # type: ignore
+            )
+            dense_results = []
+            if dense_chroma_results['ids'] and dense_chroma_results['ids'][0]:
+                for i, doc_id in enumerate(dense_chroma_results['ids'][0]):
+                    dense_results.append({
+                        'id': doc_id,
+                        'document': dense_chroma_results['documents'][0][i], # type: ignore
+                        'metadata': dense_chroma_results['metadatas'][0][i], # type: ignore
+                        'distance': dense_chroma_results['distances'][0][i], # type: ignore
+                    })
+            dense_time = time.time() - dense_start
+            
+            # --- 3. Sparse Retrieval (BM25 Keyword Search) (unchanged) ---
+            sparse_start = time.time()
+            all_filtered_content = collection.get(
+                where=where_clause, # type: ignore
+                include=['documents', 'metadatas'] # type: ignore
+            )
+            documents = all_filtered_content.get('documents', [])
+            metadatas = all_filtered_content.get('metadatas', [])
+            ids = all_filtered_content.get('ids', [])
 
-        for i, score in enumerate(rerank_scores):
-            to_rerank[i]['rerank_score'] = score
-        
-        to_rerank.sort(key=lambda x: x['rerank_score'], reverse=True)
-        final_chunks_all = to_rerank + remaining_results
-    else:
-        final_chunks_all = fused_results
-    
-    # Truncate the final list to the user's requested top_k
-    final_chunks = final_chunks_all[:top_k]
-    rerank_time = time.time() - rerank_start
-    
-    # --- 6. Final Answer Generation and Output Construction (MODIFIED) ---
-    sources_start = time.time()
-    context: List[str] = []
-    sources: List[Dict[str, Any]] = [] 
+            sparse_results = []
+            if documents:
+                tokenized_documents = [doc.split(" ") for doc in documents]
+                bm25 = BM25Okapi(tokenized_documents)
+                tokenized_query = query.split(" ")
+                doc_scores = bm25.get_scores(tokenized_query)
+                ranked_indices = sorted(range(len(doc_scores)), key=lambda i: doc_scores[i], reverse=True)
+                
+                for i in ranked_indices[:min(retrieval_k, len(documents))]:
+                    sparse_results.append({
+                        'id': ids[i],
+                        'document': documents[i],
+                        'metadata': metadatas[i], # type: ignore
+                        'score': doc_scores[i] 
+                    })
+            sparse_time = time.time() - sparse_start
+            
+            # --- 4. Reciprocal Rank Fusion (RRF) (unchanged) ---
+            rrf_start = time.time()
+            fused_results = reciprocal_rank_fusion(dense_results, sparse_results)
+            rrf_time = time.time() - rrf_start
+            
+            # --- 5. Reranking with Cross-Encoder (unchanged) ---
+            rerank_start = time.time()
+            if RERANKER_ENABLED and fused_results:
+                rerank_n = max(top_k + 4, top_k * 2) 
+                to_rerank = fused_results[:rerank_n]
+                remaining_results = fused_results[rerank_n:]
 
-    for i, item in enumerate(final_chunks):
-        doc = item['document']
-        meta = item['metadata']
-        distance = item.get('distance') 
-        
-        display_content = doc
-        if doc.startswith('[TABLE'):
-            parts = doc.split(']', 1)
-            display_content = parts[1].strip() if len(parts) > 1 else doc
-        elif doc.startswith('[IMAGE'):
-            parts = doc.split(']', 1)
-            display_content = parts[1].strip() if len(parts) > 1 else doc
+                sentence_pairs = [[query, item['document']] for item in to_rerank]
+                rerank_scores = RERANKER_MODEL.predict(sentence_pairs) # type: ignore
 
-        sources.append({
-            "index": i + 1,
-            "type": meta.get('type', 'text'),
-            "content": display_content,  
-            "snippet": display_content[:200] + "..." if len(display_content) > 200 else display_content, 
-            "distance": round(distance, 4) if distance else None, 
-            "metadata": {
-                "source": meta.get('source', 'Unknown'),
-                "page": meta.get('page', 'N/A'),
-                "table_index": meta.get('table_index'),
-                "image_index": meta.get('image_index')
+                for i, score in enumerate(rerank_scores):
+                    to_rerank[i]['rerank_score'] = score
+                
+                to_rerank.sort(key=lambda x: x['rerank_score'], reverse=True)
+                final_chunks_all = to_rerank + remaining_results
+            else:
+                final_chunks_all = fused_results
+            
+            # Truncate the final list to the user's requested top_k
+            final_chunks = final_chunks_all[:top_k]
+            rerank_time = time.time() - rerank_start
+            
+            # --- 6. Final Answer Generation and Output Construction (MODIFIED) ---
+            sources_start = time.time()
+            context: List[str] = []
+            sources: List[Dict[str, Any]] = [] 
+
+            for i, item in enumerate(final_chunks):
+                doc = item['document']
+                meta = item['metadata']
+                distance = item.get('distance') 
+                
+                display_content = doc
+                if doc.startswith('[TABLE'):
+                    parts = doc.split(']', 1)
+                    display_content = parts[1].strip() if len(parts) > 1 else doc
+                elif doc.startswith('[IMAGE'):
+                    parts = doc.split(']', 1)
+                    display_content = parts[1].strip() if len(parts) > 1 else doc
+
+                sources.append({
+                    "index": i + 1,
+                    "type": meta.get('type', 'text'),
+                    "content": display_content,  
+                    "snippet": display_content[:200] + "..." if len(display_content) > 200 else display_content, 
+                    "distance": round(distance, 4) if distance else None, 
+                    "metadata": {
+                        "source": meta.get('source', 'Unknown'),
+                        "page": meta.get('page', 'N/A'),
+                        "table_index": meta.get('table_index'),
+                        "image_index": meta.get('image_index')
+                    }
+                })
+                
+                # Build context for the agent
+                context.append(doc) # Agent's prompt will handle source numbers
+            sources_time = time.time() - sources_start
+            
+            # 6b. Agent Execution (NEW LOGIC)
+            agent_start = time.time()
+            answer = "Error: Could not process request."
+            action_performed = False
+            cached = False 
+            
+            if not OPENAI_API_KEY or not context:
+                return {
+                    "answer": "OpenAI is not configured or no context found.",
+                    "sources": sources,
+                    "query": query,
+                    "cached": cached,
+                    "action_performed": action_performed
+                }
+            
+
+            logger.info("Invoking RAG Agent...")
+
+            # Prepare the initial state for the LangGraph agent
+            initial_state: AgentState = {
+                "user_query": query,
+                "user_id": user_id,
+                "source_filter": source_filter,
+                "context": context, # Pass the retrieved chunks to the agent
+                "answer": "",
+                "tool_call": None,
+                "action_performed": False,
+                "email_present": email_present,
+                "query_type": "RAG_ANSWER",
+                "tool_calls": [],
+                "intermediate_results": [],
+                "execution_plan": [],
+                "confidence": 0.0,
+                "current_step": 0,
+                "max_steps": 3
             }
-        })
-        
-        # Build context for the agent
-        context.append(doc) # Agent's prompt will handle source numbers
-    sources_time = time.time() - sources_start
-    
-    # 6b. Agent Execution (NEW LOGIC)
-    agent_start = time.time()
-    answer = "Error: Could not process request."
-    action_performed = False
-    cached = False 
-    
-    if not OPENAI_API_KEY or not context:
-        return {
-            "answer": "OpenAI is not configured or no context found.",
-            "sources": sources,
-            "query": query,
-            "cached": cached,
-            "action_performed": action_performed
-        }
-    
 
-    logger.info("Invoking RAG Agent...")
+            # logger.info("context passed to RAG Agent:", context)
+            
+            try:
+                # Use ainvoke for async graph execution
+                final_state = await RAG_AGENT_APP.ainvoke(initial_state)
+                answer = final_state['answer']
+                
+            except Exception as e:
+                answer = f"Error invoking RAG Agent: {str(e)}"
+                action_performed = False
 
-    # Prepare the initial state for the LangGraph agent
-    initial_state: AgentState = {
-        "user_query": query,
-        "user_id": user_id,
-        "source_filter": source_filter,
-        "context": context, # Pass the retrieved chunks to the agent
-        "answer": "",
-        "tool_call": None,
-        "action_performed": False,
-        "email_present": email_present,
-        "query_type": "RAG_ANSWER",
-        "tool_calls": [],
-        "intermediate_results": [],
-        "execution_plan": [],
-        "confidence": 0.0,
-        "current_step": 0,
-        "max_steps": 3
-    }
+            agent_time = time.time() - agent_start
+            
+            # --- FINAL TIMING REPORT ---
+            total_time = time.time() - start
+            
+            logger.info(f" {inspect.stack()[0].function} - COMPLETE BREAKDOWN:")
+            logger.info(f"  Collection Setup: {collection_time:.3f}s")
+            logger.info(f"  Filter Setup: {filter_time:.3f}s")
+            logger.info(f"  Dense Search: {dense_time:.3f}s")
+            logger.info(f"  Sparse Search: {sparse_time:.3f}s")
+            logger.info(f"  RRF Fusion: {rrf_time:.3f}s")
+            logger.info(f"  Reranking: {rerank_time:.3f}s")
+            logger.info(f"  Sources Processing: {sources_time:.3f}s")
+            logger.info(f"  Agent Execution: {agent_time:.3f}s")
+            logger.info(f"  TOTAL time for {inspect.stack()[0].function}: {total_time:.3f}s")
 
-    # logger.info("context passed to RAG Agent:", context)
-    
-    try:
-        # Use ainvoke for async graph execution
-        final_state = await RAG_AGENT_APP.ainvoke(initial_state)
-        answer = final_state['answer']
-        
-    except Exception as e:
-        answer = f"Error invoking RAG Agent: {str(e)}"
-        action_performed = False
+            return {
+                "answer": answer,
+                "sources": sources,
+                "query": query,
+                "cached": cached,
+                "action_performed": action_performed 
+            }
+        except Exception as e:
+            logger.error(f"❌ Query attempt {attempt + 1} failed: {e}")
+            if attempt < MAX_RETRIES - 1:
+                await asyncio.sleep(RETRY_DELAY)
+                continue
+            else:
+                return {
+                    "answer": f"Backend error: {str(e)}",
+                    "sources": [],
+                    "cached": False,
+                    "action_performed": False
+                }
 
-    agent_time = time.time() - agent_start
-    
-    # --- FINAL TIMING REPORT ---
-    total_time = time.time() - start
-    
-    # logger.info(f" {inspect.stack()[0].function} - COMPLETE BREAKDOWN:")
-    # logger.info(f"  Collection Setup: {collection_time:.3f}s")
-    # logger.info(f"  Filter Setup: {filter_time:.3f}s")
-    # logger.info(f"  Dense Search: {dense_time:.3f}s")
-    # logger.info(f"  Sparse Search: {sparse_time:.3f}s")
-    # logger.info(f"  RRF Fusion: {rrf_time:.3f}s")
-    # logger.info(f"  Reranking: {rerank_time:.3f}s")
-    # logger.info(f"  Sources Processing: {sources_time:.3f}s")
-    # logger.info(f"  Agent Execution: {agent_time:.3f}s")
-    logger.info(f"  TOTAL time for {inspect.stack()[0].function}: {total_time:.3f}s")
 
     return {
-        "answer": answer,
-        "sources": sources,
-        "query": query,
-        "cached": cached,
-        "action_performed": action_performed 
+        "answer": "Unexpected error occurred.",
+        "sources": [],
+        "cached": False,
+        "action_performed": False
     }

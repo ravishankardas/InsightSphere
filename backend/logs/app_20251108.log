@@ -1705,3 +1705,43 @@
 2025-11-08 16:28:17 | InsightSphere | INFO | main.py:32 | Application started and database tables verified
 2025-11-08 16:28:58 | InsightSphere | INFO | main.py:32 | Application started and database tables verified
 2025-11-08 16:29:38 | InsightSphere | INFO | main.py:32 | Application started and database tables verified
+2025-11-08 16:48:25 | InsightSphere | INFO | ingest.py:26 | ✓ Ingest: ChromaDB PersistentClient initialized at ./chroma_db
+2025-11-08 16:48:32 | InsightSphere | INFO | multimodal_retriever.py:103 |  ⏱️ reciprocal_rank_fusion took 0.0 seconds
+2025-11-08 16:48:32 | InsightSphere | INFO | multimodal_retriever.py:269 | Invoking RAG Agent...
+2025-11-08 16:48:44 | InsightSphere | INFO | semantic_rag_cache.py:88 | ✅ Semantic cache HIT (similarity: 89.8%)
+2025-11-08 16:48:44 | InsightSphere | INFO | rag_agent.py:83 | 🎯 Cache HIT - returning cached answer
+2025-11-08 16:48:44 | InsightSphere | INFO | rag_agent.py:354 | 🔀 Routing query: 'which model is used for zero-shot classification in this document?' | Context: 6 chunks
+2025-11-08 16:48:44 | InsightSphere | INFO | rag_agent.py:385 |   → Routing to RAG (default fast path)
+2025-11-08 16:48:45 | InsightSphere | INFO | multimodal_retriever.py:315 |   TOTAL time for query_multimodal: 19.966s
+2025-11-08 16:49:53 | InsightSphere | INFO | ingest.py:26 | ✓ Ingest: ChromaDB PersistentClient initialized at ./chroma_db
+2025-11-08 16:50:01 | InsightSphere | INFO | multimodal_retriever.py:103 |  ⏱️ reciprocal_rank_fusion took 0.0 seconds
+2025-11-08 16:50:01 | InsightSphere | INFO | multimodal_retriever.py:269 | Invoking RAG Agent...
+2025-11-08 16:50:15 | InsightSphere | INFO | semantic_rag_cache.py:88 | ✅ Semantic cache HIT (similarity: 89.8%)
+2025-11-08 16:50:15 | InsightSphere | INFO | rag_agent.py:83 | 🎯 Cache HIT - returning cached answer
+2025-11-08 16:50:15 | InsightSphere | INFO | rag_agent.py:354 | 🔀 Routing query: 'which model is used for zero-shot classification in this document?' | Context: 6 chunks
+2025-11-08 16:50:15 | InsightSphere | INFO | rag_agent.py:385 |   → Routing to RAG (default fast path)
+2025-11-08 16:50:15 | InsightSphere | INFO | multimodal_retriever.py:306 |  query_multimodal - COMPLETE BREAKDOWN:
+2025-11-08 16:50:15 | InsightSphere | INFO | multimodal_retriever.py:307 |   Collection Setup: 0.344s
+2025-11-08 16:50:15 | InsightSphere | INFO | multimodal_retriever.py:308 |   Filter Setup: 0.000s
+2025-11-08 16:50:15 | InsightSphere | INFO | multimodal_retriever.py:309 |   Dense Search: 4.906s
+2025-11-08 16:50:15 | InsightSphere | INFO | multimodal_retriever.py:310 |   Sparse Search: 0.044s
+2025-11-08 16:50:15 | InsightSphere | INFO | multimodal_retriever.py:311 |   RRF Fusion: 2.233s
+2025-11-08 16:50:15 | InsightSphere | INFO | multimodal_retriever.py:312 |   Reranking: 0.129s
+2025-11-08 16:50:15 | InsightSphere | INFO | multimodal_retriever.py:313 |   Sources Processing: 0.000s
+2025-11-08 16:50:15 | InsightSphere | INFO | multimodal_retriever.py:314 |   Agent Execution: 14.322s
+2025-11-08 16:50:15 | InsightSphere | INFO | multimodal_retriever.py:315 |   TOTAL time for query_multimodal: 21.977s
+2025-11-08 16:51:13 | InsightSphere | INFO | multimodal_retriever.py:103 |  ⏱️ reciprocal_rank_fusion took 0.0 seconds
+2025-11-08 16:51:13 | InsightSphere | INFO | multimodal_retriever.py:269 | Invoking RAG Agent...
+2025-11-08 16:51:28 | InsightSphere | INFO | semantic_rag_cache.py:91 | 🔍 Semantic cache MISS (best similarity: 0.0%)
+2025-11-08 16:51:28 | InsightSphere | INFO | rag_agent.py:354 | 🔀 Routing query: 'which rag techniques are mentioned in this document?' | Context: 6 chunks
+2025-11-08 16:51:28 | InsightSphere | INFO | rag_agent.py:385 |   → Routing to RAG (default fast path)
+2025-11-08 16:51:29 | InsightSphere | INFO | multimodal_retriever.py:306 |  query_multimodal - COMPLETE BREAKDOWN:
+2025-11-08 16:51:29 | InsightSphere | INFO | multimodal_retriever.py:307 |   Collection Setup: 0.003s
+2025-11-08 16:51:29 | InsightSphere | INFO | multimodal_retriever.py:308 |   Filter Setup: 0.000s
+2025-11-08 16:51:29 | InsightSphere | INFO | multimodal_retriever.py:309 |   Dense Search: 0.043s
+2025-11-08 16:51:29 | InsightSphere | INFO | multimodal_retriever.py:310 |   Sparse Search: 0.002s
+2025-11-08 16:51:29 | InsightSphere | INFO | multimodal_retriever.py:311 |   RRF Fusion: 0.055s
+2025-11-08 16:51:29 | InsightSphere | INFO | multimodal_retriever.py:312 |   Reranking: 0.055s
+2025-11-08 16:51:29 | InsightSphere | INFO | multimodal_retriever.py:313 |   Sources Processing: 0.000s
+2025-11-08 16:51:29 | InsightSphere | INFO | multimodal_retriever.py:314 |   Agent Execution: 14.989s
+2025-11-08 16:51:29 | InsightSphere | INFO | multimodal_retriever.py:315 |   TOTAL time for query_multimodal: 15.147s
