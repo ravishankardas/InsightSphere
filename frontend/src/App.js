@@ -1,6 +1,6 @@
 // src/App.js
 import React, { useState, useEffect, useCallback, useRef } from "react";
-import { SignedIn, SignedOut, useUser } from "@clerk/clerk-react";
+import { useUser } from "@clerk/clerk-react"; // Removed unused SignedIn, SignedOut
 import "./App.css";
 
 // Components
@@ -11,11 +11,10 @@ import ChatPanel from "./components/ChatPanel";
 import AuthModal from "./components/AuthModal";
 import DeleteConfirmationModal from './components/DeleteConfirmationModal';
 
-// Constants
-const API_KEY = process.env.REACT_APP_API_KEY;
-const NUM_QUERIES_ALLOWED = process.env.REACT_APP_NUM_QUERIES_ALLOWED || 2;
-
 export default function App() {
+  const API_KEY = process.env.REACT_APP_API_KEY;
+  const NUM_QUERIES_ALLOWED = process.env.REACT_APP_NUM_QUERIES_ALLOWED || 2;
+
   const { user, isSignedIn } = useUser();
   const userId = user?.primaryEmailAddress?.emailAddress || user?.id || null;
   
@@ -46,20 +45,94 @@ export default function App() {
   // Upload State
   const [uploading, setUploading] = useState(false);
   const [uploadStatus, setUploadStatus] = useState(null);
-  const [file, setFile] = useState(null);
+  // Removed unused 'file' state
 
   // Chat/Query State
   const [query, setQuery] = useState("");
   const [querying, setQuerying] = useState(false);
-  const [documentChats, setDocumentChats] = useState({});
-  const [loadingChats, setLoadingChats] = useState(false);
+  // Removed unused 'documentChats' and 'setLoadingChats' states
   const [messages, setMessages] = useState([]);
   const [rateLimited, setRateLimited] = useState(false);
-  const [retryAfter, setRetryAfter] = useState(0);
+  // Removed unused 'retryAfter' state
   
   // Delete Modal State
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [docToDelete, setDocToDelete] = useState(null);
+
+  // ---- API functions for chat persistence ----
+  const saveChatToBackend = useCallback(async (documentName, messages) => {
+    if (!isSignedIn || !userId || !documentName) {
+      console.log("Skipping save - not signed in or no document selected");
+      return;
+    }
+    
+    // Don't save if we're just creating an empty record
+    if (messages.length === 0) {
+      console.log("Skipping save - no messages to save");
+      return;
+    }
+    
+    try {
+      const headers = {
+        "Content-Type": "application/json",
+        "X-API-Key": API_KEY,
+        "X-User-Id": userId,
+      };
+
+      console.log(`💾 Saving ${messages.length} messages for: ${documentName}`);
+      
+      const response = await fetch(`${apiUrl}/api/query/chats/save`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify({
+          document_name: documentName,
+          messages: messages
+        }),
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        console.log("✅ Chat saved successfully");
+      } else {
+        console.error("❌ Failed to save chat:", data.message);
+      }
+    } catch (error) {
+      console.error("❌ Error saving chat to backend:", error);
+    }
+  }, [API_KEY, apiUrl, isSignedIn, userId]);
+
+  const loadChatFromBackend = useCallback(async (documentName) => {
+    if (!isSignedIn || !userId || !documentName) {
+      console.log("Skipping load - not signed in or no document name");
+      return [];
+    }
+    
+    try {
+      const headers = {
+        "X-API-Key": API_KEY,
+        "X-User-Id": userId,
+      };
+
+      console.log(`📂 Loading chat for: ${documentName}`);
+      
+      const response = await fetch(`${apiUrl}/api/query/chats/load/${encodeURIComponent(documentName)}`, {
+        method: "GET",
+        headers,
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        console.log(`✅ Loaded ${data.messages.length} messages for ${documentName}`);
+        return data.messages;
+      } else {
+        console.error("❌ Failed to load chat:", data.message);
+        return [];
+      }
+    } catch (error) {
+      console.error("❌ Error loading chat from backend:", error);
+      return [];
+    }
+  }, [API_KEY, apiUrl, isSignedIn, userId]);
 
   // --- Helper & Utility Functions ---
   const testBackendConnection = useCallback(async () => {
@@ -96,16 +169,20 @@ export default function App() {
     };
     
     localStorage.setItem(`chatHistory_${userId}`, JSON.stringify(updatedCache));
-    setDocumentChats(updatedCache);
+    // Removed setDocumentChats since it's no longer used
   }, [userId, getCachedChats]);
 
   const clearCache = useCallback(() => {
     if (userId) {
       localStorage.removeItem(`chatHistory_${userId}`);
     }
-    setDocumentChats({});
     setMessages([]);
   }, [userId]);
+
+  // Helper function to extract document name
+  const getDocumentName = useCallback((doc) => {
+    return typeof doc === "string" ? doc : (doc.source || doc.name || doc.file || "");
+  }, []);
 
   // ---- Document Functions ----
   const loadDocuments = useCallback(async () => {
@@ -137,12 +214,7 @@ export default function App() {
     } finally {
       setLoadingDocuments(false);
     }
-  }, [userId, API_KEY, apiUrl, selectedDocument]);
-
-  // Helper function to extract document name
-  const getDocumentName = (doc) => {
-    return typeof doc === "string" ? doc : (doc.source || doc.name || doc.file || "");
-  };
+  }, [userId, API_KEY, apiUrl, selectedDocument, getDocumentName]);
 
   // ---- Load Documents AND Chat History on Login ----
   useEffect(() => {
@@ -187,7 +259,6 @@ export default function App() {
               
               // Store in localStorage for fast access
               localStorage.setItem(`chatHistory_${userId}`, JSON.stringify(allChats));
-              setDocumentChats(allChats);
               
               // 3. Auto-select first document and load its messages
               const firstDoc = normalizedDocuments[0];
@@ -223,57 +294,11 @@ export default function App() {
       setDocuments([]);
       setSelectedDocument(null);
       setMessages([]);
-      setDocumentChats({});
     }
-  }, [isSignedIn, userId, API_KEY, apiUrl]);
+  }, [isSignedIn, userId, API_KEY, apiUrl, getDocumentName, loadChatFromBackend]);
 
   // ---- Delete Functions ----
-  const handleDeleteConfirm = async () => {
-    if (!docToDelete) return;
-
-    setDeletingDoc(docToDelete);
-    setShowDeleteModal(false);
-    
-    try {
-      const headers = { "X-API-Key": API_KEY, "X-User-Id": userId };
-      const res = await fetch(`${apiUrl}/api/documents/${encodeURIComponent(docToDelete)}`, { 
-        method: "DELETE", 
-        headers 
-      });
-
-      if (res.ok) {
-        // 1. Remove document from documents list
-        setDocuments(documents.filter(doc => doc !== docToDelete));
-        
-        // 2. Clear chat history from localStorage cache
-        const cachedChats = getCachedChats();
-        delete cachedChats[docToDelete];
-        localStorage.setItem(`chatHistory_${userId}`, JSON.stringify(cachedChats));
-        setDocumentChats(cachedChats);
-        
-        // 3. Clear current messages if viewing the deleted document
-        if (selectedDocument === docToDelete) {
-          setSelectedDocument(null);
-          setMessages([]);
-        }
-        
-        // 4. Also delete from backend database
-        await deleteChatHistoryFromBackend(docToDelete);
-        
-        setUploadStatus({ type: "success", message: `Document "${docToDelete}" deleted successfully.` });
-      } else {
-        const data = await res.json();
-        setUploadStatus({ type: "error", message: data.detail || "Failed to delete document." });
-      }
-    } catch (err) {
-      setUploadStatus({ type: "error", message: `Network error: ${err.message}` });
-    } finally {
-      setDeletingDoc(null);
-      setDocToDelete(null);
-    }
-  };
-
-  const deleteChatHistoryFromBackend = async (documentName) => {
+  const deleteChatHistoryFromBackend = useCallback(async (documentName) => {
     if (!isSignedIn || !userId || !documentName) {
       console.log("Skipping chat history deletion - not signed in");
       return;
@@ -304,6 +329,50 @@ export default function App() {
       }
     } catch (error) {
       console.error("❌ Error deleting chat history and document:", error);
+    }
+  }, [API_KEY, apiUrl, isSignedIn, userId]);
+
+  const handleDeleteConfirm = async () => {
+    if (!docToDelete) return;
+
+    setDeletingDoc(docToDelete);
+    setShowDeleteModal(false);
+    
+    try {
+      const headers = { "X-API-Key": API_KEY, "X-User-Id": userId };
+      const res = await fetch(`${apiUrl}/api/documents/${encodeURIComponent(docToDelete)}`, { 
+        method: "DELETE", 
+        headers 
+      });
+
+      if (res.ok) {
+        // 1. Remove document from documents list
+        setDocuments(documents.filter(doc => doc !== docToDelete));
+        
+        // 2. Clear chat history from localStorage cache
+        const cachedChats = getCachedChats();
+        delete cachedChats[docToDelete];
+        localStorage.setItem(`chatHistory_${userId}`, JSON.stringify(cachedChats));
+        
+        // 3. Clear current messages if viewing the deleted document
+        if (selectedDocument === docToDelete) {
+          setSelectedDocument(null);
+          setMessages([]);
+        }
+        
+        // 4. Also delete from backend database
+        await deleteChatHistoryFromBackend(docToDelete);
+        
+        setUploadStatus({ type: "success", message: `Document "${docToDelete}" deleted successfully.` });
+      } else {
+        const data = await res.json();
+        setUploadStatus({ type: "error", message: data.detail || "Failed to delete document." });
+      }
+    } catch (err) {
+      setUploadStatus({ type: "error", message: `Network error: ${err.message}` });
+    } finally {
+      setDeletingDoc(null);
+      setDocToDelete(null);
     }
   };
 
@@ -443,7 +512,6 @@ export default function App() {
       setUploadStatus({ type: "error", message: `Network error: ${err.message}.` });
     } finally {
       setUploading(false);
-      setFile(null);
     }
   };
 
@@ -462,9 +530,92 @@ export default function App() {
       return;
     }
 
-    setFile(selectedFile);
     setUploadStatus(null);
     await handleUpload(selectedFile);
+  };
+
+  // Helper functions for query handling
+  const createMessage = (type, content, isUser, retrieved = []) => {
+    return {
+      type,
+      content,
+      isUser,
+      retrieved,
+      timestamp: new Date().toISOString()
+    };
+  };
+
+  const addErrorMessage = (message) => {
+    const errorMessage = createMessage("error", message, false);
+    setMessages(prev => [...prev, errorMessage]);
+  };
+
+  const updateMessagesAndCache = (newMessage) => {
+    setMessages(prev => {
+      const newMessages = [...prev, newMessage];
+      updateCache(selectedDocument, newMessages);
+      return newMessages;
+    });
+  };
+
+  const handleRateLimit = (res) => {
+    const retryAfterHeader = res.headers.get('Retry-After');
+    const waitTime = retryAfterHeader ? parseInt(retryAfterHeader) : 60;
+    
+    setRateLimited(true);
+    
+    // Clear any existing interval
+    if (rateLimitIntervalRef.current) {
+      clearInterval(rateLimitIntervalRef.current);
+    }
+    
+    rateLimitIntervalRef.current = setInterval(() => {
+      setRateLimited(false);
+      clearInterval(rateLimitIntervalRef.current);
+    }, waitTime * 1000);
+  };
+
+  const handleEmptyResponse = (userMessage) => {
+    let errorMessage = "The document was uploaded but no meaningful content was extracted. ";
+    errorMessage += "This could be because:\n• The PDF is scanned or image-based\n• The backend AI service is not properly configured";
+    
+    const errorResponse = createMessage("error", errorMessage, false);
+    updateMessagesAndCache(errorResponse);
+    scheduleBackendSave([...messages, userMessage, errorResponse]);
+  };
+
+  const handleQueryError = (data, userMessage) => {
+    const errorDetail = data.detail || "Query failed";
+    let userFriendlyMessage = "Query failed. Please try again.";
+    
+    if (errorDetail.includes("OpenAI")) {
+      userFriendlyMessage = "Backend configuration error: AI service is not properly configured on the server.";
+    } else if (errorDetail.includes("no context")) {
+      userFriendlyMessage = "No searchable content found in the document. The PDF might be scanned or contain only images.";
+    } else if (errorDetail.includes("Authentication required")) {
+      userFriendlyMessage = "Authentication error: Please sign out and sign in again.";
+    }
+    
+    const errorMessage = createMessage("error", userFriendlyMessage, false);
+    updateMessagesAndCache(errorMessage);
+    scheduleBackendSave([...messages, userMessage, errorMessage]);
+  };
+
+  const handleQueryException = (err, userMessage) => {
+    const errorMessage = createMessage(
+      "error", 
+      err.message.includes('Rate limited') ? err.message : `Network error: ${err.message}.`, 
+      false
+    );
+    
+    updateMessagesAndCache(errorMessage);
+    scheduleBackendSave([...messages, userMessage, errorMessage]);
+  };
+
+  const scheduleBackendSave = (messagesToSave) => {
+    setTimeout(() => {
+      saveChatToBackend(selectedDocument, messagesToSave);
+    }, 100);
   };
 
   const handleQuery = async () => {
@@ -558,176 +709,10 @@ export default function App() {
     }
   };
 
-  // Helper functions for query handling
-  const createMessage = (type, content, isUser, retrieved = []) => {
-    return {
-      type,
-      content,
-      isUser,
-      retrieved,
-      timestamp: new Date().toISOString()
-    };
-  };
-
-  const addErrorMessage = (message) => {
-    const errorMessage = createMessage("error", message, false);
-    setMessages(prev => [...prev, errorMessage]);
-  };
-
-  const updateMessagesAndCache = (newMessage) => {
-    setMessages(prev => {
-      const newMessages = [...prev, newMessage];
-      updateCache(selectedDocument, newMessages);
-      return newMessages;
-    });
-  };
-
-  const handleRateLimit = (res) => {
-    const retryAfterHeader = res.headers.get('Retry-After');
-    const waitTime = retryAfterHeader ? parseInt(retryAfterHeader) : 60;
-    
-    setRateLimited(true);
-    setRetryAfter(waitTime);
-    
-    // Clear any existing interval
-    if (rateLimitIntervalRef.current) {
-      clearInterval(rateLimitIntervalRef.current);
-    }
-    
-    rateLimitIntervalRef.current = setInterval(() => {
-      setRetryAfter(prev => {
-        if (prev <= 1) {
-          clearInterval(rateLimitIntervalRef.current);
-          setRateLimited(false);
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-  };
-
-  const handleEmptyResponse = (userMessage) => {
-    let errorMessage = "The document was uploaded but no meaningful content was extracted. ";
-    errorMessage += "This could be because:\n• The PDF is scanned or image-based\n• The backend AI service is not properly configured";
-    
-    const errorResponse = createMessage("error", errorMessage, false);
-    updateMessagesAndCache(errorResponse);
-    scheduleBackendSave([...messages, userMessage, errorResponse]);
-  };
-
-  const handleQueryError = (data, userMessage) => {
-    const errorDetail = data.detail || "Query failed";
-    let userFriendlyMessage = "Query failed. Please try again.";
-    
-    if (errorDetail.includes("OpenAI")) {
-      userFriendlyMessage = "Backend configuration error: AI service is not properly configured on the server.";
-    } else if (errorDetail.includes("no context")) {
-      userFriendlyMessage = "No searchable content found in the document. The PDF might be scanned or contain only images.";
-    } else if (errorDetail.includes("Authentication required")) {
-      userFriendlyMessage = "Authentication error: Please sign out and sign in again.";
-    }
-    
-    const errorMessage = createMessage("error", userFriendlyMessage, false);
-    updateMessagesAndCache(errorMessage);
-    scheduleBackendSave([...messages, userMessage, errorMessage]);
-  };
-
-  const handleQueryException = (err, userMessage) => {
-    const errorMessage = createMessage(
-      "error", 
-      err.message.includes('Rate limited') ? err.message : `Network error: ${err.message}.`, 
-      false
-    );
-    
-    updateMessagesAndCache(errorMessage);
-    scheduleBackendSave([...messages, userMessage, errorMessage]);
-  };
-
-  const scheduleBackendSave = (messagesToSave) => {
-    setTimeout(() => {
-      saveChatToBackend(selectedDocument, messagesToSave);
-    }, 100);
-  };
-
   const handleKeyPress = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleQuery();
-    }
-  };
-
-  // API functions for chat persistence
-  const saveChatToBackend = async (documentName, messages) => {
-    if (!isSignedIn || !userId || !documentName) {
-      console.log("Skipping save - not signed in or no document selected");
-      return;
-    }
-    
-    // Don't save if we're just creating an empty record
-    if (messages.length === 0) {
-      console.log("Skipping save - no messages to save");
-      return;
-    }
-    
-    try {
-      const headers = {
-        "Content-Type": "application/json",
-        "X-API-Key": API_KEY,
-        "X-User-Id": userId,
-      };
-
-      console.log(`💾 Saving ${messages.length} messages for: ${documentName}`);
-      
-      const response = await fetch(`${apiUrl}/api/query/chats/save`, {
-        method: "POST",
-        headers,
-        body: JSON.stringify({
-          document_name: documentName,
-          messages: messages
-        }),
-      });
-
-      const data = await response.json();
-      if (data.success) {
-        console.log("✅ Chat saved successfully");
-      } else {
-        console.error("❌ Failed to save chat:", data.message);
-      }
-    } catch (error) {
-      console.error("❌ Error saving chat to backend:", error);
-    }
-  };
-
-  const loadChatFromBackend = async (documentName) => {
-    if (!isSignedIn || !userId || !documentName) {
-      console.log("Skipping load - not signed in or no document name");
-      return [];
-    }
-    
-    try {
-      const headers = {
-        "X-API-Key": API_KEY,
-        "X-User-Id": userId,
-      };
-
-      console.log(`📂 Loading chat for: ${documentName}`);
-      
-      const response = await fetch(`${apiUrl}/api/query/chats/load/${encodeURIComponent(documentName)}`, {
-        method: "GET",
-        headers,
-      });
-
-      const data = await response.json();
-      if (data.success) {
-        console.log(`✅ Loaded ${data.messages.length} messages for ${documentName}`);
-        return data.messages;
-      } else {
-        console.error("❌ Failed to load chat:", data.message);
-        return [];
-      }
-    } catch (error) {
-      console.error("❌ Error loading chat from backend:", error);
-      return [];
     }
   };
 
@@ -795,7 +780,7 @@ export default function App() {
         }
       };
     }
-  }, [messages, selectedDocument, updateCache]);
+  }, [messages, selectedDocument, updateCache, saveChatToBackend]);
 
   // Clear cache and intervals on logout
   useEffect(() => {
@@ -839,7 +824,7 @@ export default function App() {
         loadFromBackend();
       }
     }
-  }, [selectedDocument, userId, getCachedChats, updateCache]);
+  }, [selectedDocument, userId, getCachedChats, updateCache, loadChatFromBackend]);
 
   // Auto-scroll to bottom of chat
   useEffect(() => {
@@ -928,7 +913,6 @@ export default function App() {
           uploadStatus={uploadStatus}
           rateLimited={rateLimited}
           numQueriesAllowed={NUM_QUERIES_ALLOWED}
-          loadingChats={loadingChats}
           loadingChatHistory={loadingChatHistory}
         />
       </div>
