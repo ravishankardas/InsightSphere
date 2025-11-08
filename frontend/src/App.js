@@ -22,6 +22,7 @@ export default function App() {
   const saveTimeoutRef = useRef(null);
   const rateLimitIntervalRef = useRef(null);
 
+  
   // --- State Variables ---
   // API Config
   const [apiUrl, setApiUrl] = useState(
@@ -58,6 +59,9 @@ export default function App() {
   // Delete Modal State
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [docToDelete, setDocToDelete] = useState(null);
+
+  // Dark Mode
+  const [darkMode, setDarkMode] = useState(false);
 
   // ---- API functions for chat persistence ----
   const saveChatToBackend = useCallback(async (documentName, messages) => {
@@ -215,6 +219,39 @@ export default function App() {
       setLoadingDocuments(false);
     }
   }, [userId, API_KEY, apiUrl, selectedDocument, getDocumentName]);
+
+
+  useEffect(() => {
+    const savedDarkMode = localStorage.getItem('darkMode');
+    if (savedDarkMode) {
+      setDarkMode(JSON.parse(savedDarkMode));
+    }
+  }, []);
+
+  // src/App.js (inside the component, after you declare darkMode state)
+  useEffect(() => {
+    // keep theme on html root for predictable scoping
+    if (darkMode) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+    }
+  }, [darkMode]);
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', darkMode ? 'dark' : 'light');
+  }, [darkMode]);
+
+
+
+  const toggleDarkMode = () => {
+     const htmlElement = document.documentElement;
+    const currentTheme = htmlElement.getAttribute('data-theme');
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    
+    htmlElement.setAttribute('data-theme', newTheme); 
+    localStorage.setItem('theme', newTheme);
+  };
 
   // ---- Load Documents AND Chat History on Login ----
   useEffect(() => {
@@ -860,7 +897,7 @@ export default function App() {
   const handleDeleteCancel = () => { setShowDeleteModal(false); setDocToDelete(null); };
 
   return (
-    <div className="app-container">
+    <div className="app-container" data-theme={darkMode ? 'dark' : 'light'}>
       <DeleteConfirmationModal
         show={showDeleteModal}
         filename={docToDelete}
@@ -876,19 +913,21 @@ export default function App() {
       />
 
       <TopNav
-        showSettings={showSettings}
-        setShowSettings={setShowSettings}
-        openSignIn={openSignIn}
-        openSignUp={openSignUp}
-      />
+      showSettings={showSettings}
+      setShowSettings={setShowSettings}
+      openSignIn={openSignIn}
+      openSignUp={openSignUp}
+      darkMode={darkMode}
+      toggleDarkMode={toggleDarkMode}
+    />
 
-      {showSettings && (
+      {/* {showSettings && (
         <SettingsPanel 
           apiUrl={apiUrl} 
           setApiUrl={setApiUrl} 
           testBackendConnection={testBackendConnection} 
         />
-      )}
+      )} */}
 
       <div className="main-content two-column">
         <DocumentsPanel

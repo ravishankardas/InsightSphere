@@ -1,8 +1,16 @@
 // src/components/TopNav.js
 import React from 'react';
+import './TopNav.css';  
 import { SignedIn, SignedOut, UserButton } from "@clerk/clerk-react";
 
-export default function TopNav({ showSettings, setShowSettings, openSignIn, openSignUp }) {
+export default function TopNav({ 
+  showSettings, 
+  setShowSettings, 
+  openSignIn, 
+  openSignUp,
+  darkMode,
+  toggleDarkMode 
+}) {
   return (
     <nav className="top-nav">
       <div className="nav-content">
@@ -12,8 +20,18 @@ export default function TopNav({ showSettings, setShowSettings, openSignIn, open
         </div>
 
         <div className="nav-actions">
+          {/* Dark Mode Toggle */}
           <button 
-            className="settings-button" 
+            className="dark-mode-toggle"
+            onClick={toggleDarkMode}
+            aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
+            title={darkMode ? "Switch to light mode" : "Switch to dark mode"}
+          >
+            {darkMode ? '☀️' : '🌙'}
+          </button>
+
+          <button 
+            className={`settings-button ${showSettings ? 'active' : ''}`} 
             onClick={() => setShowSettings(!showSettings)}
             aria-label="Toggle settings" 
             title="Settings"

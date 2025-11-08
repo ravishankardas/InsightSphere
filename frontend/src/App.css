@@ -23,6 +23,8 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  /* Ensure smooth transitions */
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
 body {
@@ -30,6 +32,7 @@ body {
   background: var(--background);
   color: var(--text);
   line-height: 1.6;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .app-container {
@@ -61,8 +64,15 @@ body {
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  margin-right: auto;
 }
 
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-left: auto;
+}
 .brand-icon {
   width: 36px;
   height: 36px;
@@ -83,12 +93,6 @@ body {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-}
-
-.nav-actions {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
 }
 
 .settings-button {
@@ -232,12 +236,28 @@ body {
   flex-direction: column;
   height: 100%;
   background: var(--surface);
+  /* Ensure no panel scrolling outside of message area */
+  overflow: hidden; 
 }
 
 .chat-header {
   padding: 1rem 1.5rem;
   border-bottom: 1px solid var(--chat-border);
   background: var(--surface);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+  width: 100%; /* Ensure full width */
+}
+
+/* Add this if not already present */
+.chat-header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  gap: 1rem;
 }
 
 .chat-title {
@@ -247,12 +267,14 @@ body {
 }
 
 .chat-messages {
-  flex: 1;
-  overflow-y: auto;
+  flex: 1; /* Take up all available space */
+  overflow-y: auto; /* Enable scrolling */
   padding: 1.5rem;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  min-height: 0; /* Important for flex child scrolling */
+  scroll-behavior: smooth; /* For smooth auto-scroll */
 }
 
 /* ========== CHAT MESSAGES ========== */
@@ -392,6 +414,7 @@ body {
   padding: 1.5rem;
   border-top: 1px solid var(--chat-border);
   background: var(--surface);
+  flex-shrink: 0;
 }
 
 .chat-input-wrapper {
@@ -628,6 +651,7 @@ body {
   padding: 0.75rem;
   border-radius: 8px;
   font-size: 0.875rem;
+  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
 }
 
 .alert-success {
@@ -642,6 +666,13 @@ body {
   color: var(--error);
 }
 
+.alert-info {
+  /* Added .alert-info style */
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid #3b82f6;
+  color: #3b82f6;
+}
+
 .alert-icon {
   font-size: 1.25rem;
 }
@@ -649,6 +680,12 @@ body {
 .alert-text {
   flex: 1;
 }
+
+.alert.fade-out {
+  opacity: 0;
+  transform: translateY(-10px);
+  pointer-events: none;
+} 
 
 /* ========== EMPTY STATES ========== */
 .empty-state {
@@ -866,67 +903,7 @@ body {
   background: var(--text-muted);
 }
 
-/* Add this to your existing App.css */
-.alert-info {
-  background: rgba(59, 130, 246, 0.1);
-  border: 1px solid #3b82f6;
-  color: #3b82f6;
-}
-
-/* Add these styles to your App.css */
-
-/* ========== CHAT PANEL UPDATES ========== */
-.chat-panel {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  background: var(--surface);
-  overflow: hidden; /* Prevent overall panel scrolling */
-}
-
-.chat-header {
-  padding: 1rem 1.5rem;
-  border-bottom: 1px solid var(--chat-border);
-  background: var(--surface);
-  flex-shrink: 0; /* Prevent header from shrinking */
-}
-
-.chat-messages {
-  flex: 1; /* Take up all available space */
-  overflow-y: auto; /* Enable scrolling */
-  padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  min-height: 0; /* Important for flex child scrolling */
-}
-
-/* Ensure chat messages container can scroll properly */
-.chat-messages::-webkit-scrollbar {
-  width: 6px;
-}
-
-.chat-messages::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.chat-messages::-webkit-scrollbar-thumb {
-  background: var(--border);
-  border-radius: 3px;
-}
-
-.chat-messages::-webkit-scrollbar-thumb:hover {
-  background: var(--text-muted);
-}
-
-.chat-input-container {
-  padding: 1.5rem;
-  border-top: 1px solid var(--chat-border);
-  background: var(--surface);
-  flex-shrink: 0; /* Prevent input from shrinking */
-}
-
-/* ========== EMPTY STATE IN CHAT ========== */
+/* ========== EMPTY STATE IN CHAT (Fix for flex centering) ========== */
 .chat-messages .empty-state {
   flex: 1;
   display: flex;
@@ -939,30 +916,56 @@ body {
   height: 100%;
 }
 
-/* ========== AUTO-SCROLL TO BOTTOM ========== */
-.chat-messages {
-  /* This ensures new messages are visible */
-  scroll-behavior: smooth;
+
+/* --- DARK MODE OVERRIDES --- */
+[data-theme="dark"] {
+  /* Global Colors */
+  --background: #0f172a; 
+  --surface: #1e293b; 
+  --surface-light: #334155; 
+  --border: #475569; 
+  --text: #f1f5f9; 
+  --text-muted: #94a3b8; 
+  --shadow: rgba(255, 255, 255, 0.05); 
+
+  /* Chat Colors */
+  --chat-user-bg: var(--primary); 
+  --chat-assistant-bg: var(--surface); 
+  --chat-border: var(--border);
 }
 
-/* Optional: Add a smooth scroll behavior */
-.chat-messages * {
-  scroll-behavior: smooth;
+/* Modal and Auth fixes for dark mode */
+[data-theme="dark"] .modal-title {
+  color: var(--text); 
+}
+[data-theme="dark"] .modal-close {
+  color: var(--text-muted); 
+}
+[data-theme="dark"] .auth-container p {
+  color: var(--text-muted); 
 }
 
-/* Add to App.css */
-.alert {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem;
-  border-radius: 8px;
-  font-size: 0.875rem;
-  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+/* Explicitly target chat elements for max specificity */
+[data-theme="dark"] .chat-header {
+  background: var(--surface); 
+  border-color: var(--chat-border);
 }
 
-.alert.fade-out {
-  opacity: 0;
-  transform: translateY(-10px);
-  pointer-events: none;
-} 
+[data-theme="dark"] .chat-title {
+  color: var(--text); 
+}
+
+[data-theme="dark"] .chat-messages {
+  background: var(--surface);
+}
+
+/* Final explicit overrides for the input area to ensure dark mode works */
+[data-theme="dark"] .chat-input-container {
+  background: var(--surface);
+}
+
+[data-theme="dark"] .chat-input {
+  background: var(--surface-light);
+  border-color: var(--chat-border);
+  color: var(--text);
+}
