@@ -4,7 +4,10 @@ from typing import List
 from app.logger import setup_logger
 import asyncpg # type: ignore
 import os
+from app.services.ingest import get_user_collection
+
 from dotenv import load_dotenv
+
 
 load_dotenv()
 logger = setup_logger()
@@ -38,6 +41,30 @@ async def get_user_documents_from_db(user_id: str) -> List[str]:
     except Exception as e:
         logger.error(f"Error fetching documents from PostgreSQL for user {user_id}: {e}")
         return []
+
+
+def delete_document(user_id: str, filename: str) -> bool:
+    """
+    Permanently deletes a document and all its associated chunks from ChromaDB.
+    """
+    collection = get_user_collection(user_id)
+    if not collection:
+        return False
+        
+    # ChromaDB deletes items matching the 'where' clause.
+    try:
+        collection.delete(
+            where={
+                "$and": [ 
+                    {"user_id": user_id},
+                    {"source": filename}
+                ]
+            }
+        )
+        return True
+    except Exception as e:
+        logger.error(f"Error deleting document {filename} for user {user_id}: {e}")
+        return False
 
 # Remove ChromaDB functions since we're only using PostgreSQL
 # The following functions are no longer needed:

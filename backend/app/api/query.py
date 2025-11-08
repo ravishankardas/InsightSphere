@@ -60,7 +60,7 @@ class LoadChatResponse(BaseModel):
     document_name: Optional[str] = None
 
 @router.post("")
-@limiter.limit(f"{TO_}/24hour")
+# @limiter.limit(f"{TO_}/24hour")
 async def query_documents(
     request: Request,
     body: QueryRequest,
@@ -233,7 +233,7 @@ async def delete_chat_conversation(
     user_id: str = Header(None, alias="X-User-Id")
 ):
     """
-    Delete chat conversation for a specific document
+    Delete chat conversation AND document content from ChromaDB
     """
     if not user_id:
         raise HTTPException(
@@ -241,26 +241,37 @@ async def delete_chat_conversation(
             detail="Authentication required. Please provide X-User-Id header."
         )
     
-    logger.info(f"🗑️ Deleting chat for user {user_id}, document: {document_name}")
+    logger.info(f"🗑️ Deleting chat and document for user {user_id}, document: {document_name}")
     
     try:
-        # Import your database service
+        # Import your services
         from app.database_service.db_service import delete_chat_from_db
+        from app.services.document_manager import delete_document
         
-        # Delete from database
+        # 1. Delete chat history from PostgreSQL
         await delete_chat_from_db(user_id, document_name)
+        logger.info(f"✅ Chat history deleted from PostgreSQL for {document_name}")
+        
+        # 2. Delete document content from ChromaDB
+        chroma_success = delete_document(user_id, document_name)
+        
+        if chroma_success:
+            logger.info(f"✅ Document content deleted from ChromaDB for {document_name}")
+        else:
+            logger.warning(f"⚠️ Document not found in ChromaDB for {document_name}")
         
         return {
             "success": True,
-            "message": "Chat conversation deleted successfully",
-            "document_name": document_name
+            "message": "Document and chat history deleted successfully",
+            "document_name": document_name,
+            "chroma_deleted": chroma_success
         }
         
     except Exception as e:
-        print(f"❌ Error deleting chat: {e}")
+        logger.error(f"❌ Error deleting document {document_name}: {e}")
         return {
             "success": False,
-            "message": f"Failed to delete chat: {str(e)}"
+            "message": f"Failed to delete document: {str(e)}"
         }
         
 @router.post("/evaluate")

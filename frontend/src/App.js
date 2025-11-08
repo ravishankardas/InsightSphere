@@ -259,36 +259,39 @@ useEffect(() => {
   };
 
   const deleteChatHistoryFromBackend = async (documentName) => {
-    if (!isSignedIn || !userId || !documentName) {
-      console.log("Skipping chat history deletion - not signed in");
-      return;
-    }
+  if (!isSignedIn || !userId || !documentName) {
+    console.log("Skipping chat history deletion - not signed in");
+    return;
+  }
+  
+  try {
+    const headers = {
+      "Content-Type": "application/json",
+      "X-API-Key": API_KEY,
+      "X-User-Id": userId,
+    };
+
+    console.log(`🗑️ Deleting chat AND document for: ${documentName}`);
     
-    try {
-      const headers = {
-        "Content-Type": "application/json",
-        "X-API-Key": API_KEY,
-        "X-User-Id": userId,
-      };
+    // This will delete both chat history AND document content
+    const response = await fetch(`${apiUrl}/api/query/chats/delete/${encodeURIComponent(documentName)}`, {
+      method: "DELETE",
+      headers,
+    });
 
-      console.log(`🗑️ Deleting chat history for: ${documentName}`);
-      
-      const response = await fetch(`${apiUrl}/api/query/chats/delete/${encodeURIComponent(documentName)}`, {
-        method: "DELETE",
-        headers,
-      });
-
-      const data = await response.json();
-      if (data.success) {
-        console.log("✅ Chat history deleted from backend");
-      } else {
-        console.error("❌ Failed to delete chat history from backend:", data.message);
+    const data = await response.json();
+    if (data.success) {
+      console.log("✅ Chat history AND document content deleted from backend");
+      if (data.chroma_deleted !== undefined) {
+        console.log(`📊 ChromaDB deletion: ${data.chroma_deleted ? 'Success' : 'Not found'}`);
       }
-    } catch (error) {
-      console.error("❌ Error deleting chat history from backend:", error);
+    } else {
+      console.error("❌ Failed to delete chat history and document:", data.message);
     }
-  };
-
+  } catch (error) {
+    console.error("❌ Error deleting chat history and document:", error);
+  }
+};
 
   const handleDocumentClick = async (filename) => {
   const normalizedFilename = filename.toLowerCase();

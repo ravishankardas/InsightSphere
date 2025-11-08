@@ -1083,3 +1083,165 @@
 2025-11-07 21:29:49 | InsightSphere | INFO | semantic_rag_cache.py:28 | ✅ Semantic cache initialized (threshold: 0.85)
 2025-11-07 21:29:49 | InsightSphere | INFO | multimodal_retriever.py:33 | Loading Cross-Encoder Reranker Model...
 2025-11-07 21:29:52 | InsightSphere | INFO | multimodal_retriever.py:36 | Cross-Encoder Loaded.
+2025-11-07 21:29:53 | InsightSphere | INFO | database.py:64 | ✅ Database tables created successfully
+2025-11-07 21:29:53 | InsightSphere | INFO | main.py:32 | 🚀 Application started and database tables verified
+2025-11-07 21:29:53 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf, messages: 4
+2025-11-07 21:29:53 | InsightSphere | INFO | db_service.py:99 | ✅ Loaded 1 chat conversations for user ravishankerdas020@gmail.com
+2025-11-07 21:29:53 | InsightSphere | INFO | documents.py:35 | 📋 Found 1 documents with chat history for user ravishankerdas020@gmail.com
+2025-11-07 21:29:53 | InsightSphere | INFO | db_service.py:45 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ml_llm_interview_cheat_sheet.pdf
+2025-11-07 21:29:53 | InsightSphere | INFO | query.py:211 | 📂 Loading chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf
+2025-11-07 21:29:53 | InsightSphere | INFO | db_service.py:76 | ✅ Loaded 4 messages for ml_llm_interview_cheat_sheet.pdf
+2025-11-07 21:29:59 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf, messages: 4
+2025-11-07 21:29:59 | InsightSphere | INFO | db_service.py:45 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ml_llm_interview_cheat_sheet.pdf
+2025-11-07 21:30:11 | InsightSphere | INFO | upload.py:61 | 
+🔍 PDF Analysis for ravi_attentive.pdf:
+2025-11-07 21:30:11 | InsightSphere | INFO | upload.py:62 |    Complexity: 0/100
+2025-11-07 21:30:11 | InsightSphere | INFO | upload.py:63 |    Analysis: Simple text document - text-only
+2025-11-07 21:30:11 | InsightSphere | INFO | upload.py:64 |    Recommended: text mode with max_images=0
+2025-11-07 21:30:11 | InsightSphere | INFO | upload.py:65 |    Estimated time: ~0s
+2025-11-07 21:30:11 | InsightSphere | INFO | text_only_ingest.py:60 | 
+============================================================
+2025-11-07 21:30:11 | InsightSphere | INFO | text_only_ingest.py:61 | FAST TEXT-ONLY INGEST: ravi_attentive.pdf
+2025-11-07 21:30:11 | InsightSphere | INFO | text_only_ingest.py:62 | ============================================================
+2025-11-07 21:30:11 | InsightSphere | INFO | text_only_ingest.py:65 | 📄 Extracting text...
+2025-11-07 21:30:11 | InsightSphere | INFO | text_only_ingest.py:69 | ✂️  Chunking text...
+2025-11-07 21:30:11 | InsightSphere | INFO | text_only_ingest.py:72 | ✅ Created 5 chunks
+2025-11-07 21:30:11 | InsightSphere | INFO | text_only_ingest.py:88 | 🔢 Generating embeddings...
+2025-11-07 21:30:15 | InsightSphere | INFO | text_only_ingest.py:92 | 💾 Storing in database...
+2025-11-07 21:30:15 | InsightSphere | INFO | ingest.py:26 | ✓ Ingest: ChromaDB PersistentClient initialized at ./chroma_db
+2025-11-07 21:30:15 | InsightSphere | INFO | ingest.py:59 | ✓ Ingest: Collection 'user_ravishankerdas020_at_gmail_com_docs' loaded with 77 items
+2025-11-07 21:30:15 | InsightSphere | INFO | text_only_ingest.py:101 | ✅ Done! Stored 5 chunks
+2025-11-07 21:30:15 | InsightSphere | INFO | text_only_ingest.py:102 | ============================================================
+
+2025-11-07 21:30:16 | InsightSphere | INFO | db_service.py:79 | ℹ️ No existing chat found for ravi_attentive.pdf
+2025-11-07 21:30:16 | InsightSphere | INFO | db_service.py:54 | ✅ Created new chat for user ravishankerdas020@gmail.com, document ravi_attentive.pdf
+2025-11-07 21:30:16 | InsightSphere | INFO | upload.py:96 | Created empty chat record for new document: ravi_attentive.pdf
+2025-11-07 21:30:16 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf, messages: 4
+2025-11-07 21:30:16 | InsightSphere | INFO | db_service.py:45 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ml_llm_interview_cheat_sheet.pdf
+2025-11-07 21:30:16 | InsightSphere | INFO | query.py:211 | 📂 Loading chat for user ravishankerdas020@gmail.com, document: ravi_attentive.pdf
+2025-11-07 21:30:16 | InsightSphere | INFO | db_service.py:76 | ✅ Loaded 0 messages for ravi_attentive.pdf
+2025-11-07 21:30:16 | InsightSphere | INFO | query.py:211 | 📂 Loading chat for user ravishankerdas020@gmail.com, document: ravi_attentive.pdf
+2025-11-07 21:30:16 | InsightSphere | INFO | db_service.py:76 | ✅ Loaded 0 messages for ravi_attentive.pdf
+2025-11-07 21:30:19 | InsightSphere | INFO | db_service.py:99 | ✅ Loaded 2 chat conversations for user ravishankerdas020@gmail.com
+2025-11-07 21:30:19 | InsightSphere | INFO | documents.py:35 | 📋 Found 2 documents with chat history for user ravishankerdas020@gmail.com
+2025-11-07 21:30:29 | InsightSphere | INFO | upload.py:61 | 
+🔍 PDF Analysis for ravi_basys.pdf:
+2025-11-07 21:30:29 | InsightSphere | INFO | upload.py:62 |    Complexity: 0/100
+2025-11-07 21:30:29 | InsightSphere | INFO | upload.py:63 |    Analysis: Simple text document - text-only
+2025-11-07 21:30:29 | InsightSphere | INFO | upload.py:64 |    Recommended: text mode with max_images=0
+2025-11-07 21:30:29 | InsightSphere | INFO | upload.py:65 |    Estimated time: ~0s
+2025-11-07 21:30:29 | InsightSphere | INFO | text_only_ingest.py:60 | 
+============================================================
+2025-11-07 21:30:29 | InsightSphere | INFO | text_only_ingest.py:61 | FAST TEXT-ONLY INGEST: ravi_basys.pdf
+2025-11-07 21:30:29 | InsightSphere | INFO | text_only_ingest.py:62 | ============================================================
+2025-11-07 21:30:29 | InsightSphere | INFO | text_only_ingest.py:65 | 📄 Extracting text...
+2025-11-07 21:30:30 | InsightSphere | INFO | text_only_ingest.py:69 | ✂️  Chunking text...
+2025-11-07 21:30:30 | InsightSphere | INFO | text_only_ingest.py:72 | ✅ Created 5 chunks
+2025-11-07 21:30:30 | InsightSphere | INFO | text_only_ingest.py:88 | 🔢 Generating embeddings...
+2025-11-07 21:30:30 | InsightSphere | INFO | text_only_ingest.py:92 | 💾 Storing in database...
+2025-11-07 21:30:30 | InsightSphere | INFO | text_only_ingest.py:101 | ✅ Done! Stored 5 chunks
+2025-11-07 21:30:30 | InsightSphere | INFO | text_only_ingest.py:102 | ============================================================
+
+2025-11-07 21:30:30 | InsightSphere | INFO | db_service.py:79 | ℹ️ No existing chat found for ravi_basys.pdf
+2025-11-07 21:30:30 | InsightSphere | INFO | db_service.py:54 | ✅ Created new chat for user ravishankerdas020@gmail.com, document ravi_basys.pdf
+2025-11-07 21:30:30 | InsightSphere | INFO | upload.py:96 | Created empty chat record for new document: ravi_basys.pdf
+2025-11-07 21:30:30 | InsightSphere | INFO | query.py:211 | 📂 Loading chat for user ravishankerdas020@gmail.com, document: ravi_basys.pdf
+2025-11-07 21:30:30 | InsightSphere | INFO | db_service.py:76 | ✅ Loaded 0 messages for ravi_basys.pdf
+2025-11-07 21:30:30 | InsightSphere | INFO | query.py:211 | 📂 Loading chat for user ravishankerdas020@gmail.com, document: ravi_basys.pdf
+2025-11-07 21:30:30 | InsightSphere | INFO | db_service.py:76 | ✅ Loaded 0 messages for ravi_basys.pdf
+2025-11-07 21:30:32 | InsightSphere | INFO | db_service.py:99 | ✅ Loaded 3 chat conversations for user ravishankerdas020@gmail.com
+2025-11-07 21:30:32 | InsightSphere | INFO | documents.py:35 | 📋 Found 3 documents with chat history for user ravishankerdas020@gmail.com
+2025-11-07 21:30:35 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf, messages: 4
+2025-11-07 21:30:35 | InsightSphere | INFO | db_service.py:45 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ml_llm_interview_cheat_sheet.pdf
+2025-11-07 21:30:38 | InsightSphere | INFO | upload.py:61 | 
+🔍 PDF Analysis for ravi_ds_pw.pdf:
+2025-11-07 21:30:38 | InsightSphere | INFO | upload.py:62 |    Complexity: 0/100
+2025-11-07 21:30:38 | InsightSphere | INFO | upload.py:63 |    Analysis: Simple text document - text-only
+2025-11-07 21:30:38 | InsightSphere | INFO | upload.py:64 |    Recommended: text mode with max_images=0
+2025-11-07 21:30:38 | InsightSphere | INFO | upload.py:65 |    Estimated time: ~0s
+2025-11-07 21:30:38 | InsightSphere | INFO | text_only_ingest.py:60 | 
+============================================================
+2025-11-07 21:30:38 | InsightSphere | INFO | text_only_ingest.py:61 | FAST TEXT-ONLY INGEST: ravi_ds_pw.pdf
+2025-11-07 21:30:38 | InsightSphere | INFO | text_only_ingest.py:62 | ============================================================
+2025-11-07 21:30:38 | InsightSphere | INFO | text_only_ingest.py:65 | 📄 Extracting text...
+2025-11-07 21:30:38 | InsightSphere | INFO | text_only_ingest.py:69 | ✂️  Chunking text...
+2025-11-07 21:30:38 | InsightSphere | INFO | text_only_ingest.py:72 | ✅ Created 5 chunks
+2025-11-07 21:30:38 | InsightSphere | INFO | text_only_ingest.py:88 | 🔢 Generating embeddings...
+2025-11-07 21:30:39 | InsightSphere | INFO | text_only_ingest.py:92 | 💾 Storing in database...
+2025-11-07 21:30:39 | InsightSphere | INFO | text_only_ingest.py:101 | ✅ Done! Stored 5 chunks
+2025-11-07 21:30:39 | InsightSphere | INFO | text_only_ingest.py:102 | ============================================================
+
+2025-11-07 21:30:39 | InsightSphere | INFO | db_service.py:79 | ℹ️ No existing chat found for ravi_ds_pw.pdf
+2025-11-07 21:30:39 | InsightSphere | INFO | db_service.py:54 | ✅ Created new chat for user ravishankerdas020@gmail.com, document ravi_ds_pw.pdf
+2025-11-07 21:30:39 | InsightSphere | INFO | upload.py:96 | Created empty chat record for new document: ravi_ds_pw.pdf
+2025-11-07 21:30:39 | InsightSphere | INFO | query.py:211 | 📂 Loading chat for user ravishankerdas020@gmail.com, document: ravi_ds_pw.pdf
+2025-11-07 21:30:39 | InsightSphere | INFO | db_service.py:76 | ✅ Loaded 0 messages for ravi_ds_pw.pdf
+2025-11-07 21:30:39 | InsightSphere | INFO | query.py:211 | 📂 Loading chat for user ravishankerdas020@gmail.com, document: ravi_ds_pw.pdf
+2025-11-07 21:30:39 | InsightSphere | INFO | db_service.py:76 | ✅ Loaded 0 messages for ravi_ds_pw.pdf
+2025-11-07 21:30:42 | InsightSphere | INFO | db_service.py:99 | ✅ Loaded 4 chat conversations for user ravishankerdas020@gmail.com
+2025-11-07 21:30:42 | InsightSphere | INFO | documents.py:35 | 📋 Found 4 documents with chat history for user ravishankerdas020@gmail.com
+2025-11-07 21:31:15 | InsightSphere | INFO | multimodal_retriever.py:245 | Invoking RAG Agent...
+2025-11-07 21:31:15 | InsightSphere | INFO | semantic_rag_cache.py:62 | source_filter in cache search: ravi_attentive.pdf
+2025-11-07 21:31:20 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ravi_attentive.pdf, messages: 1
+2025-11-07 21:31:20 | InsightSphere | INFO | db_service.py:45 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ravi_attentive.pdf
+2025-11-07 21:31:21 | InsightSphere | INFO | semantic_rag_cache.py:88 | ✅ Semantic cache HIT (similarity: 93.3%)
+2025-11-07 21:31:21 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ravi_attentive.pdf, messages: 2
+2025-11-07 21:31:21 | InsightSphere | INFO | db_service.py:45 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ravi_attentive.pdf
+2025-11-07 21:31:26 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ravi_attentive.pdf, messages: 2
+2025-11-07 21:31:26 | InsightSphere | INFO | db_service.py:45 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ravi_attentive.pdf
+2025-11-07 21:31:52 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ravi_attentive.pdf, messages: 2
+2025-11-07 21:31:52 | InsightSphere | INFO | db_service.py:45 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ravi_attentive.pdf
+2025-11-07 21:32:16 | InsightSphere | INFO | multimodal_retriever.py:245 | Invoking RAG Agent...
+2025-11-07 21:32:16 | InsightSphere | INFO | semantic_rag_cache.py:62 | source_filter in cache search: ravi_basys.pdf
+2025-11-07 21:32:17 | InsightSphere | INFO | semantic_rag_cache.py:91 | 🔍 Semantic cache MISS (best similarity: 0.0%)
+2025-11-07 21:32:19 | InsightSphere | INFO | semantic_rag_cache.py:122 | 💾 Saved to semantic cache (TTL: 7 days), cache_key: rag:semantic:93ce87498f71:ravi_basys.pdf:3e17f3c0
+2025-11-07 21:32:19 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ravi_basys.pdf, messages: 2
+2025-11-07 21:32:19 | InsightSphere | INFO | db_service.py:45 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ravi_basys.pdf
+2025-11-07 21:32:25 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ravi_basys.pdf, messages: 2
+2025-11-07 21:32:25 | InsightSphere | INFO | db_service.py:45 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ravi_basys.pdf
+2025-11-07 21:32:37 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ravi_basys.pdf, messages: 2
+2025-11-07 21:32:37 | InsightSphere | INFO | db_service.py:45 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ravi_basys.pdf
+2025-11-07 21:32:58 | InsightSphere | INFO | multimodal_retriever.py:245 | Invoking RAG Agent...
+2025-11-07 21:32:58 | InsightSphere | INFO | semantic_rag_cache.py:62 | source_filter in cache search: ravi_ds_pw.pdf
+2025-11-07 21:32:58 | InsightSphere | INFO | semantic_rag_cache.py:91 | 🔍 Semantic cache MISS (best similarity: 0.0%)
+2025-11-07 21:33:00 | InsightSphere | INFO | semantic_rag_cache.py:122 | 💾 Saved to semantic cache (TTL: 7 days), cache_key: rag:semantic:93ce87498f71:ravi_ds_pw.pdf:7730bf78
+2025-11-07 21:33:00 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ravi_ds_pw.pdf, messages: 2
+2025-11-07 21:33:01 | InsightSphere | INFO | db_service.py:45 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ravi_ds_pw.pdf
+2025-11-07 21:33:05 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ravi_ds_pw.pdf, messages: 2
+2025-11-07 21:33:05 | InsightSphere | INFO | db_service.py:45 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ravi_ds_pw.pdf
+2025-11-07 21:33:21 | InsightSphere | INFO | db_service.py:99 | ✅ Loaded 4 chat conversations for user ravishankerdas020@gmail.com
+2025-11-07 21:33:21 | InsightSphere | INFO | documents.py:35 | 📋 Found 4 documents with chat history for user ravishankerdas020@gmail.com
+2025-11-07 21:33:21 | InsightSphere | INFO | query.py:211 | 📂 Loading chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf
+2025-11-07 21:33:21 | InsightSphere | INFO | db_service.py:76 | ✅ Loaded 4 messages for ml_llm_interview_cheat_sheet.pdf
+2025-11-07 21:33:21 | InsightSphere | INFO | query.py:211 | 📂 Loading chat for user ravishankerdas020@gmail.com, document: ravi_attentive.pdf
+2025-11-07 21:33:21 | InsightSphere | INFO | db_service.py:76 | ✅ Loaded 2 messages for ravi_attentive.pdf
+2025-11-07 21:33:21 | InsightSphere | INFO | query.py:211 | 📂 Loading chat for user ravishankerdas020@gmail.com, document: ravi_basys.pdf
+2025-11-07 21:33:21 | InsightSphere | INFO | db_service.py:76 | ✅ Loaded 2 messages for ravi_basys.pdf
+2025-11-07 21:33:21 | InsightSphere | INFO | query.py:211 | 📂 Loading chat for user ravishankerdas020@gmail.com, document: ravi_ds_pw.pdf
+2025-11-07 21:33:21 | InsightSphere | INFO | db_service.py:76 | ✅ Loaded 2 messages for ravi_ds_pw.pdf
+2025-11-07 21:33:23 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf, messages: 4
+2025-11-07 21:33:23 | InsightSphere | INFO | db_service.py:45 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ml_llm_interview_cheat_sheet.pdf
+2025-11-07 21:33:24 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ravi_attentive.pdf, messages: 2
+2025-11-07 21:33:24 | InsightSphere | INFO | db_service.py:45 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ravi_attentive.pdf
+2025-11-07 21:33:25 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ravi_basys.pdf, messages: 2
+2025-11-07 21:33:25 | InsightSphere | INFO | db_service.py:45 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ravi_basys.pdf
+2025-11-07 21:33:26 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ravi_ds_pw.pdf, messages: 2
+2025-11-07 21:33:26 | InsightSphere | INFO | db_service.py:45 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ravi_ds_pw.pdf
+2025-11-07 21:33:27 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ravi_basys.pdf, messages: 2
+2025-11-07 21:33:27 | InsightSphere | INFO | db_service.py:45 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ravi_basys.pdf
+2025-11-07 21:33:29 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ravi_attentive.pdf, messages: 2
+2025-11-07 21:33:29 | InsightSphere | INFO | db_service.py:45 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ravi_attentive.pdf
+2025-11-07 21:33:30 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf, messages: 4
+2025-11-07 21:33:30 | InsightSphere | INFO | db_service.py:45 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ml_llm_interview_cheat_sheet.pdf
+2025-11-07 21:33:31 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ravi_attentive.pdf, messages: 2
+2025-11-07 21:33:31 | InsightSphere | INFO | db_service.py:45 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ravi_attentive.pdf
+2025-11-07 21:33:31 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ravi_basys.pdf, messages: 2
+2025-11-07 21:33:32 | InsightSphere | INFO | db_service.py:45 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ravi_basys.pdf
+2025-11-07 21:33:34 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ravi_ds_pw.pdf, messages: 2
+2025-11-07 21:33:34 | InsightSphere | INFO | db_service.py:45 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ravi_ds_pw.pdf
+2025-11-07 21:33:35 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ravi_basys.pdf, messages: 2
+2025-11-07 21:33:35 | InsightSphere | INFO | db_service.py:45 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ravi_basys.pdf
+2025-11-07 21:33:35 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ravi_attentive.pdf, messages: 2
+2025-11-07 21:33:36 | InsightSphere | INFO | db_service.py:45 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ravi_attentive.pdf
+2025-11-07 21:33:41 | InsightSphere | INFO | query.py:175 | 💾 Saving chat for user ravishankerdas020@gmail.com, document: ml_llm_interview_cheat_sheet.pdf, messages: 4
+2025-11-07 21:33:41 | InsightSphere | INFO | db_service.py:45 | ✅ Updated chat for user ravishankerdas020@gmail.com, document ml_llm_interview_cheat_sheet.pdf

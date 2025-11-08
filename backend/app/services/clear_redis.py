@@ -1,7 +1,7 @@
+from app.logger import setup_logger
 import redis # type: ignore
 import os
 from dotenv import load_dotenv
-from app.logger import setup_logger
 
 # Load environment variables (assuming your Redis config is in your .env file)
 load_dotenv()

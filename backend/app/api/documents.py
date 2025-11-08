@@ -45,14 +45,14 @@ async def list_documents(
 
 @router.delete(
     "/{filename}", 
-    summary="Delete a specific document and its chat history"
+    summary="Delete a specific document and its data from both databases"
 )
 async def delete_document_by_filename(
     filename: str,
     user_id: str = Header(None, alias="X-User-Id")
 ):
     """
-    Permanently deletes chat history for a specific document from PostgreSQL.
+    Permanently deletes document from both ChromaDB and PostgreSQL
     """
     if not user_id:
         raise HTTPException(
@@ -61,14 +61,24 @@ async def delete_document_by_filename(
         )
 
     try:
-        # Delete from PostgreSQL chat history
-        await delete_chat_from_db(user_id.lower(), filename.lower())
+        # Delete from ChromaDB
+        from app.services.document_manager import delete_document
+        chroma_success = delete_document(user_id.lower(), filename.lower())
         
-        logger.info(f"✅ Deleted chat history for document '{filename}' for user {user_id}")
-        return {"message": f"Chat history for '{filename}' deleted successfully."}
+        # Delete from PostgreSQL chat history
+        from app.database_service.db_service import delete_chat_from_db
+        await delete_chat_from_db(user_id.lower(), filename.lower())
+        logger.info(f"Chat history deleted for user: {user_id.lower()} and filename: {filename.lower()}")
+        
+        if chroma_success:
+            logger.info(f"✅ Fully deleted document '{filename}' for user {user_id}")
+            return {"message": f"Document '{filename}' and all associated data deleted successfully."}
+        else:
+            logger.warning(f"⚠️ Document '{filename}' not found in ChromaDB, but chat history was deleted")
+            return {"message": f"Chat history for '{filename}' deleted successfully."}
         
     except Exception as e:
-        logger.error(f"Error deleting document {filename}: {e}")
+        logger.error(f"❌ Error deleting document {filename}: {e}")
         raise HTTPException(
             status_code=500,
             detail=f"Failed to delete document: {str(e)}"
