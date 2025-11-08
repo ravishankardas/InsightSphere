@@ -1745,3 +1745,9 @@
 2025-11-08 16:51:29 | InsightSphere | INFO | multimodal_retriever.py:313 |   Sources Processing: 0.000s
 2025-11-08 16:51:29 | InsightSphere | INFO | multimodal_retriever.py:314 |   Agent Execution: 14.989s
 2025-11-08 16:51:29 | InsightSphere | INFO | multimodal_retriever.py:315 |   TOTAL time for query_multimodal: 15.147s
+2025-11-08 17:53:35 | InsightSphere | INFO | ingest.py:26 | ✓ Ingest: ChromaDB PersistentClient initialized at ./chroma_db
+2025-11-08 17:54:12 | InsightSphere | INFO | ingest.py:26 | ✓ Ingest: ChromaDB PersistentClient initialized at ./chroma_db
+2025-11-08 17:58:50 | InsightSphere | INFO | ingest.py:26 | ✓ Ingest: ChromaDB PersistentClient initialized at ./chroma_db
+2025-11-08 18:04:44 | InsightSphere | INFO | ingest.py:26 | ✓ Ingest: ChromaDB PersistentClient initialized at ./chroma_db
+2025-11-08 18:05:19 | InsightSphere | INFO | ingest.py:26 | ✓ Ingest: ChromaDB PersistentClient initialized at ./chroma_db
+2025-11-08 18:05:52 | InsightSphere | INFO | ingest.py:26 | ✓ Ingest: ChromaDB PersistentClient initialized at ./chroma_db

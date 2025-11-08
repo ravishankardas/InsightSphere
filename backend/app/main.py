@@ -10,6 +10,7 @@ from app.core.rate_limiter_config import limiter
 from app.database_service.database import create_tables
 
 from app.logger import setup_logger
+from app.services.ingest import get_chroma_client
 from slowapi.errors import RateLimitExceeded # type: ignore
 # ----------------------------------------------------
 from app.api import upload, query, documents, analytics, send_email_action # These imports are now safe
@@ -28,6 +29,7 @@ app = FastAPI(
 
 @app.on_event("startup")
 async def startup_event():
+    get_chroma_client()
     await create_tables()
     # logger.info("Application started and database tables verified")
     
