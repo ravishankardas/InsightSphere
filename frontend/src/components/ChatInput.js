@@ -1,7 +1,6 @@
 // src/components/ChatInput.js
 import React, { useState, useEffect, useRef } from 'react';
 import './ChatInput.css';
-import { FaMicrophone } from "react-icons/fa";
 
 export default function ChatInput({
   query,

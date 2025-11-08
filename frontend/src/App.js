@@ -5,7 +5,6 @@ import "./App.css";
 
 // Components
 import TopNav from "./components/TopNav";
-import SettingsPanel from "./components/SettingsPanel";
 import DocumentsPanel from "./components/DocumentsPanel";
 import ChatPanel from "./components/ChatPanel";
 import AuthModal from "./components/AuthModal";
