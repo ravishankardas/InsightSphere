@@ -11,7 +11,7 @@ from app.logger import setup_logger
 from dotenv import load_dotenv
 load_dotenv()
 
-CHROMA_DIR = os.environ.get("CHROMA_DIR", "./chroma_db")
+CHROMA_DIR = os.environ.get("CHROMA_DIR", "/app/chroma_db_per")
 OPENAI_KEY = os.environ.get("OPENAI_API_KEY", None)
 
 _client = None

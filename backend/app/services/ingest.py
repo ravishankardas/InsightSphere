@@ -12,7 +12,7 @@ load_dotenv()
 from app.logger import setup_logger
 logger = setup_logger()
 
-CHROMA_DIR = os.environ.get("CHROMA_DIR", "./chroma_db")
+CHROMA_DIR = os.environ.get("CHROMA_DIR", "/app/chroma_db_per")
 
 _client = None
 _collections = {}

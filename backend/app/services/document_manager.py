@@ -51,19 +51,21 @@ def delete_document(user_id: str, filename: str) -> bool:
     try:
         collection = get_user_collection(user_id)
         if not collection:
-            logger.error(f"❌ Collection not found for user {user_id}")
+            logger.error(f" Collection not found for user {user_id}")
             return False
         
         # Count chunks before deletion for logging
-        pre_count = collection.count(
-            where={ # type: ignore
+        result = collection.get(
+            where={
                 "$and": [
-                    {"user_id": user_id},
-                    {"source": filename}
+                    {"document_name": filename},
+                    {"user_id": user_id}
                 ]
             }
         )
-        
+
+        pre_count = len(result['ids'])
+
         if pre_count == 0:
             logger.warning(f"📭 No chunks found to delete for document {filename}")
             return True  # Consider this success - nothing to delete
@@ -78,32 +80,14 @@ def delete_document(user_id: str, filename: str) -> bool:
             }
         )
         
-        # Verify deletion
-        post_count = collection.count(
-            where={ # type: ignore
-                "$and": [
-                    {"user_id": user_id},
-                    {"source": filename}
-                ]
-            }
-        )
-        
-        success = post_count == 0
-        if success:
-            logger.info(f"✅ Successfully deleted {pre_count} chunks for document {filename}")
-        else:
-            logger.error(f"❌ Deletion verification failed: {post_count} chunks remaining")
+        logger.info(f"✅ Successfully deleted {pre_count} chunks for document {filename}")
             
-        return success
+        return True
         
     except Exception as e:
         logger.error(f"❌ Error deleting document {filename} for user {user_id}: {e}")
         return False
 
-# Remove ChromaDB functions since we're only using PostgreSQL
-# The following functions are no longer needed:
-# - get_user_documents() 
-# - delete_document()
 
 
 async def get_documents_in_chromadb(user_id: str) -> List[str]:
@@ -135,7 +119,6 @@ async def get_documents_in_chromadb(user_id: str) -> List[str]:
         logger.error(f"Error getting ChromaDB documents for {user_id}: {e}")
         return []
     
-
 
 async def document_exists_in_chromadb(user_id: str, filename: str) -> bool:
     """

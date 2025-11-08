@@ -225,6 +225,8 @@ def ingest_multimodal_pdf(
 ) -> Dict:
     """Wrapper ingestion function that uses extract_multimodal with split options."""
     start = time.time()
+    filename = filename.lower()
+    
     logger.info(f"\n{'='*60}")
     logger.info(f"FAST MULTIMODAL INGEST: {filename}")
     logger.info(f"Mode: {'FAST' if fast_mode else 'HIGH-RES'} | split_page={split_pdf_page} | concurrency={split_pdf_concurrency_level}")
