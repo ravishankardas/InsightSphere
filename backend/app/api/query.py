@@ -8,7 +8,7 @@ from app.services.multimodal_retriever import query_multimodal
 from app.core.rate_limiter_config import limiter
 from app.services.evaluation import evaluate_rag_pipeline
 from app.core.auth import validate_api_key
-
+from app.utils.helper import sanitize_response, validate_query
 # --- NEW IMPORT ---
 from app.api.analytics import log_query
 from app.services.query_rewriter import get_query_rewriter
@@ -74,6 +74,11 @@ async def query_documents(
             status_code=401,
             detail="Authentication required. Please provide X-User-Id header."
         )
+    
+    is_valid, error_msg = validate_query(body.query)
+    if not is_valid:
+        return {"answer": error_msg}
+
     start_time = time.time()
     result = {} # Initialize result to ensure it's available in finally block
     
@@ -85,6 +90,8 @@ async def query_documents(
         "error": True, 
         "response_time_ms": None,
     }
+
+
 
     email_present = False
     query_rewriter = get_query_rewriter()
@@ -121,6 +128,7 @@ async def query_documents(
         if result.get("answer") and "error" not in answer_text and "no documents" not in answer_text and "not configured" not in answer_text:
             log_data["error"] = False
 
+        result["answer"] = sanitize_response(result["answer"])
         return result
 
     except Exception as e:
