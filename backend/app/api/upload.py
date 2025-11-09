@@ -34,6 +34,7 @@ async def upload_pdf_auto(
     """
     if not user_id:
         raise HTTPException(status_code=401, detail="Auth required")
+
     
     filename = (file.filename or "").lower()
     if not filename.endswith(".pdf"):

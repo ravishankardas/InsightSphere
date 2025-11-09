@@ -74,7 +74,6 @@ async def query_documents(
             status_code=401,
             detail="Authentication required. Please provide X-User-Id header."
         )
-    
     start_time = time.time()
     result = {} # Initialize result to ensure it's available in finally block
     

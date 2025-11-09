@@ -16,9 +16,18 @@ from slowapi.errors import RateLimitExceeded # type: ignore
 from app.api import upload, query, documents, analytics, send_email_action # These imports are now safe
 from dotenv import load_dotenv
 import os
+import sentry_sdk # type: ignore
+
 load_dotenv()
 
 logger = setup_logger()
+SENTRY_BACKEND_DSN = os.getenv("SENTRY_BACKEND_DSN")
+sentry_sdk.init(
+    dsn=SENTRY_BACKEND_DSN,
+    # Add data like request headers and IP for users,
+    # see https://docs.sentry.io/platforms/python/data-management/data-collected/ for more info
+    send_default_pii=True,
+)
 
 app = FastAPI(
     title="InsightSphere API", 

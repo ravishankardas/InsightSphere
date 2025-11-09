@@ -1768,3 +1768,5 @@
 2025-11-08 19:04:00 | InsightSphere | INFO | ingest.py:26 | ✓ Ingest: ChromaDB PersistentClient initialized at /app/chroma_db_per
 2025-11-08 19:04:33 | InsightSphere | INFO | ingest.py:26 | ✓ Ingest: ChromaDB PersistentClient initialized at /app/chroma_db_per
 2025-11-08 19:05:05 | InsightSphere | INFO | ingest.py:26 | ✓ Ingest: ChromaDB PersistentClient initialized at /app/chroma_db_per
+2025-11-08 19:05:55 | InsightSphere | INFO | ingest.py:26 | ✓ Ingest: ChromaDB PersistentClient initialized at /app/chroma_db_per
+2025-11-08 19:14:56 | InsightSphere | INFO | ingest.py:26 | ✓ Ingest: ChromaDB PersistentClient initialized at /app/chroma_db_per

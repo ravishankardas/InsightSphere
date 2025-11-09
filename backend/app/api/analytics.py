@@ -96,3 +96,9 @@ async def get_simple_analytics_dashboard() -> Dict[str, Any]:
         "most_queried_documents": dict(document_counts.most_common(5)),
         "avg_response_time_ms": round(avg_response_time_ms, 2),
     }
+
+
+@router.get("/test-sentry")
+async def test_sentry():
+    # This will appear in your Sentry dashboard
+    division_by_zero = 1 / 0

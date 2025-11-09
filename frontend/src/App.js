@@ -1,5 +1,6 @@
 // src/App.js
 import React, { useState, useEffect, useCallback, useRef } from "react";
+import * as Sentry from "@sentry/react";
 import { useUser } from "@clerk/clerk-react"; // Removed unused SignedIn, SignedOut
 import "./App.css";
 
@@ -9,6 +10,18 @@ import DocumentsPanel from "./components/DocumentsPanel";
 import ChatPanel from "./components/ChatPanel";
 import AuthModal from "./components/AuthModal";
 import DeleteConfirmationModal from './components/DeleteConfirmationModal';
+
+Sentry.init({
+  dsn: process.env.REACT_APP_SENTRY_DSN,
+  integrations: [
+    Sentry.browserTracingIntegration(),
+    Sentry.replayIntegration(),
+  ],
+  tracesSampleRate: 1.0,
+  replaysSessionSampleRate: 0.1,
+  replaysOnErrorSampleRate: 1.0,
+  environment: process.env.NODE_ENV,
+});
 
 export default function App() {
   const API_KEY = process.env.REACT_APP_API_KEY;
@@ -931,6 +944,7 @@ export default function App() {
       darkMode={darkMode}
       toggleDarkMode={toggleDarkMode}
     />
+
 
       {/* {showSettings && (
         <SettingsPanel 

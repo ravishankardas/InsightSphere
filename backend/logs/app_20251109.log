@@ -1,0 +1,17 @@
+2025-11-09 09:22:48 | InsightSphere | INFO | ingest.py:26 | ✓ Ingest: ChromaDB PersistentClient initialized at /app/chroma_db_per
+2025-11-09 09:36:11 | InsightSphere | INFO | ingest.py:26 | ✓ Ingest: ChromaDB PersistentClient initialized at /app/chroma_db_per
+2025-11-09 09:39:21 | InsightSphere | INFO | ingest.py:26 | ✓ Ingest: ChromaDB PersistentClient initialized at /app/chroma_db_per
+2025-11-09 09:40:12 | InsightSphere | INFO | ingest.py:26 | ✓ Ingest: ChromaDB PersistentClient initialized at /app/chroma_db_per
+2025-11-09 09:41:19 | InsightSphere | INFO | ingest.py:26 | ✓ Ingest: ChromaDB PersistentClient initialized at /app/chroma_db_per
+2025-11-09 09:42:11 | InsightSphere | INFO | ingest.py:26 | ✓ Ingest: ChromaDB PersistentClient initialized at /app/chroma_db_per
+2025-11-09 09:42:51 | InsightSphere | INFO | ingest.py:26 | ✓ Ingest: ChromaDB PersistentClient initialized at /app/chroma_db_per
+2025-11-09 09:51:40 | InsightSphere | INFO | db_service.py:99 | ✅ Loaded 3 chat conversations for user ravishankerdas020@gmail.com
+2025-11-09 09:51:41 | InsightSphere | INFO | document_manager.py:114 | 🔍 ChromaDB has 0 documents for user ravishankerdas020@gmail.com
+2025-11-09 09:51:41 | InsightSphere | INFO | documents.py:31 | 📋 User ravishankerdas020@gmail.com: 3 in PostgreSQL, 0 in ChromaDB, 0 valid
+2025-11-09 09:57:55 | InsightSphere | INFO | ingest.py:26 | ✓ Ingest: ChromaDB PersistentClient initialized at /app/chroma_db_per
+2025-11-09 09:58:47 | InsightSphere | INFO | ingest.py:26 | ✓ Ingest: ChromaDB PersistentClient initialized at /app/chroma_db_per
+2025-11-09 09:59:37 | InsightSphere | INFO | ingest.py:26 | ✓ Ingest: ChromaDB PersistentClient initialized at /app/chroma_db_per
+2025-11-09 10:00:27 | InsightSphere | INFO | ingest.py:26 | ✓ Ingest: ChromaDB PersistentClient initialized at /app/chroma_db_per
+2025-11-09 10:01:14 | InsightSphere | INFO | ingest.py:26 | ✓ Ingest: ChromaDB PersistentClient initialized at /app/chroma_db_per
+2025-11-09 10:04:00 | InsightSphere | INFO | ingest.py:26 | ✓ Ingest: ChromaDB PersistentClient initialized at /app/chroma_db_per
+2025-11-09 10:16:21 | InsightSphere | INFO | ingest.py:26 | ✓ Ingest: ChromaDB PersistentClient initialized at /app/chroma_db_per

@@ -89,7 +89,6 @@ def delete_document(user_id: str, filename: str) -> bool:
         return False
 
 
-
 async def get_documents_in_chromadb(user_id: str) -> List[str]:
     """
     Get list of documents that actually exist in ChromaDB with content
