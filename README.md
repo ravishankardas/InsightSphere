@@ -42,6 +42,7 @@
 - **Voice Input** - Press and hold the microphone button to speak your query, release when finished, then send.
 - **Dark Mode** - Seamless theme switching with persistent user preference.
 - **Sidebar** - Collapsible navigation with document history and chat management.
+- **Export PDF** - Export the current chat as PDF
 
 
 ## 📈 Performance Metrics
