@@ -33,3 +33,4 @@ asyncpg
 sqlalchemy
 alembic
 sentry-sdk[fastapi]
+langfuse

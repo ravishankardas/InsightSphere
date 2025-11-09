@@ -3,7 +3,8 @@ import os
 import time
 from typing import TypedDict, Optional, List, Dict, Any
 from langgraph.graph import StateGraph, END
-from openai import OpenAI
+# from openai import OpenAI
+from langfuse.openai import openai # type: ignore
 import httpx
 import json
 import traceback
@@ -44,7 +45,9 @@ class AgentState(TypedDict):
     current_step: int
     max_steps: int
 
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY")) # type: ignore
+# client = openai(api_key=os.getenv("OPENAI_API_KEY")) # type: ignore
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
 API_BASE_URL = os.getenv("RAILWAY_PUBLIC_DOMAIN")
 if not API_BASE_URL:
@@ -125,7 +128,7 @@ def intent_detector(state: AgentState) -> AgentState:
     """
 
     try:
-        response = client.chat.completions.create(
+        response = openai.chat.completions.create(
             model=OPENAI_MODEL,
             messages=[{"role":"user", "content": prompt}],
             max_tokens=500,
@@ -188,7 +191,7 @@ def intent_detector(state: AgentState) -> AgentState:
             state["query_type"] = "GENERAL_QUERY"
         
         try:
-            fallback = client.chat.completions.create(
+            fallback = openai.chat.completions.create(
                 model=OPENAI_MODEL,
                 messages=[
                     {"role":"system", "content":"You are a helpful assistant that answers using the context below."},
@@ -229,7 +232,7 @@ def general_query_answer(state: AgentState) -> AgentState:
     general_prompt = f"You are a helpful and knowledgeable general assistant. Answer the user's question concisely using only your general knowledge. User Query: {state['user_query']}"
     
     try:
-        response = client.chat.completions.create(
+        response = openai.chat.completions.create(
             model=OPENAI_MODEL,
             messages=[{"role":"user", "content": general_prompt}],
             max_tokens=400,
@@ -310,7 +313,7 @@ def agentic_planning_node(state: AgentState) -> AgentState:
     """
     
     try:
-        response = client.chat.completions.create(
+        response = openai.chat.completions.create(
             model=OPENAI_MODEL,
             messages=[{"role": "user", "content": planner_prompt}],
             temperature=0.1,
@@ -416,7 +419,7 @@ def agentic_synthesis_node(state: AgentState) -> AgentState:
     """
     
     try:
-        response = client.chat.completions.create(
+        response = openai.chat.completions.create(
             model=OPENAI_MODEL,
             messages=[{"role": "user", "content": synthesis_prompt}],
             temperature=0.3,

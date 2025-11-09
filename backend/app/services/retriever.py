@@ -3,7 +3,8 @@ import os
 import re
 from typing import List, Dict
 import chromadb
-from openai import OpenAI
+# from openai import OpenAI
+from langfuse.openai import openai # type: ignore
 from .embeddings import get_embeddings
 
 from app.logger import setup_logger
@@ -19,12 +20,13 @@ _collections = {}  # Cache collections by user_id
 _openai_client = None
 logger = setup_logger()
 
-def get_openai_client():
-    """Initialize and return OpenAI client"""
-    global _openai_client
-    if _openai_client is None and OPENAI_KEY:
-        _openai_client = OpenAI(api_key=OPENAI_KEY)
-    return _openai_client
+def get_openai_key():
+    # global _openai_client
+    # if _openai_client is None and OPENAI_KEY:
+    #     _openai_client = openai(api_key=OPENAI_KEY)
+    # return _openai_client
+
+    return OPENAI_KEY
 
 def get_chroma_client():
     """Get or create the ChromaDB client"""
@@ -128,9 +130,9 @@ def call_openai_system_prompt(context_snippets: List[str], question: str):
             "sources": []
         }
     
-    client = get_openai_client()
+    client_api_key = get_openai_key()
     
-    if not client:
+    if not client_api_key:
         return {
             "answer": "OpenAI API key not set. Here are retrieved snippets:\n\n" + "\n\n".join(context_snippets),
             "sources": [{"snippet": s[0:100], "index": i} for i, s in enumerate(context_snippets, start=1)]
@@ -142,7 +144,7 @@ def call_openai_system_prompt(context_snippets: List[str], question: str):
     prompt += f"Question: {question}\nAnswer:"
     
     try:
-        resp = client.chat.completions.create(
+        resp = openai.chat.completions.create(
             model=os.environ.get("OPENAI_MODEL", "gpt-4o-mini"),
             messages=[
                 {"role": "system", "content": "You are a helpful assistant."},

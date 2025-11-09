@@ -15,3 +15,46 @@
 2025-11-09 10:01:14 | InsightSphere | INFO | ingest.py:26 | ✓ Ingest: ChromaDB PersistentClient initialized at /app/chroma_db_per
 2025-11-09 10:04:00 | InsightSphere | INFO | ingest.py:26 | ✓ Ingest: ChromaDB PersistentClient initialized at /app/chroma_db_per
 2025-11-09 10:16:21 | InsightSphere | INFO | ingest.py:26 | ✓ Ingest: ChromaDB PersistentClient initialized at /app/chroma_db_per
+2025-11-09 11:08:41 | InsightSphere | INFO | ingest.py:26 | ✓ Ingest: ChromaDB PersistentClient initialized at /app/chroma_db_per
+2025-11-09 11:22:35 | InsightSphere | INFO | ingest.py:26 | ✓ Ingest: ChromaDB PersistentClient initialized at /app/chroma_db_per
+2025-11-09 11:23:26 | InsightSphere | INFO | ingest.py:26 | ✓ Ingest: ChromaDB PersistentClient initialized at /app/chroma_db_per
+2025-11-09 11:25:01 | InsightSphere | INFO | ingest.py:26 | ✓ Ingest: ChromaDB PersistentClient initialized at /app/chroma_db_per
+2025-11-09 11:25:30 | InsightSphere | INFO | db_service.py:99 | ✅ Loaded 3 chat conversations for user ravishankerdas020@gmail.com
+2025-11-09 11:25:30 | InsightSphere | INFO | document_manager.py:114 | 🔍 ChromaDB has 0 documents for user ravishankerdas020@gmail.com
+2025-11-09 11:25:30 | InsightSphere | INFO | documents.py:31 | 📋 User ravishankerdas020@gmail.com: 3 in PostgreSQL, 0 in ChromaDB, 0 valid
+2025-11-09 11:26:40 | InsightSphere | INFO | db_service.py:99 | ✅ Loaded 3 chat conversations for user ravishankerdas020@gmail.com
+2025-11-09 11:26:40 | InsightSphere | INFO | document_manager.py:114 | 🔍 ChromaDB has 0 documents for user ravishankerdas020@gmail.com
+2025-11-09 11:26:40 | InsightSphere | INFO | documents.py:31 | 📋 User ravishankerdas020@gmail.com: 3 in PostgreSQL, 0 in ChromaDB, 0 valid
+2025-11-09 11:27:03 | InsightSphere | INFO | upload.py:62 | 
+🔍 PDF Analysis for ravi_attentive.pdf:
+2025-11-09 11:27:03 | InsightSphere | INFO | upload.py:63 |    Complexity: 0/100
+2025-11-09 11:27:03 | InsightSphere | INFO | upload.py:64 |    Analysis: Simple text document - text-only
+2025-11-09 11:27:03 | InsightSphere | INFO | upload.py:65 |    Recommended: text mode with max_images=0
+2025-11-09 11:27:03 | InsightSphere | INFO | upload.py:66 |    Estimated time: ~0s
+2025-11-09 11:27:03 | InsightSphere | INFO | text_only_ingest.py:60 | 
+============================================================
+2025-11-09 11:27:03 | InsightSphere | INFO | text_only_ingest.py:61 | FAST TEXT-ONLY INGEST: ravi_attentive.pdf
+2025-11-09 11:27:03 | InsightSphere | INFO | text_only_ingest.py:62 | ============================================================
+2025-11-09 11:27:03 | InsightSphere | INFO | text_only_ingest.py:65 | 📄 Extracting text...
+2025-11-09 11:27:03 | InsightSphere | INFO | text_only_ingest.py:69 | ✂️  Chunking text...
+2025-11-09 11:27:03 | InsightSphere | INFO | text_only_ingest.py:72 | ✅ Created 5 chunks
+2025-11-09 11:27:03 | InsightSphere | INFO | text_only_ingest.py:88 | 🔢 Generating embeddings...
+2025-11-09 11:27:09 | InsightSphere | INFO | text_only_ingest.py:92 | 💾 Storing in database...
+2025-11-09 11:27:10 | InsightSphere | INFO | text_only_ingest.py:101 | ✅ Done! Stored 5 chunks
+2025-11-09 11:27:10 | InsightSphere | INFO | text_only_ingest.py:102 | ============================================================
+
+2025-11-09 11:27:10 | InsightSphere | INFO | db_service.py:76 | ✅ Loaded 70 messages for ravi_attentive.pdf
+2025-11-09 11:27:10 | InsightSphere | INFO | upload.py:99 | Document ravi_attentive.pdf already has chat history, preserving it
+2025-11-09 11:27:10 | InsightSphere | INFO | query.py:197 | 📂 Loading chat for user ravishankerdas020@gmail.com, document: ravi_attentive.pdf
+2025-11-09 11:27:10 | InsightSphere | INFO | db_service.py:76 | ✅ Loaded 70 messages for ravi_attentive.pdf
+2025-11-09 11:27:13 | InsightSphere | INFO | db_service.py:99 | ✅ Loaded 3 chat conversations for user ravishankerdas020@gmail.com
+2025-11-09 11:27:13 | InsightSphere | INFO | document_manager.py:114 | 🔍 ChromaDB has 1 documents for user ravishankerdas020@gmail.com
+2025-11-09 11:27:13 | InsightSphere | INFO | documents.py:31 | 📋 User ravishankerdas020@gmail.com: 3 in PostgreSQL, 1 in ChromaDB, 1 valid
+2025-11-09 11:27:23 | InsightSphere | INFO | db_service.py:99 | ✅ Loaded 3 chat conversations for user ravishankerdas020@gmail.com
+2025-11-09 11:27:23 | InsightSphere | INFO | document_manager.py:114 | 🔍 ChromaDB has 1 documents for user ravishankerdas020@gmail.com
+2025-11-09 11:27:23 | InsightSphere | INFO | documents.py:31 | 📋 User ravishankerdas020@gmail.com: 3 in PostgreSQL, 1 in ChromaDB, 1 valid
+2025-11-09 11:27:23 | InsightSphere | INFO | query.py:197 | 📂 Loading chat for user ravishankerdas020@gmail.com, document: ravi_attentive.pdf
+2025-11-09 11:27:23 | InsightSphere | INFO | db_service.py:76 | ✅ Loaded 70 messages for ravi_attentive.pdf
+2025-11-09 11:30:38 | InsightSphere | INFO | ingest.py:26 | ✓ Ingest: ChromaDB PersistentClient initialized at /app/chroma_db_per
+2025-11-09 11:31:25 | InsightSphere | INFO | ingest.py:26 | ✓ Ingest: ChromaDB PersistentClient initialized at /app/chroma_db_per
+2025-11-09 11:32:15 | InsightSphere | INFO | ingest.py:26 | ✓ Ingest: ChromaDB PersistentClient initialized at /app/chroma_db_per

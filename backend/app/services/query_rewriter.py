@@ -1,10 +1,17 @@
 # app/services/query_rewriter.py
 
-from openai import OpenAI
+# from openai import OpenAI
+from langfuse.openai import openai # type: ignore
+
 from typing import List, Optional
 import os
 from app.logger import setup_logger
+from dotenv import load_dotenv
 logger = setup_logger()
+
+load_dotenv()
+
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 query_cache = {}
 
@@ -15,7 +22,7 @@ class QueryRewriter:
     """
     
     def __init__(self, api_key: Optional[str] = None):
-        self.client = OpenAI(api_key=api_key or os.getenv("OPENAI_API_KEY"))
+        # self.client = openai(api_key=api_key or os.getenv("OPENAI_API_KEY"))
         self.model = "gpt-3.5-turbo"  # Fast and cost-effective for query rewriting
     
     def rewrite_query(self, original_query: str, document_context: Optional[str] = None) -> str:
@@ -52,7 +59,7 @@ class QueryRewriter:
         user_prompt += "\n\nRewritten query:"
         
         try:
-            response = self.client.chat.completions.create(
+            response = openai.chat.completions.create(
                 model=self.model,
                 messages=[
                     {"role": "system", "content": system_prompt},
@@ -101,7 +108,7 @@ class QueryRewriter:
         user_prompt = f"Original query: {original_query}\n\nGenerate {num_queries} variations:"
         
         try:
-            response = self.client.chat.completions.create(
+            response = openai.chat.completions.create(
                 model=self.model,
                 messages=[
                     {"role": "system", "content": system_prompt},
